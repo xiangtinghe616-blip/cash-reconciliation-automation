@@ -1,0 +1,21 @@
+break_type,priority,account_id,currency,amount_bank,amount_internal,transaction_date_bank,transaction_date_internal,reference_id_bank,reference_id_internal,description_bank,description_internal,recommended_review_action
+Duplicate Transaction,High,ACC1001,CAD,9800.0,,2026-03-10,,REF0048,,Client funding received,,Review duplicate records detected on bank side before reconciliation matching.
+Duplicate Transaction,High,ACC1003,CAD,2100.0,,2026-03-11,,REF0049,,Cash withdrawal processed,,Review duplicate records detected on bank side before reconciliation matching.
+Duplicate Transaction,High,ACC1005,CAD,,15100.0,,2026-03-11,,REF0050,,Treasury movement,Review duplicate records detected on internal side before reconciliation matching.
+Potential Timing Difference,Medium,ACC1001,CAD,5400.0,5400.0,2026-03-08,2026-03-09,REF0031,REF0031,Cash deposit posted,Cash deposit posted,Review next-day posting to confirm normal settlement timing difference.
+Potential Timing Difference,Medium,ACC1002,CAD,12800.0,12800.0,2026-03-08,2026-03-09,REF0032,REF0032,Client funding received,Client funding received,Review next-day posting to confirm normal settlement timing difference.
+Potential Timing Difference,Medium,ACC1003,CAD,760.0,760.0,2026-03-08,2026-03-09,REF0033,REF0033,Bank service fee,Bank service fee,Review next-day posting to confirm normal settlement timing difference.
+Potential Timing Difference,Medium,ACC1004,CAD,9800.0,9800.0,2026-03-09,2026-03-10,REF0034,REF0034,Client withdrawal,Client withdrawal,Review next-day posting to confirm normal settlement timing difference.
+Potential Timing Difference,Medium,ACC1005,CAD,17200.0,17200.0,2026-03-09,2026-03-10,REF0035,REF0035,Treasury funding received,Treasury funding received,Review next-day posting to confirm normal settlement timing difference.
+Potential Timing Difference,Medium,ACC1002,CAD,3100.0,3100.0,2026-03-10,2026-03-11,REF0036,REF0036,Cash withdrawal processed,Cash withdrawal processed,Review next-day posting to confirm normal settlement timing difference.
+Amount Mismatch,High,ACC1002,CAD,12500.0,12350.0,2026-03-09,2026-03-09,REF0045,REF0045,Vendor payment,Vendor payment,Investigate source booking or adjustment causing amount mismatch.
+Amount Mismatch,High,ACC1003,CAD,16800.0,17000.0,2026-03-10,2026-03-10,REF0046,REF0046,Client funding received,Client funding received,Investigate source booking or adjustment causing amount mismatch.
+Amount Mismatch,Medium,ACC1004,CAD,5400.0,5250.0,2026-03-11,2026-03-11,REF0047,REF0047,Cash deposit posted,Cash deposit posted,Investigate source booking or adjustment causing amount mismatch.
+Missing in Internal Ledger,Low,ACC1002,CAD,4300.0,,2026-03-08,,REF0041,,Cash deposit posted,,"Verify whether internal booking is delayed, missing, or affected by feed issue."
+Missing in Internal Ledger,High,ACC1004,CAD,13600.0,,2026-03-09,,REF0042,,Treasury movement,,"Verify whether internal booking is delayed, missing, or affected by feed issue."
+Missing in Internal Ledger,Low,ACC1001,CAD,720.0,,2026-03-10,,REF0043,,Bank service fee,,"Verify whether internal booking is delayed, missing, or affected by feed issue."
+Missing in Internal Ledger,Low,ACC1005,CAD,8900.0,,2026-03-11,,REF0044,,Cash withdrawal processed,,"Verify whether internal booking is delayed, missing, or affected by feed issue."
+Missing in Bank Statement,High,ACC1001,CAD,,14500.0,,2026-03-08,,REF0037,,Vendor payment,Review external posting status and statement availability before escalation.
+Missing in Bank Statement,Low,ACC1003,CAD,,6000.0,,2026-03-09,,REF0038,,Cash deposit posted,Review external posting status and statement availability before escalation.
+Missing in Bank Statement,Low,ACC1004,CAD,,850.0,,2026-03-10,,REF0039,,Interest credit,Review external posting status and statement availability before escalation.
+Missing in Bank Statement,High,ACC1005,CAD,,11700.0,,2026-03-10,,REF0040,,Client funding received,Review external posting status and statement availability before escalation.

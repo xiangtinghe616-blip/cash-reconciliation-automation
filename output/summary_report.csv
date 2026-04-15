@@ -1,0 +1,7 @@
+category,count,total_amount,high_priority_count
+Matched - Exact,33,241710.0,0
+Duplicate Transaction,3,27000.0,3
+Potential Timing Difference,6,98120.0,0
+Amount Mismatch,3,69300.0,2
+Missing in Internal Ledger,4,27520.0,1
+Missing in Bank Statement,4,33050.0,2

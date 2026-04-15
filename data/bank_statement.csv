@@ -1,0 +1,49 @@
+transaction_date,account_id,currency,amount,transaction_type,reference_id,description
+2026-03-02,ACC1001,CAD,8500.00,Wire In,REF0001,Client funding received
+2026-03-02,ACC1002,CAD,12000.00,Wire Out,REF0002,Vendor payment
+2026-03-02,ACC1003,CAD,640.00,Fee,REF0003,Bank service fee
+2026-03-02,ACC1004,CAD,4200.00,Deposit,REF0004,Cash deposit posted
+2026-03-02,ACC1005,CAD,15800.00,Wire In,REF0005,Treasury funding received
+2026-03-03,ACC1001,CAD,2200.00,Withdrawal,REF0006,Cash withdrawal processed
+2026-03-03,ACC1002,CAD,9750.00,Wire Out,REF0007,Client withdrawal
+2026-03-03,ACC1003,CAD,300.00,Interest,REF0008,Interest credit
+2026-03-03,ACC1004,CAD,11250.00,Wire In,REF0009,Client funding received
+2026-03-03,ACC1005,CAD,5100.00,Deposit,REF0010,Cash deposit posted
+2026-03-04,ACC1001,CAD,7800.00,Wire Out,REF0011,Treasury movement
+2026-03-04,ACC1002,CAD,890.00,Fee,REF0012,Bank service fee
+2026-03-04,ACC1003,CAD,14300.00,Wire In,REF0013,Client funding received
+2026-03-04,ACC1004,CAD,2600.00,Withdrawal,REF0014,Cash withdrawal processed
+2026-03-04,ACC1005,CAD,7350.00,Wire Out,REF0015,Vendor payment
+2026-03-05,ACC1001,CAD,18000.00,Wire In,REF0016,Treasury funding received
+2026-03-05,ACC1002,CAD,950.00,Interest,REF0017,Interest credit
+2026-03-05,ACC1003,CAD,4700.00,Deposit,REF0018,Cash deposit posted
+2026-03-05,ACC1004,CAD,6900.00,Wire Out,REF0019,Client withdrawal
+2026-03-05,ACC1005,CAD,1250.00,Withdrawal,REF0020,Cash withdrawal processed
+2026-03-06,ACC1001,CAD,13400.00,Wire Out,REF0021,Vendor payment
+2026-03-06,ACC1002,CAD,5200.00,Deposit,REF0022,Cash deposit posted
+2026-03-06,ACC1003,CAD,410.00,Fee,REF0023,Bank service fee
+2026-03-06,ACC1004,CAD,8700.00,Wire In,REF0024,Client funding received
+2026-03-06,ACC1005,CAD,16200.00,Wire Out,REF0025,Treasury movement
+2026-03-07,ACC1001,CAD,920.00,Interest,REF0026,Interest credit
+2026-03-07,ACC1002,CAD,6800.00,Withdrawal,REF0027,Cash withdrawal processed
+2026-03-07,ACC1003,CAD,15400.00,Wire In,REF0028,Client funding received
+2026-03-07,ACC1004,CAD,2400.00,Deposit,REF0029,Cash deposit posted
+2026-03-07,ACC1005,CAD,10800.00,Wire Out,REF0030,Vendor payment
+2026-03-08,ACC1001,CAD,5400.00,Deposit,REF0031,Cash deposit posted
+2026-03-08,ACC1002,CAD,12800.00,Wire In,REF0032,Client funding received
+2026-03-08,ACC1003,CAD,760.00,Fee,REF0033,Bank service fee
+2026-03-09,ACC1004,CAD,9800.00,Wire Out,REF0034,Client withdrawal
+2026-03-09,ACC1005,CAD,17200.00,Wire In,REF0035,Treasury funding received
+2026-03-10,ACC1002,CAD,3100.00,Withdrawal,REF0036,Cash withdrawal processed
+2026-03-08,ACC1002,CAD,4300.00,Deposit,REF0041,Cash deposit posted
+2026-03-09,ACC1004,CAD,13600.00,Wire Out,REF0042,Treasury movement
+2026-03-10,ACC1001,CAD,720.00,Fee,REF0043,Bank service fee
+2026-03-11,ACC1005,CAD,8900.00,Withdrawal,REF0044,Cash withdrawal processed
+2026-03-09,ACC1002,CAD,12500.00,Wire Out,REF0045,Vendor payment
+2026-03-10,ACC1003,CAD,16800.00,Wire In,REF0046,Client funding received
+2026-03-11,ACC1004,CAD,5400.00,Deposit,REF0047,Cash deposit posted
+2026-03-10,ACC1001,CAD,9800.00,Wire In,REF0048,Client funding received
+2026-03-10,ACC1001,CAD,9800.00,Wire In,REF0048,Client funding received
+2026-03-11,ACC1003,CAD,2100.00,Withdrawal,REF0049,Cash withdrawal processed
+2026-03-11,ACC1003,CAD,2100.00,Withdrawal,REF0049,Cash withdrawal processed
+2026-03-11,ACC1005,CAD,15100.00,Wire Out,REF0050,Treasury movement

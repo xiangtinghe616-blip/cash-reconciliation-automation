@@ -1,0 +1,51 @@
+reference_id,base_date,account_id,currency,base_amount,transaction_type,description,break_design
+REF0001,2026-03-02,ACC1001,CAD,8500.00,Wire In,Client funding received,Exact Match
+REF0002,2026-03-02,ACC1002,CAD,12000.00,Wire Out,Vendor payment,Exact Match
+REF0003,2026-03-02,ACC1003,CAD,640.00,Fee,Bank service fee,Exact Match
+REF0004,2026-03-02,ACC1004,CAD,4200.00,Deposit,Cash deposit posted,Exact Match
+REF0005,2026-03-02,ACC1005,CAD,15800.00,Wire In,Treasury funding received,Exact Match
+REF0006,2026-03-03,ACC1001,CAD,2200.00,Withdrawal,Cash withdrawal processed,Exact Match
+REF0007,2026-03-03,ACC1002,CAD,9750.00,Wire Out,Client withdrawal,Exact Match
+REF0008,2026-03-03,ACC1003,CAD,300.00,Interest,Interest credit,Exact Match
+REF0009,2026-03-03,ACC1004,CAD,11250.00,Wire In,Client funding received,Exact Match
+REF0010,2026-03-03,ACC1005,CAD,5100.00,Deposit,Cash deposit posted,Exact Match
+REF0011,2026-03-04,ACC1001,CAD,7800.00,Wire Out,Treasury movement,Exact Match
+REF0012,2026-03-04,ACC1002,CAD,890.00,Fee,Bank service fee,Exact Match
+REF0013,2026-03-04,ACC1003,CAD,14300.00,Wire In,Client funding received,Exact Match
+REF0014,2026-03-04,ACC1004,CAD,2600.00,Withdrawal,Cash withdrawal processed,Exact Match
+REF0015,2026-03-04,ACC1005,CAD,7350.00,Wire Out,Vendor payment,Exact Match
+REF0016,2026-03-05,ACC1001,CAD,18000.00,Wire In,Treasury funding received,Exact Match
+REF0017,2026-03-05,ACC1002,CAD,950.00,Interest,Interest credit,Exact Match
+REF0018,2026-03-05,ACC1003,CAD,4700.00,Deposit,Cash deposit posted,Exact Match
+REF0019,2026-03-05,ACC1004,CAD,6900.00,Wire Out,Client withdrawal,Exact Match
+REF0020,2026-03-05,ACC1005,CAD,1250.00,Withdrawal,Cash withdrawal processed,Exact Match
+REF0021,2026-03-06,ACC1001,CAD,13400.00,Wire Out,Vendor payment,Exact Match
+REF0022,2026-03-06,ACC1002,CAD,5200.00,Deposit,Cash deposit posted,Exact Match
+REF0023,2026-03-06,ACC1003,CAD,410.00,Fee,Bank service fee,Exact Match
+REF0024,2026-03-06,ACC1004,CAD,8700.00,Wire In,Client funding received,Exact Match
+REF0025,2026-03-06,ACC1005,CAD,16200.00,Wire Out,Treasury movement,Exact Match
+REF0026,2026-03-07,ACC1001,CAD,920.00,Interest,Interest credit,Exact Match
+REF0027,2026-03-07,ACC1002,CAD,6800.00,Withdrawal,Cash withdrawal processed,Exact Match
+REF0028,2026-03-07,ACC1003,CAD,15400.00,Wire In,Client funding received,Exact Match
+REF0029,2026-03-07,ACC1004,CAD,2400.00,Deposit,Cash deposit posted,Exact Match
+REF0030,2026-03-07,ACC1005,CAD,10800.00,Wire Out,Vendor payment,Exact Match
+REF0031,2026-03-08,ACC1001,CAD,5400.00,Deposit,Cash deposit posted,Timing Difference
+REF0032,2026-03-08,ACC1002,CAD,12800.00,Wire In,Client funding received,Timing Difference
+REF0033,2026-03-08,ACC1003,CAD,760.00,Fee,Bank service fee,Timing Difference
+REF0034,2026-03-09,ACC1004,CAD,9800.00,Wire Out,Client withdrawal,Timing Difference
+REF0035,2026-03-09,ACC1005,CAD,17200.00,Wire In,Treasury funding received,Timing Difference
+REF0036,2026-03-10,ACC1002,CAD,3100.00,Withdrawal,Cash withdrawal processed,Timing Difference
+REF0037,2026-03-08,ACC1001,CAD,14500.00,Wire Out,Vendor payment,Missing in Bank Statement
+REF0038,2026-03-09,ACC1003,CAD,6000.00,Deposit,Cash deposit posted,Missing in Bank Statement
+REF0039,2026-03-10,ACC1004,CAD,850.00,Interest,Interest credit,Missing in Bank Statement
+REF0040,2026-03-10,ACC1005,CAD,11700.00,Wire In,Client funding received,Missing in Bank Statement
+REF0041,2026-03-08,ACC1002,CAD,4300.00,Deposit,Cash deposit posted,Missing in Internal Ledger
+REF0042,2026-03-09,ACC1004,CAD,13600.00,Wire Out,Treasury movement,Missing in Internal Ledger
+REF0043,2026-03-10,ACC1001,CAD,720.00,Fee,Bank service fee,Missing in Internal Ledger
+REF0044,2026-03-11,ACC1005,CAD,8900.00,Withdrawal,Cash withdrawal processed,Missing in Internal Ledger
+REF0045,2026-03-09,ACC1002,CAD,12500.00,Wire Out,Vendor payment,Amount Mismatch
+REF0046,2026-03-10,ACC1003,CAD,16800.00,Wire In,Client funding received,Amount Mismatch
+REF0047,2026-03-11,ACC1004,CAD,5400.00,Deposit,Cash deposit posted,Amount Mismatch
+REF0048,2026-03-10,ACC1001,CAD,9800.00,Wire In,Client funding received,Duplicate Transaction
+REF0049,2026-03-11,ACC1003,CAD,2100.00,Withdrawal,Cash withdrawal processed,Duplicate Transaction
+REF0050,2026-03-11,ACC1005,CAD,15100.00,Wire Out,Treasury movement,Duplicate Transaction
