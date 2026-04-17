@@ -1,5 +1,11 @@
 # Cash Reconciliation Exception Detection and Triage Automation
 
+## Start Here
+- **Interactive Case Presentation:** https://xiangtinghe616-blip.github.io/cash-reconciliation-automation/
+- **Project Brief:** Attached separately as a business-facing overview of the workflow, solution design, and project value
+- **Repository Contents:** Source code, synthetic data, structured outputs, and implementation files
+
+This project demonstrates how a control-sensitive reconciliation workflow can be structured using a rule-based matching and exception-classification core, with AI applied only after detection to support explanation, next-step guidance, and draft analyst notes.
 A portfolio project demonstrating how exception-based automation can improve cash reconciliation workflows in an operations environment.
 
 This project was designed to show how standard reconciliation activities can be automated using rule-based logic, while more complex breaks are surfaced for analyst review. It also includes an AI-assisted exception support layer that generates explanations, suggested next steps, and draft analyst notes to improve triage efficiency.
