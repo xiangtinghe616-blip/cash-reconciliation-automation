@@ -1,0 +1,14 @@
+category,count,total_amount,high_priority_count
+Exact Match,300,3194719.67,0
+Normalized Reference Match,19,201099.54,0
+Potential Timing Difference,80,979977.5,0
+Split/Aggregation Match,15,148654.95,0
+Possible Match - Analyst Review Required,50,532293.79,0
+Amount Mismatch,40,1067342.24,25
+Duplicate Bank Transaction,20,157091.34,20
+Duplicate Ledger Transaction,20,155074.38,20
+Missing in Bank Statement,61,583524.54,27
+Missing in Internal Ledger,59,672951.67,27
+Potential Timing Difference,80,1959955.0,0
+Split or Aggregation Difference,15,211801.97,0
+Data Quality Issues,25,0.0,12

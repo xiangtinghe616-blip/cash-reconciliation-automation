@@ -1,0 +1,26 @@
+source,source_row_id,issue_type,severity,field_name,observed_value,recommended_action
+bank,BK-S000586-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000587-B1,Missing transaction reference,Medium,reference_id/raw_reference,,"Use alternative identifiers such as amount, date, counterparty, and description for analyst review."
+bank,BK-S000588-B1,Missing or invalid transaction date,High,transaction_date,,Confirm source file completeness and date format before reconciliation.
+bank,BK-S000589-B1,Missing or invalid amount,High,amount,NOT_AVAILABLE,Correct amount value before matching logic is applied.
+bank,BK-S000590-B1,Missing or invalid amount,High,amount,NOT_AVAILABLE,Correct amount value before matching logic is applied.
+bank,BK-S000591-B1,Missing or invalid amount,High,amount,NOT_AVAILABLE,Correct amount value before matching logic is applied.
+bank,BK-S000592-B1,Missing or invalid transaction date,High,transaction_date,,Confirm source file completeness and date format before reconciliation.
+bank,BK-S000593-B1,Missing or invalid transaction date,High,transaction_date,,Confirm source file completeness and date format before reconciliation.
+bank,BK-S000594-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000595-B1,Missing or invalid transaction date,High,transaction_date,,Confirm source file completeness and date format before reconciliation.
+bank,BK-S000596-B1,Missing or invalid amount,High,amount,NOT_AVAILABLE,Correct amount value before matching logic is applied.
+bank,BK-S000597-B1,Missing or invalid amount,High,amount,NOT_AVAILABLE,Correct amount value before matching logic is applied.
+bank,BK-S000598-B1,Missing transaction reference,Medium,reference_id/raw_reference,,"Use alternative identifiers such as amount, date, counterparty, and description for analyst review."
+bank,BK-S000599-B1,Missing transaction reference,Medium,reference_id/raw_reference,,"Use alternative identifiers such as amount, date, counterparty, and description for analyst review."
+bank,BK-S000600-B1,Missing transaction reference,Medium,reference_id/raw_reference,,"Use alternative identifiers such as amount, date, counterparty, and description for analyst review."
+bank,BK-S000601-B1,Missing transaction reference,Medium,reference_id/raw_reference,,"Use alternative identifiers such as amount, date, counterparty, and description for analyst review."
+bank,BK-S000602-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000603-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000604-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000605-B1,Missing transaction reference,Medium,reference_id/raw_reference,,"Use alternative identifiers such as amount, date, counterparty, and description for analyst review."
+bank,BK-S000606-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000607-B1,Missing or invalid amount,High,amount,NOT_AVAILABLE,Correct amount value before matching logic is applied.
+bank,BK-S000608-B1,Missing currency,Medium,currency,,Confirm currency from source system or bank statement.
+bank,BK-S000609-B1,Missing or invalid transaction date,High,transaction_date,,Confirm source file completeness and date format before reconciliation.
+bank,BK-S000610-B1,Missing or invalid transaction date,High,transaction_date,,Confirm source file completeness and date format before reconciliation.

@@ -1,0 +1,611 @@
+scenario_id,scenario_type,expected_classification,reference_id,account_id,currency,base_amount,bank_rows_created,ledger_rows_created,notes
+S000001,exact_match,matched_exact,REF000001,ACC1001,CAD,4348.91,1,1,"Same account, date, currency, amount, direction, and reference."
+S000002,exact_match,matched_exact,REF000002,ACC1001,CAD,134.33,1,1,"Same account, date, currency, amount, direction, and reference."
+S000003,exact_match,matched_exact,REF000003,ACC3001,CAD,14078.60,1,1,"Same account, date, currency, amount, direction, and reference."
+S000004,exact_match,matched_exact,REF000004,ACC1001,CAD,7668.91,1,1,"Same account, date, currency, amount, direction, and reference."
+S000005,exact_match,matched_exact,REF000005,ACC2002,USD,15489.42,1,1,"Same account, date, currency, amount, direction, and reference."
+S000006,exact_match,matched_exact,REF000006,ACC1001,CAD,20905.71,1,1,"Same account, date, currency, amount, direction, and reference."
+S000007,exact_match,matched_exact,REF000007,ACC1001,CAD,7945.31,1,1,"Same account, date, currency, amount, direction, and reference."
+S000008,exact_match,matched_exact,REF000008,ACC2002,USD,9755.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000009,exact_match,matched_exact,REF000009,ACC2001,USD,15619.14,1,1,"Same account, date, currency, amount, direction, and reference."
+S000010,exact_match,matched_exact,REF000010,ACC1002,CAD,23209.39,1,1,"Same account, date, currency, amount, direction, and reference."
+S000011,exact_match,matched_exact,REF000011,ACC1002,CAD,2588.53,1,1,"Same account, date, currency, amount, direction, and reference."
+S000012,exact_match,matched_exact,REF000012,ACC2002,USD,175.67,1,1,"Same account, date, currency, amount, direction, and reference."
+S000013,exact_match,matched_exact,REF000013,ACC3001,CAD,24940.90,1,1,"Same account, date, currency, amount, direction, and reference."
+S000014,exact_match,matched_exact,REF000014,ACC1001,CAD,17331.55,1,1,"Same account, date, currency, amount, direction, and reference."
+S000015,exact_match,matched_exact,REF000015,ACC2002,USD,21658.71,1,1,"Same account, date, currency, amount, direction, and reference."
+S000016,exact_match,matched_exact,REF000016,ACC3001,CAD,8044.00,1,1,"Same account, date, currency, amount, direction, and reference."
+S000017,exact_match,matched_exact,REF000017,ACC2001,USD,3553.86,1,1,"Same account, date, currency, amount, direction, and reference."
+S000018,exact_match,matched_exact,REF000018,ACC1002,CAD,13945.10,1,1,"Same account, date, currency, amount, direction, and reference."
+S000019,exact_match,matched_exact,REF000019,ACC1001,CAD,20959.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000020,exact_match,matched_exact,REF000020,ACC3001,CAD,20584.56,1,1,"Same account, date, currency, amount, direction, and reference."
+S000021,exact_match,matched_exact,REF000021,ACC3001,CAD,15558.25,1,1,"Same account, date, currency, amount, direction, and reference."
+S000022,exact_match,matched_exact,REF000022,ACC1002,CAD,17120.49,1,1,"Same account, date, currency, amount, direction, and reference."
+S000023,exact_match,matched_exact,REF000023,ACC1001,CAD,68.93,1,1,"Same account, date, currency, amount, direction, and reference."
+S000024,exact_match,matched_exact,REF000024,ACC1001,CAD,110.66,1,1,"Same account, date, currency, amount, direction, and reference."
+S000025,exact_match,matched_exact,REF000025,ACC1002,CAD,13941.61,1,1,"Same account, date, currency, amount, direction, and reference."
+S000026,exact_match,matched_exact,REF000026,ACC2002,USD,437.95,1,1,"Same account, date, currency, amount, direction, and reference."
+S000027,exact_match,matched_exact,REF000027,ACC1001,CAD,3362.03,1,1,"Same account, date, currency, amount, direction, and reference."
+S000028,exact_match,matched_exact,REF000028,ACC1002,CAD,4364.38,1,1,"Same account, date, currency, amount, direction, and reference."
+S000029,exact_match,matched_exact,REF000029,ACC1001,CAD,636.93,1,1,"Same account, date, currency, amount, direction, and reference."
+S000030,exact_match,matched_exact,REF000030,ACC1002,CAD,21751.61,1,1,"Same account, date, currency, amount, direction, and reference."
+S000031,exact_match,matched_exact,REF000031,ACC2002,USD,17718.20,1,1,"Same account, date, currency, amount, direction, and reference."
+S000032,exact_match,matched_exact,REF000032,ACC1002,CAD,2462.98,1,1,"Same account, date, currency, amount, direction, and reference."
+S000033,exact_match,matched_exact,REF000033,ACC2002,USD,24058.69,1,1,"Same account, date, currency, amount, direction, and reference."
+S000034,exact_match,matched_exact,REF000034,ACC1001,CAD,23598.31,1,1,"Same account, date, currency, amount, direction, and reference."
+S000035,exact_match,matched_exact,REF000035,ACC3001,CAD,14565.45,1,1,"Same account, date, currency, amount, direction, and reference."
+S000036,exact_match,matched_exact,REF000036,ACC2001,USD,17120.57,1,1,"Same account, date, currency, amount, direction, and reference."
+S000037,exact_match,matched_exact,REF000037,ACC1001,CAD,24906.31,1,1,"Same account, date, currency, amount, direction, and reference."
+S000038,exact_match,matched_exact,REF000038,ACC2001,USD,22102.49,1,1,"Same account, date, currency, amount, direction, and reference."
+S000039,exact_match,matched_exact,REF000039,ACC3001,CAD,24693.59,1,1,"Same account, date, currency, amount, direction, and reference."
+S000040,exact_match,matched_exact,REF000040,ACC2001,USD,4222.99,1,1,"Same account, date, currency, amount, direction, and reference."
+S000041,exact_match,matched_exact,REF000041,ACC1002,CAD,18222.69,1,1,"Same account, date, currency, amount, direction, and reference."
+S000042,exact_match,matched_exact,REF000042,ACC3001,CAD,21306.49,1,1,"Same account, date, currency, amount, direction, and reference."
+S000043,exact_match,matched_exact,REF000043,ACC1001,CAD,16290.72,1,1,"Same account, date, currency, amount, direction, and reference."
+S000044,exact_match,matched_exact,REF000044,ACC3001,CAD,3684.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000045,exact_match,matched_exact,REF000045,ACC3001,CAD,2003.89,1,1,"Same account, date, currency, amount, direction, and reference."
+S000046,exact_match,matched_exact,REF000046,ACC1002,CAD,14437.20,1,1,"Same account, date, currency, amount, direction, and reference."
+S000047,exact_match,matched_exact,REF000047,ACC1002,CAD,1594.87,1,1,"Same account, date, currency, amount, direction, and reference."
+S000048,exact_match,matched_exact,REF000048,ACC1002,CAD,3594.30,1,1,"Same account, date, currency, amount, direction, and reference."
+S000049,exact_match,matched_exact,REF000049,ACC2002,USD,21911.75,1,1,"Same account, date, currency, amount, direction, and reference."
+S000050,exact_match,matched_exact,REF000050,ACC2002,USD,24205.34,1,1,"Same account, date, currency, amount, direction, and reference."
+S000051,exact_match,matched_exact,REF000051,ACC2002,USD,1662.41,1,1,"Same account, date, currency, amount, direction, and reference."
+S000052,exact_match,matched_exact,REF000052,ACC1001,CAD,18485.08,1,1,"Same account, date, currency, amount, direction, and reference."
+S000053,exact_match,matched_exact,REF000053,ACC1001,CAD,2065.28,1,1,"Same account, date, currency, amount, direction, and reference."
+S000054,exact_match,matched_exact,REF000054,ACC1002,CAD,647.81,1,1,"Same account, date, currency, amount, direction, and reference."
+S000055,exact_match,matched_exact,REF000055,ACC1001,CAD,17005.43,1,1,"Same account, date, currency, amount, direction, and reference."
+S000056,exact_match,matched_exact,REF000056,ACC3001,CAD,23568.73,1,1,"Same account, date, currency, amount, direction, and reference."
+S000057,exact_match,matched_exact,REF000057,ACC2002,USD,6044.38,1,1,"Same account, date, currency, amount, direction, and reference."
+S000058,exact_match,matched_exact,REF000058,ACC1002,CAD,24035.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000059,exact_match,matched_exact,REF000059,ACC3001,CAD,3241.29,1,1,"Same account, date, currency, amount, direction, and reference."
+S000060,exact_match,matched_exact,REF000060,ACC1002,CAD,935.54,1,1,"Same account, date, currency, amount, direction, and reference."
+S000061,exact_match,matched_exact,REF000061,ACC3001,CAD,12865.05,1,1,"Same account, date, currency, amount, direction, and reference."
+S000062,exact_match,matched_exact,REF000062,ACC1001,CAD,20298.64,1,1,"Same account, date, currency, amount, direction, and reference."
+S000063,exact_match,matched_exact,REF000063,ACC1001,CAD,17021.87,1,1,"Same account, date, currency, amount, direction, and reference."
+S000064,exact_match,matched_exact,REF000064,ACC3001,CAD,4819.79,1,1,"Same account, date, currency, amount, direction, and reference."
+S000065,exact_match,matched_exact,REF000065,ACC2001,USD,7590.34,1,1,"Same account, date, currency, amount, direction, and reference."
+S000066,exact_match,matched_exact,REF000066,ACC2001,USD,2933.86,1,1,"Same account, date, currency, amount, direction, and reference."
+S000067,exact_match,matched_exact,REF000067,ACC1002,CAD,416.84,1,1,"Same account, date, currency, amount, direction, and reference."
+S000068,exact_match,matched_exact,REF000068,ACC2002,USD,1468.77,1,1,"Same account, date, currency, amount, direction, and reference."
+S000069,exact_match,matched_exact,REF000069,ACC2001,USD,18631.22,1,1,"Same account, date, currency, amount, direction, and reference."
+S000070,exact_match,matched_exact,REF000070,ACC2002,USD,17052.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000071,exact_match,matched_exact,REF000071,ACC1002,CAD,404.62,1,1,"Same account, date, currency, amount, direction, and reference."
+S000072,exact_match,matched_exact,REF000072,ACC1002,CAD,391.19,1,1,"Same account, date, currency, amount, direction, and reference."
+S000073,exact_match,matched_exact,REF000073,ACC2002,USD,2965.75,1,1,"Same account, date, currency, amount, direction, and reference."
+S000074,exact_match,matched_exact,REF000074,ACC2001,USD,911.56,1,1,"Same account, date, currency, amount, direction, and reference."
+S000075,exact_match,matched_exact,REF000075,ACC1001,CAD,12365.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000076,exact_match,matched_exact,REF000076,ACC2001,USD,24129.63,1,1,"Same account, date, currency, amount, direction, and reference."
+S000077,exact_match,matched_exact,REF000077,ACC3001,CAD,22792.63,1,1,"Same account, date, currency, amount, direction, and reference."
+S000078,exact_match,matched_exact,REF000078,ACC1001,CAD,6828.39,1,1,"Same account, date, currency, amount, direction, and reference."
+S000079,exact_match,matched_exact,REF000079,ACC3001,CAD,16876.51,1,1,"Same account, date, currency, amount, direction, and reference."
+S000080,exact_match,matched_exact,REF000080,ACC1001,CAD,914.71,1,1,"Same account, date, currency, amount, direction, and reference."
+S000081,exact_match,matched_exact,REF000081,ACC1002,CAD,7481.98,1,1,"Same account, date, currency, amount, direction, and reference."
+S000082,exact_match,matched_exact,REF000082,ACC3001,CAD,20937.54,1,1,"Same account, date, currency, amount, direction, and reference."
+S000083,exact_match,matched_exact,REF000083,ACC2002,USD,9073.52,1,1,"Same account, date, currency, amount, direction, and reference."
+S000084,exact_match,matched_exact,REF000084,ACC1002,CAD,22127.68,1,1,"Same account, date, currency, amount, direction, and reference."
+S000085,exact_match,matched_exact,REF000085,ACC1002,CAD,12725.87,1,1,"Same account, date, currency, amount, direction, and reference."
+S000086,exact_match,matched_exact,REF000086,ACC2002,USD,249.44,1,1,"Same account, date, currency, amount, direction, and reference."
+S000087,exact_match,matched_exact,REF000087,ACC2001,USD,11212.09,1,1,"Same account, date, currency, amount, direction, and reference."
+S000088,exact_match,matched_exact,REF000088,ACC2001,USD,18310.82,1,1,"Same account, date, currency, amount, direction, and reference."
+S000089,exact_match,matched_exact,REF000089,ACC1002,CAD,7635.99,1,1,"Same account, date, currency, amount, direction, and reference."
+S000090,exact_match,matched_exact,REF000090,ACC2001,USD,1339.56,1,1,"Same account, date, currency, amount, direction, and reference."
+S000091,exact_match,matched_exact,REF000091,ACC3001,CAD,16308.87,1,1,"Same account, date, currency, amount, direction, and reference."
+S000092,exact_match,matched_exact,REF000092,ACC3001,CAD,9176.94,1,1,"Same account, date, currency, amount, direction, and reference."
+S000093,exact_match,matched_exact,REF000093,ACC1001,CAD,14848.51,1,1,"Same account, date, currency, amount, direction, and reference."
+S000094,exact_match,matched_exact,REF000094,ACC2001,USD,738.00,1,1,"Same account, date, currency, amount, direction, and reference."
+S000095,exact_match,matched_exact,REF000095,ACC2002,USD,8329.13,1,1,"Same account, date, currency, amount, direction, and reference."
+S000096,exact_match,matched_exact,REF000096,ACC1002,CAD,2948.50,1,1,"Same account, date, currency, amount, direction, and reference."
+S000097,exact_match,matched_exact,REF000097,ACC1002,CAD,15251.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000098,exact_match,matched_exact,REF000098,ACC2001,USD,260.08,1,1,"Same account, date, currency, amount, direction, and reference."
+S000099,exact_match,matched_exact,REF000099,ACC1002,CAD,16543.23,1,1,"Same account, date, currency, amount, direction, and reference."
+S000100,exact_match,matched_exact,REF000100,ACC1002,CAD,14660.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000101,exact_match,matched_exact,REF000101,ACC2001,USD,13011.33,1,1,"Same account, date, currency, amount, direction, and reference."
+S000102,exact_match,matched_exact,REF000102,ACC1001,CAD,1620.76,1,1,"Same account, date, currency, amount, direction, and reference."
+S000103,exact_match,matched_exact,REF000103,ACC3001,CAD,14829.93,1,1,"Same account, date, currency, amount, direction, and reference."
+S000104,exact_match,matched_exact,REF000104,ACC2002,USD,11461.24,1,1,"Same account, date, currency, amount, direction, and reference."
+S000105,exact_match,matched_exact,REF000105,ACC2002,USD,21585.59,1,1,"Same account, date, currency, amount, direction, and reference."
+S000106,exact_match,matched_exact,REF000106,ACC2001,USD,14202.32,1,1,"Same account, date, currency, amount, direction, and reference."
+S000107,exact_match,matched_exact,REF000107,ACC2001,USD,20798.25,1,1,"Same account, date, currency, amount, direction, and reference."
+S000108,exact_match,matched_exact,REF000108,ACC2002,USD,9682.70,1,1,"Same account, date, currency, amount, direction, and reference."
+S000109,exact_match,matched_exact,REF000109,ACC1002,CAD,309.23,1,1,"Same account, date, currency, amount, direction, and reference."
+S000110,exact_match,matched_exact,REF000110,ACC3001,CAD,14220.14,1,1,"Same account, date, currency, amount, direction, and reference."
+S000111,exact_match,matched_exact,REF000111,ACC2002,USD,12961.01,1,1,"Same account, date, currency, amount, direction, and reference."
+S000112,exact_match,matched_exact,REF000112,ACC2002,USD,14230.36,1,1,"Same account, date, currency, amount, direction, and reference."
+S000113,exact_match,matched_exact,REF000113,ACC1002,CAD,21505.90,1,1,"Same account, date, currency, amount, direction, and reference."
+S000114,exact_match,matched_exact,REF000114,ACC2001,USD,14918.16,1,1,"Same account, date, currency, amount, direction, and reference."
+S000115,exact_match,matched_exact,REF000115,ACC2002,USD,14042.32,1,1,"Same account, date, currency, amount, direction, and reference."
+S000116,exact_match,matched_exact,REF000116,ACC1002,CAD,19613.07,1,1,"Same account, date, currency, amount, direction, and reference."
+S000117,exact_match,matched_exact,REF000117,ACC2002,USD,16648.46,1,1,"Same account, date, currency, amount, direction, and reference."
+S000118,exact_match,matched_exact,REF000118,ACC3001,CAD,21980.57,1,1,"Same account, date, currency, amount, direction, and reference."
+S000119,exact_match,matched_exact,REF000119,ACC1001,CAD,16714.75,1,1,"Same account, date, currency, amount, direction, and reference."
+S000120,exact_match,matched_exact,REF000120,ACC2001,USD,2927.57,1,1,"Same account, date, currency, amount, direction, and reference."
+S000121,exact_match,matched_exact,REF000121,ACC2002,USD,19225.64,1,1,"Same account, date, currency, amount, direction, and reference."
+S000122,exact_match,matched_exact,REF000122,ACC2001,USD,3362.64,1,1,"Same account, date, currency, amount, direction, and reference."
+S000123,exact_match,matched_exact,REF000123,ACC2001,USD,2346.86,1,1,"Same account, date, currency, amount, direction, and reference."
+S000124,exact_match,matched_exact,REF000124,ACC1002,CAD,20020.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000125,exact_match,matched_exact,REF000125,ACC2002,USD,22907.90,1,1,"Same account, date, currency, amount, direction, and reference."
+S000126,exact_match,matched_exact,REF000126,ACC2001,USD,22573.80,1,1,"Same account, date, currency, amount, direction, and reference."
+S000127,exact_match,matched_exact,REF000127,ACC1002,CAD,24703.64,1,1,"Same account, date, currency, amount, direction, and reference."
+S000128,exact_match,matched_exact,REF000128,ACC2001,USD,10232.64,1,1,"Same account, date, currency, amount, direction, and reference."
+S000129,exact_match,matched_exact,REF000129,ACC3001,CAD,17782.70,1,1,"Same account, date, currency, amount, direction, and reference."
+S000130,exact_match,matched_exact,REF000130,ACC1001,CAD,24366.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000131,exact_match,matched_exact,REF000131,ACC3001,CAD,15901.39,1,1,"Same account, date, currency, amount, direction, and reference."
+S000132,exact_match,matched_exact,REF000132,ACC1001,CAD,378.38,1,1,"Same account, date, currency, amount, direction, and reference."
+S000133,exact_match,matched_exact,REF000133,ACC2002,USD,535.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000134,exact_match,matched_exact,REF000134,ACC1002,CAD,8083.39,1,1,"Same account, date, currency, amount, direction, and reference."
+S000135,exact_match,matched_exact,REF000135,ACC1002,CAD,24518.61,1,1,"Same account, date, currency, amount, direction, and reference."
+S000136,exact_match,matched_exact,REF000136,ACC1001,CAD,381.73,1,1,"Same account, date, currency, amount, direction, and reference."
+S000137,exact_match,matched_exact,REF000137,ACC2001,USD,1600.59,1,1,"Same account, date, currency, amount, direction, and reference."
+S000138,exact_match,matched_exact,REF000138,ACC1001,CAD,8252.56,1,1,"Same account, date, currency, amount, direction, and reference."
+S000139,exact_match,matched_exact,REF000139,ACC1001,CAD,261.32,1,1,"Same account, date, currency, amount, direction, and reference."
+S000140,exact_match,matched_exact,REF000140,ACC3001,CAD,4708.55,1,1,"Same account, date, currency, amount, direction, and reference."
+S000141,exact_match,matched_exact,REF000141,ACC3001,CAD,383.48,1,1,"Same account, date, currency, amount, direction, and reference."
+S000142,exact_match,matched_exact,REF000142,ACC1001,CAD,24468.22,1,1,"Same account, date, currency, amount, direction, and reference."
+S000143,exact_match,matched_exact,REF000143,ACC1002,CAD,240.90,1,1,"Same account, date, currency, amount, direction, and reference."
+S000144,exact_match,matched_exact,REF000144,ACC1002,CAD,20915.63,1,1,"Same account, date, currency, amount, direction, and reference."
+S000145,exact_match,matched_exact,REF000145,ACC2001,USD,822.57,1,1,"Same account, date, currency, amount, direction, and reference."
+S000146,exact_match,matched_exact,REF000146,ACC1002,CAD,4163.28,1,1,"Same account, date, currency, amount, direction, and reference."
+S000147,exact_match,matched_exact,REF000147,ACC1001,CAD,717.55,1,1,"Same account, date, currency, amount, direction, and reference."
+S000148,exact_match,matched_exact,REF000148,ACC2002,USD,11848.13,1,1,"Same account, date, currency, amount, direction, and reference."
+S000149,exact_match,matched_exact,REF000149,ACC3001,CAD,1747.62,1,1,"Same account, date, currency, amount, direction, and reference."
+S000150,exact_match,matched_exact,REF000150,ACC1001,CAD,2763.78,1,1,"Same account, date, currency, amount, direction, and reference."
+S000151,exact_match,matched_exact,REF000151,ACC1001,CAD,15048.75,1,1,"Same account, date, currency, amount, direction, and reference."
+S000152,exact_match,matched_exact,REF000152,ACC2001,USD,3380.28,1,1,"Same account, date, currency, amount, direction, and reference."
+S000153,exact_match,matched_exact,REF000153,ACC1002,CAD,10931.53,1,1,"Same account, date, currency, amount, direction, and reference."
+S000154,exact_match,matched_exact,REF000154,ACC1001,CAD,7117.36,1,1,"Same account, date, currency, amount, direction, and reference."
+S000155,exact_match,matched_exact,REF000155,ACC1001,CAD,18870.14,1,1,"Same account, date, currency, amount, direction, and reference."
+S000156,exact_match,matched_exact,REF000156,ACC3001,CAD,3933.55,1,1,"Same account, date, currency, amount, direction, and reference."
+S000157,exact_match,matched_exact,REF000157,ACC1001,CAD,3486.41,1,1,"Same account, date, currency, amount, direction, and reference."
+S000158,exact_match,matched_exact,REF000158,ACC1002,CAD,9821.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000159,exact_match,matched_exact,REF000159,ACC3001,CAD,14361.75,1,1,"Same account, date, currency, amount, direction, and reference."
+S000160,exact_match,matched_exact,REF000160,ACC2001,USD,832.88,1,1,"Same account, date, currency, amount, direction, and reference."
+S000161,exact_match,matched_exact,REF000161,ACC1001,CAD,11075.98,1,1,"Same account, date, currency, amount, direction, and reference."
+S000162,exact_match,matched_exact,REF000162,ACC2001,USD,97.35,1,1,"Same account, date, currency, amount, direction, and reference."
+S000163,exact_match,matched_exact,REF000163,ACC1001,CAD,12655.88,1,1,"Same account, date, currency, amount, direction, and reference."
+S000164,exact_match,matched_exact,REF000164,ACC3001,CAD,7797.92,1,1,"Same account, date, currency, amount, direction, and reference."
+S000165,exact_match,matched_exact,REF000165,ACC1001,CAD,2314.77,1,1,"Same account, date, currency, amount, direction, and reference."
+S000166,exact_match,matched_exact,REF000166,ACC2001,USD,497.65,1,1,"Same account, date, currency, amount, direction, and reference."
+S000167,exact_match,matched_exact,REF000167,ACC3001,CAD,21000.50,1,1,"Same account, date, currency, amount, direction, and reference."
+S000168,exact_match,matched_exact,REF000168,ACC1001,CAD,2868.70,1,1,"Same account, date, currency, amount, direction, and reference."
+S000169,exact_match,matched_exact,REF000169,ACC2002,USD,3764.16,1,1,"Same account, date, currency, amount, direction, and reference."
+S000170,exact_match,matched_exact,REF000170,ACC2002,USD,810.04,1,1,"Same account, date, currency, amount, direction, and reference."
+S000171,exact_match,matched_exact,REF000171,ACC3001,CAD,18899.32,1,1,"Same account, date, currency, amount, direction, and reference."
+S000172,exact_match,matched_exact,REF000172,ACC1001,CAD,508.96,1,1,"Same account, date, currency, amount, direction, and reference."
+S000173,exact_match,matched_exact,REF000173,ACC1002,CAD,227.54,1,1,"Same account, date, currency, amount, direction, and reference."
+S000174,exact_match,matched_exact,REF000174,ACC2002,USD,11773.73,1,1,"Same account, date, currency, amount, direction, and reference."
+S000175,exact_match,matched_exact,REF000175,ACC2002,USD,8267.69,1,1,"Same account, date, currency, amount, direction, and reference."
+S000176,exact_match,matched_exact,REF000176,ACC3001,CAD,1902.57,1,1,"Same account, date, currency, amount, direction, and reference."
+S000177,exact_match,matched_exact,REF000177,ACC1001,CAD,12105.08,1,1,"Same account, date, currency, amount, direction, and reference."
+S000178,exact_match,matched_exact,REF000178,ACC1002,CAD,4620.67,1,1,"Same account, date, currency, amount, direction, and reference."
+S000179,exact_match,matched_exact,REF000179,ACC1001,CAD,6945.85,1,1,"Same account, date, currency, amount, direction, and reference."
+S000180,exact_match,matched_exact,REF000180,ACC3001,CAD,7789.45,1,1,"Same account, date, currency, amount, direction, and reference."
+S000181,exact_match,matched_exact,REF000181,ACC1001,CAD,8912.58,1,1,"Same account, date, currency, amount, direction, and reference."
+S000182,exact_match,matched_exact,REF000182,ACC3001,CAD,647.25,1,1,"Same account, date, currency, amount, direction, and reference."
+S000183,exact_match,matched_exact,REF000183,ACC2002,USD,3033.26,1,1,"Same account, date, currency, amount, direction, and reference."
+S000184,exact_match,matched_exact,REF000184,ACC1002,CAD,18730.59,1,1,"Same account, date, currency, amount, direction, and reference."
+S000185,exact_match,matched_exact,REF000185,ACC3001,CAD,5326.31,1,1,"Same account, date, currency, amount, direction, and reference."
+S000186,exact_match,matched_exact,REF000186,ACC1002,CAD,8099.01,1,1,"Same account, date, currency, amount, direction, and reference."
+S000187,exact_match,matched_exact,REF000187,ACC3001,CAD,19391.38,1,1,"Same account, date, currency, amount, direction, and reference."
+S000188,exact_match,matched_exact,REF000188,ACC1002,CAD,20417.05,1,1,"Same account, date, currency, amount, direction, and reference."
+S000189,exact_match,matched_exact,REF000189,ACC2002,USD,24270.13,1,1,"Same account, date, currency, amount, direction, and reference."
+S000190,exact_match,matched_exact,REF000190,ACC1002,CAD,20406.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000191,exact_match,matched_exact,REF000191,ACC3001,CAD,19674.98,1,1,"Same account, date, currency, amount, direction, and reference."
+S000192,exact_match,matched_exact,REF000192,ACC3001,CAD,482.53,1,1,"Same account, date, currency, amount, direction, and reference."
+S000193,exact_match,matched_exact,REF000193,ACC3001,CAD,194.28,1,1,"Same account, date, currency, amount, direction, and reference."
+S000194,exact_match,matched_exact,REF000194,ACC1001,CAD,23331.33,1,1,"Same account, date, currency, amount, direction, and reference."
+S000195,exact_match,matched_exact,REF000195,ACC2001,USD,9997.90,1,1,"Same account, date, currency, amount, direction, and reference."
+S000196,exact_match,matched_exact,REF000196,ACC2001,USD,875.66,1,1,"Same account, date, currency, amount, direction, and reference."
+S000197,exact_match,matched_exact,REF000197,ACC2002,USD,121.30,1,1,"Same account, date, currency, amount, direction, and reference."
+S000198,exact_match,matched_exact,REF000198,ACC3001,CAD,3668.48,1,1,"Same account, date, currency, amount, direction, and reference."
+S000199,exact_match,matched_exact,REF000199,ACC1001,CAD,15947.45,1,1,"Same account, date, currency, amount, direction, and reference."
+S000200,exact_match,matched_exact,REF000200,ACC3001,CAD,14801.14,1,1,"Same account, date, currency, amount, direction, and reference."
+S000201,exact_match,matched_exact,REF000201,ACC3001,CAD,5495.53,1,1,"Same account, date, currency, amount, direction, and reference."
+S000202,exact_match,matched_exact,REF000202,ACC3001,CAD,13182.94,1,1,"Same account, date, currency, amount, direction, and reference."
+S000203,exact_match,matched_exact,REF000203,ACC1001,CAD,7087.61,1,1,"Same account, date, currency, amount, direction, and reference."
+S000204,exact_match,matched_exact,REF000204,ACC2001,USD,19516.03,1,1,"Same account, date, currency, amount, direction, and reference."
+S000205,exact_match,matched_exact,REF000205,ACC3001,CAD,19699.42,1,1,"Same account, date, currency, amount, direction, and reference."
+S000206,exact_match,matched_exact,REF000206,ACC1002,CAD,23646.52,1,1,"Same account, date, currency, amount, direction, and reference."
+S000207,exact_match,matched_exact,REF000207,ACC1002,CAD,13369.21,1,1,"Same account, date, currency, amount, direction, and reference."
+S000208,exact_match,matched_exact,REF000208,ACC1002,CAD,2147.30,1,1,"Same account, date, currency, amount, direction, and reference."
+S000209,exact_match,matched_exact,REF000209,ACC2002,USD,10279.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000210,exact_match,matched_exact,REF000210,ACC2001,USD,18449.95,1,1,"Same account, date, currency, amount, direction, and reference."
+S000211,exact_match,matched_exact,REF000211,ACC3001,CAD,345.13,1,1,"Same account, date, currency, amount, direction, and reference."
+S000212,exact_match,matched_exact,REF000212,ACC2002,USD,11731.11,1,1,"Same account, date, currency, amount, direction, and reference."
+S000213,exact_match,matched_exact,REF000213,ACC1001,CAD,9719.47,1,1,"Same account, date, currency, amount, direction, and reference."
+S000214,exact_match,matched_exact,REF000214,ACC2002,USD,750.66,1,1,"Same account, date, currency, amount, direction, and reference."
+S000215,exact_match,matched_exact,REF000215,ACC1001,CAD,23771.76,1,1,"Same account, date, currency, amount, direction, and reference."
+S000216,exact_match,matched_exact,REF000216,ACC3001,CAD,8545.25,1,1,"Same account, date, currency, amount, direction, and reference."
+S000217,exact_match,matched_exact,REF000217,ACC1002,CAD,14480.15,1,1,"Same account, date, currency, amount, direction, and reference."
+S000218,exact_match,matched_exact,REF000218,ACC1002,CAD,24967.09,1,1,"Same account, date, currency, amount, direction, and reference."
+S000219,exact_match,matched_exact,REF000219,ACC2002,USD,3106.98,1,1,"Same account, date, currency, amount, direction, and reference."
+S000220,exact_match,matched_exact,REF000220,ACC1001,CAD,8198.96,1,1,"Same account, date, currency, amount, direction, and reference."
+S000221,exact_match,matched_exact,REF000221,ACC1002,CAD,24643.18,1,1,"Same account, date, currency, amount, direction, and reference."
+S000222,exact_match,matched_exact,REF000222,ACC1001,CAD,12217.74,1,1,"Same account, date, currency, amount, direction, and reference."
+S000223,exact_match,matched_exact,REF000223,ACC2001,USD,13616.70,1,1,"Same account, date, currency, amount, direction, and reference."
+S000224,exact_match,matched_exact,REF000224,ACC2001,USD,17322.62,1,1,"Same account, date, currency, amount, direction, and reference."
+S000225,exact_match,matched_exact,REF000225,ACC3001,CAD,22857.09,1,1,"Same account, date, currency, amount, direction, and reference."
+S000226,exact_match,matched_exact,REF000226,ACC2001,USD,18023.97,1,1,"Same account, date, currency, amount, direction, and reference."
+S000227,exact_match,matched_exact,REF000227,ACC2001,USD,7586.82,1,1,"Same account, date, currency, amount, direction, and reference."
+S000228,exact_match,matched_exact,REF000228,ACC3001,CAD,14935.52,1,1,"Same account, date, currency, amount, direction, and reference."
+S000229,exact_match,matched_exact,REF000229,ACC3001,CAD,827.40,1,1,"Same account, date, currency, amount, direction, and reference."
+S000230,exact_match,matched_exact,REF000230,ACC2001,USD,10998.08,1,1,"Same account, date, currency, amount, direction, and reference."
+S000231,exact_match,matched_exact,REF000231,ACC2001,USD,20312.52,1,1,"Same account, date, currency, amount, direction, and reference."
+S000232,exact_match,matched_exact,REF000232,ACC1001,CAD,12146.61,1,1,"Same account, date, currency, amount, direction, and reference."
+S000233,exact_match,matched_exact,REF000233,ACC2001,USD,4138.39,1,1,"Same account, date, currency, amount, direction, and reference."
+S000234,exact_match,matched_exact,REF000234,ACC2001,USD,454.64,1,1,"Same account, date, currency, amount, direction, and reference."
+S000235,exact_match,matched_exact,REF000235,ACC2002,USD,21767.38,1,1,"Same account, date, currency, amount, direction, and reference."
+S000236,exact_match,matched_exact,REF000236,ACC2001,USD,13353.40,1,1,"Same account, date, currency, amount, direction, and reference."
+S000237,exact_match,matched_exact,REF000237,ACC1001,CAD,6777.49,1,1,"Same account, date, currency, amount, direction, and reference."
+S000238,exact_match,matched_exact,REF000238,ACC2002,USD,7857.96,1,1,"Same account, date, currency, amount, direction, and reference."
+S000239,exact_match,matched_exact,REF000239,ACC2001,USD,9782.50,1,1,"Same account, date, currency, amount, direction, and reference."
+S000240,exact_match,matched_exact,REF000240,ACC1002,CAD,10272.37,1,1,"Same account, date, currency, amount, direction, and reference."
+S000241,exact_match,matched_exact,REF000241,ACC3001,CAD,10453.69,1,1,"Same account, date, currency, amount, direction, and reference."
+S000242,exact_match,matched_exact,REF000242,ACC1002,CAD,1966.12,1,1,"Same account, date, currency, amount, direction, and reference."
+S000243,exact_match,matched_exact,REF000243,ACC2002,USD,853.82,1,1,"Same account, date, currency, amount, direction, and reference."
+S000244,exact_match,matched_exact,REF000244,ACC1002,CAD,8181.62,1,1,"Same account, date, currency, amount, direction, and reference."
+S000245,exact_match,matched_exact,REF000245,ACC3001,CAD,12397.42,1,1,"Same account, date, currency, amount, direction, and reference."
+S000246,exact_match,matched_exact,REF000246,ACC1001,CAD,22570.41,1,1,"Same account, date, currency, amount, direction, and reference."
+S000247,exact_match,matched_exact,REF000247,ACC3001,CAD,15004.56,1,1,"Same account, date, currency, amount, direction, and reference."
+S000248,exact_match,matched_exact,REF000248,ACC3001,CAD,6812.72,1,1,"Same account, date, currency, amount, direction, and reference."
+S000249,exact_match,matched_exact,REF000249,ACC2001,USD,5893.40,1,1,"Same account, date, currency, amount, direction, and reference."
+S000250,exact_match,matched_exact,REF000250,ACC1002,CAD,24954.95,1,1,"Same account, date, currency, amount, direction, and reference."
+S000251,timing_difference,potential_timing_difference,REF000251,ACC1002,CAD,9502.89,1,1,Same transaction details with a one-to-two day posting difference.
+S000252,timing_difference,potential_timing_difference,REF000252,ACC2001,USD,24349.86,1,1,Same transaction details with a one-to-two day posting difference.
+S000253,timing_difference,potential_timing_difference,REF000253,ACC2002,USD,23408.81,1,1,Same transaction details with a one-to-two day posting difference.
+S000254,timing_difference,potential_timing_difference,REF000254,ACC3001,CAD,23910.61,1,1,Same transaction details with a one-to-two day posting difference.
+S000255,timing_difference,potential_timing_difference,REF000255,ACC1001,CAD,18936.12,1,1,Same transaction details with a one-to-two day posting difference.
+S000256,timing_difference,potential_timing_difference,REF000256,ACC2001,USD,15083.93,1,1,Same transaction details with a one-to-two day posting difference.
+S000257,timing_difference,potential_timing_difference,REF000257,ACC1001,CAD,12337.69,1,1,Same transaction details with a one-to-two day posting difference.
+S000258,timing_difference,potential_timing_difference,REF000258,ACC2002,USD,24133.94,1,1,Same transaction details with a one-to-two day posting difference.
+S000259,timing_difference,potential_timing_difference,REF000259,ACC3001,CAD,21407.99,1,1,Same transaction details with a one-to-two day posting difference.
+S000260,timing_difference,potential_timing_difference,REF000260,ACC1001,CAD,18976.08,1,1,Same transaction details with a one-to-two day posting difference.
+S000261,timing_difference,potential_timing_difference,REF000261,ACC3001,CAD,24738.39,1,1,Same transaction details with a one-to-two day posting difference.
+S000262,timing_difference,potential_timing_difference,REF000262,ACC1001,CAD,16558.85,1,1,Same transaction details with a one-to-two day posting difference.
+S000263,timing_difference,potential_timing_difference,REF000263,ACC3001,CAD,21547.52,1,1,Same transaction details with a one-to-two day posting difference.
+S000264,timing_difference,potential_timing_difference,REF000264,ACC1001,CAD,23459.81,1,1,Same transaction details with a one-to-two day posting difference.
+S000265,timing_difference,potential_timing_difference,REF000265,ACC2001,USD,14749.06,1,1,Same transaction details with a one-to-two day posting difference.
+S000266,timing_difference,potential_timing_difference,REF000266,ACC1001,CAD,4833.20,1,1,Same transaction details with a one-to-two day posting difference.
+S000267,timing_difference,potential_timing_difference,REF000267,ACC2001,USD,4205.65,1,1,Same transaction details with a one-to-two day posting difference.
+S000268,timing_difference,potential_timing_difference,REF000268,ACC3001,CAD,20814.48,1,1,Same transaction details with a one-to-two day posting difference.
+S000269,timing_difference,potential_timing_difference,REF000269,ACC3001,CAD,557.75,1,1,Same transaction details with a one-to-two day posting difference.
+S000270,timing_difference,potential_timing_difference,REF000270,ACC1002,CAD,11604.17,1,1,Same transaction details with a one-to-two day posting difference.
+S000271,timing_difference,potential_timing_difference,REF000271,ACC2002,USD,423.88,1,1,Same transaction details with a one-to-two day posting difference.
+S000272,timing_difference,potential_timing_difference,REF000272,ACC1001,CAD,18899.31,1,1,Same transaction details with a one-to-two day posting difference.
+S000273,timing_difference,potential_timing_difference,REF000273,ACC1001,CAD,2656.46,1,1,Same transaction details with a one-to-two day posting difference.
+S000274,timing_difference,potential_timing_difference,REF000274,ACC1002,CAD,9987.06,1,1,Same transaction details with a one-to-two day posting difference.
+S000275,timing_difference,potential_timing_difference,REF000275,ACC3001,CAD,3847.20,1,1,Same transaction details with a one-to-two day posting difference.
+S000276,timing_difference,potential_timing_difference,REF000276,ACC1001,CAD,18258.26,1,1,Same transaction details with a one-to-two day posting difference.
+S000277,timing_difference,potential_timing_difference,REF000277,ACC1002,CAD,5523.53,1,1,Same transaction details with a one-to-two day posting difference.
+S000278,timing_difference,potential_timing_difference,REF000278,ACC1002,CAD,80.22,1,1,Same transaction details with a one-to-two day posting difference.
+S000279,timing_difference,potential_timing_difference,REF000279,ACC1002,CAD,19625.53,1,1,Same transaction details with a one-to-two day posting difference.
+S000280,timing_difference,potential_timing_difference,REF000280,ACC3001,CAD,17140.77,1,1,Same transaction details with a one-to-two day posting difference.
+S000281,timing_difference,potential_timing_difference,REF000281,ACC3001,CAD,2462.98,1,1,Same transaction details with a one-to-two day posting difference.
+S000282,timing_difference,potential_timing_difference,REF000282,ACC1001,CAD,19859.31,1,1,Same transaction details with a one-to-two day posting difference.
+S000283,timing_difference,potential_timing_difference,REF000283,ACC2001,USD,12364.45,1,1,Same transaction details with a one-to-two day posting difference.
+S000284,timing_difference,potential_timing_difference,REF000284,ACC1001,CAD,14374.88,1,1,Same transaction details with a one-to-two day posting difference.
+S000285,timing_difference,potential_timing_difference,REF000285,ACC2001,USD,21331.20,1,1,Same transaction details with a one-to-two day posting difference.
+S000286,timing_difference,potential_timing_difference,REF000286,ACC2002,USD,21966.89,1,1,Same transaction details with a one-to-two day posting difference.
+S000287,timing_difference,potential_timing_difference,REF000287,ACC2001,USD,5560.57,1,1,Same transaction details with a one-to-two day posting difference.
+S000288,timing_difference,potential_timing_difference,REF000288,ACC3001,CAD,6743.94,1,1,Same transaction details with a one-to-two day posting difference.
+S000289,timing_difference,potential_timing_difference,REF000289,ACC2001,USD,22187.49,1,1,Same transaction details with a one-to-two day posting difference.
+S000290,timing_difference,potential_timing_difference,REF000290,ACC1002,CAD,14500.59,1,1,Same transaction details with a one-to-two day posting difference.
+S000291,timing_difference,potential_timing_difference,REF000291,ACC3001,CAD,8084.61,1,1,Same transaction details with a one-to-two day posting difference.
+S000292,timing_difference,potential_timing_difference,REF000292,ACC1002,CAD,17436.32,1,1,Same transaction details with a one-to-two day posting difference.
+S000293,timing_difference,potential_timing_difference,REF000293,ACC2001,USD,12719.59,1,1,Same transaction details with a one-to-two day posting difference.
+S000294,timing_difference,potential_timing_difference,REF000294,ACC1001,CAD,617.63,1,1,Same transaction details with a one-to-two day posting difference.
+S000295,timing_difference,potential_timing_difference,REF000295,ACC3001,CAD,623.96,1,1,Same transaction details with a one-to-two day posting difference.
+S000296,timing_difference,potential_timing_difference,REF000296,ACC3001,CAD,526.48,1,1,Same transaction details with a one-to-two day posting difference.
+S000297,timing_difference,potential_timing_difference,REF000297,ACC2002,USD,13585.25,1,1,Same transaction details with a one-to-two day posting difference.
+S000298,timing_difference,potential_timing_difference,REF000298,ACC2001,USD,10744.66,1,1,Same transaction details with a one-to-two day posting difference.
+S000299,timing_difference,potential_timing_difference,REF000299,ACC1001,CAD,3244.01,1,1,Same transaction details with a one-to-two day posting difference.
+S000300,timing_difference,potential_timing_difference,REF000300,ACC1001,CAD,810.80,1,1,Same transaction details with a one-to-two day posting difference.
+S000301,timing_difference,potential_timing_difference,REF000301,ACC1002,CAD,12412.01,1,1,Same transaction details with a one-to-two day posting difference.
+S000302,timing_difference,potential_timing_difference,REF000302,ACC1001,CAD,236.44,1,1,Same transaction details with a one-to-two day posting difference.
+S000303,timing_difference,potential_timing_difference,REF000303,ACC1002,CAD,21386.62,1,1,Same transaction details with a one-to-two day posting difference.
+S000304,timing_difference,potential_timing_difference,REF000304,ACC1001,CAD,443.38,1,1,Same transaction details with a one-to-two day posting difference.
+S000305,timing_difference,potential_timing_difference,REF000305,ACC1001,CAD,11813.20,1,1,Same transaction details with a one-to-two day posting difference.
+S000306,timing_difference,potential_timing_difference,REF000306,ACC3001,CAD,606.75,1,1,Same transaction details with a one-to-two day posting difference.
+S000307,timing_difference,potential_timing_difference,REF000307,ACC1002,CAD,4702.65,1,1,Same transaction details with a one-to-two day posting difference.
+S000308,timing_difference,potential_timing_difference,REF000308,ACC1001,CAD,7474.39,1,1,Same transaction details with a one-to-two day posting difference.
+S000309,timing_difference,potential_timing_difference,REF000309,ACC3001,CAD,1630.29,1,1,Same transaction details with a one-to-two day posting difference.
+S000310,timing_difference,potential_timing_difference,REF000310,ACC2001,USD,10307.19,1,1,Same transaction details with a one-to-two day posting difference.
+S000311,timing_difference,potential_timing_difference,REF000311,ACC1002,CAD,7454.06,1,1,Same transaction details with a one-to-two day posting difference.
+S000312,timing_difference,potential_timing_difference,REF000312,ACC2002,USD,19784.00,1,1,Same transaction details with a one-to-two day posting difference.
+S000313,timing_difference,potential_timing_difference,REF000313,ACC2002,USD,3567.34,1,1,Same transaction details with a one-to-two day posting difference.
+S000314,timing_difference,potential_timing_difference,REF000314,ACC2002,USD,20571.41,1,1,Same transaction details with a one-to-two day posting difference.
+S000315,timing_difference,potential_timing_difference,REF000315,ACC1002,CAD,10557.75,1,1,Same transaction details with a one-to-two day posting difference.
+S000316,timing_difference,potential_timing_difference,REF000316,ACC2001,USD,10430.44,1,1,Same transaction details with a one-to-two day posting difference.
+S000317,timing_difference,potential_timing_difference,REF000317,ACC1002,CAD,704.49,1,1,Same transaction details with a one-to-two day posting difference.
+S000318,timing_difference,potential_timing_difference,REF000318,ACC1001,CAD,16200.06,1,1,Same transaction details with a one-to-two day posting difference.
+S000319,timing_difference,potential_timing_difference,REF000319,ACC2002,USD,12501.63,1,1,Same transaction details with a one-to-two day posting difference.
+S000320,timing_difference,potential_timing_difference,REF000320,ACC2001,USD,22945.63,1,1,Same transaction details with a one-to-two day posting difference.
+S000321,timing_difference,potential_timing_difference,REF000321,ACC3001,CAD,17259.33,1,1,Same transaction details with a one-to-two day posting difference.
+S000322,timing_difference,potential_timing_difference,REF000322,ACC1001,CAD,13451.15,1,1,Same transaction details with a one-to-two day posting difference.
+S000323,timing_difference,potential_timing_difference,REF000323,ACC3001,CAD,24944.87,1,1,Same transaction details with a one-to-two day posting difference.
+S000324,timing_difference,potential_timing_difference,REF000324,ACC1001,CAD,9233.60,1,1,Same transaction details with a one-to-two day posting difference.
+S000325,timing_difference,potential_timing_difference,REF000325,ACC1001,CAD,2612.18,1,1,Same transaction details with a one-to-two day posting difference.
+S000326,timing_difference,potential_timing_difference,REF000326,ACC1001,CAD,18771.75,1,1,Same transaction details with a one-to-two day posting difference.
+S000327,timing_difference,potential_timing_difference,REF000327,ACC2002,USD,16114.25,1,1,Same transaction details with a one-to-two day posting difference.
+S000328,timing_difference,potential_timing_difference,REF000328,ACC3001,CAD,10332.06,1,1,Same transaction details with a one-to-two day posting difference.
+S000329,timing_difference,potential_timing_difference,REF000329,ACC1001,CAD,13885.34,1,1,Same transaction details with a one-to-two day posting difference.
+S000330,timing_difference,potential_timing_difference,REF000330,ACC2001,USD,16338.61,1,1,Same transaction details with a one-to-two day posting difference.
+S000331,missing_in_bank_statement,missing_in_bank_statement,REF000331,ACC2001,USD,20529.72,0,1,Internal ledger has a record that is not present in the bank statement.
+S000332,missing_in_bank_statement,missing_in_bank_statement,REF000332,ACC1002,CAD,3806.77,0,1,Internal ledger has a record that is not present in the bank statement.
+S000333,missing_in_bank_statement,missing_in_bank_statement,REF000333,ACC2002,USD,395.34,0,1,Internal ledger has a record that is not present in the bank statement.
+S000334,missing_in_bank_statement,missing_in_bank_statement,REF000334,ACC1002,CAD,4367.12,0,1,Internal ledger has a record that is not present in the bank statement.
+S000335,missing_in_bank_statement,missing_in_bank_statement,REF000335,ACC2001,USD,783.69,0,1,Internal ledger has a record that is not present in the bank statement.
+S000336,missing_in_bank_statement,missing_in_bank_statement,REF000336,ACC2002,USD,2984.10,0,1,Internal ledger has a record that is not present in the bank statement.
+S000337,missing_in_bank_statement,missing_in_bank_statement,REF000337,ACC2001,USD,19737.76,0,1,Internal ledger has a record that is not present in the bank statement.
+S000338,missing_in_bank_statement,missing_in_bank_statement,REF000338,ACC3001,CAD,20758.79,0,1,Internal ledger has a record that is not present in the bank statement.
+S000339,missing_in_bank_statement,missing_in_bank_statement,REF000339,ACC2002,USD,3457.99,0,1,Internal ledger has a record that is not present in the bank statement.
+S000340,missing_in_bank_statement,missing_in_bank_statement,REF000340,ACC2002,USD,3087.59,0,1,Internal ledger has a record that is not present in the bank statement.
+S000341,missing_in_bank_statement,missing_in_bank_statement,REF000341,ACC3001,CAD,15646.28,0,1,Internal ledger has a record that is not present in the bank statement.
+S000342,missing_in_bank_statement,missing_in_bank_statement,REF000342,ACC1002,CAD,13774.74,0,1,Internal ledger has a record that is not present in the bank statement.
+S000343,missing_in_bank_statement,missing_in_bank_statement,REF000343,ACC2001,USD,13345.96,0,1,Internal ledger has a record that is not present in the bank statement.
+S000344,missing_in_bank_statement,missing_in_bank_statement,REF000344,ACC1001,CAD,829.47,0,1,Internal ledger has a record that is not present in the bank statement.
+S000345,missing_in_bank_statement,missing_in_bank_statement,REF000345,ACC1002,CAD,14858.21,0,1,Internal ledger has a record that is not present in the bank statement.
+S000346,missing_in_bank_statement,missing_in_bank_statement,REF000346,ACC2002,USD,19453.22,0,1,Internal ledger has a record that is not present in the bank statement.
+S000347,missing_in_bank_statement,missing_in_bank_statement,REF000347,ACC2001,USD,1059.35,0,1,Internal ledger has a record that is not present in the bank statement.
+S000348,missing_in_bank_statement,missing_in_bank_statement,REF000348,ACC2001,USD,24235.09,0,1,Internal ledger has a record that is not present in the bank statement.
+S000349,missing_in_bank_statement,missing_in_bank_statement,REF000349,ACC2001,USD,14587.41,0,1,Internal ledger has a record that is not present in the bank statement.
+S000350,missing_in_bank_statement,missing_in_bank_statement,REF000350,ACC1001,CAD,12029.96,0,1,Internal ledger has a record that is not present in the bank statement.
+S000351,missing_in_bank_statement,missing_in_bank_statement,REF000351,ACC1001,CAD,22825.77,0,1,Internal ledger has a record that is not present in the bank statement.
+S000352,missing_in_bank_statement,missing_in_bank_statement,REF000352,ACC1001,CAD,9924.25,0,1,Internal ledger has a record that is not present in the bank statement.
+S000353,missing_in_bank_statement,missing_in_bank_statement,REF000353,ACC2001,USD,11301.54,0,1,Internal ledger has a record that is not present in the bank statement.
+S000354,missing_in_bank_statement,missing_in_bank_statement,REF000354,ACC1002,CAD,253.57,0,1,Internal ledger has a record that is not present in the bank statement.
+S000355,missing_in_bank_statement,missing_in_bank_statement,REF000355,ACC2001,USD,12464.81,0,1,Internal ledger has a record that is not present in the bank statement.
+S000356,missing_in_bank_statement,missing_in_bank_statement,REF000356,ACC1001,CAD,8182.13,0,1,Internal ledger has a record that is not present in the bank statement.
+S000357,missing_in_bank_statement,missing_in_bank_statement,REF000357,ACC1002,CAD,15647.66,0,1,Internal ledger has a record that is not present in the bank statement.
+S000358,missing_in_bank_statement,missing_in_bank_statement,REF000358,ACC1002,CAD,15785.82,0,1,Internal ledger has a record that is not present in the bank statement.
+S000359,missing_in_bank_statement,missing_in_bank_statement,REF000359,ACC1002,CAD,9436.86,0,1,Internal ledger has a record that is not present in the bank statement.
+S000360,missing_in_bank_statement,missing_in_bank_statement,REF000360,ACC1002,CAD,548.06,0,1,Internal ledger has a record that is not present in the bank statement.
+S000361,missing_in_bank_statement,missing_in_bank_statement,REF000361,ACC2001,USD,5527.52,0,1,Internal ledger has a record that is not present in the bank statement.
+S000362,missing_in_bank_statement,missing_in_bank_statement,REF000362,ACC1002,CAD,499.62,0,1,Internal ledger has a record that is not present in the bank statement.
+S000363,missing_in_bank_statement,missing_in_bank_statement,REF000363,ACC2001,USD,14641.13,0,1,Internal ledger has a record that is not present in the bank statement.
+S000364,missing_in_bank_statement,missing_in_bank_statement,REF000364,ACC2002,USD,1331.04,0,1,Internal ledger has a record that is not present in the bank statement.
+S000365,missing_in_bank_statement,missing_in_bank_statement,REF000365,ACC3001,CAD,19410.64,0,1,Internal ledger has a record that is not present in the bank statement.
+S000366,missing_in_bank_statement,missing_in_bank_statement,REF000366,ACC3001,CAD,3006.33,0,1,Internal ledger has a record that is not present in the bank statement.
+S000367,missing_in_bank_statement,missing_in_bank_statement,REF000367,ACC3001,CAD,19317.38,0,1,Internal ledger has a record that is not present in the bank statement.
+S000368,missing_in_bank_statement,missing_in_bank_statement,REF000368,ACC1002,CAD,441.04,0,1,Internal ledger has a record that is not present in the bank statement.
+S000369,missing_in_bank_statement,missing_in_bank_statement,REF000369,ACC2001,USD,3866.63,0,1,Internal ledger has a record that is not present in the bank statement.
+S000370,missing_in_bank_statement,missing_in_bank_statement,REF000370,ACC2002,USD,20740.16,0,1,Internal ledger has a record that is not present in the bank statement.
+S000371,missing_in_bank_statement,missing_in_bank_statement,REF000371,ACC2001,USD,1704.55,0,1,Internal ledger has a record that is not present in the bank statement.
+S000372,missing_in_bank_statement,missing_in_bank_statement,REF000372,ACC2001,USD,12907.54,0,1,Internal ledger has a record that is not present in the bank statement.
+S000373,missing_in_bank_statement,missing_in_bank_statement,REF000373,ACC1002,CAD,3469.72,0,1,Internal ledger has a record that is not present in the bank statement.
+S000374,missing_in_bank_statement,missing_in_bank_statement,REF000374,ACC1001,CAD,12322.35,0,1,Internal ledger has a record that is not present in the bank statement.
+S000375,missing_in_bank_statement,missing_in_bank_statement,REF000375,ACC3001,CAD,8723.25,0,1,Internal ledger has a record that is not present in the bank statement.
+S000376,missing_in_internal_ledger,missing_in_internal_ledger,REF000376,ACC1001,CAD,655.99,1,0,Bank statement has a record that is not present in the internal ledger.
+S000377,missing_in_internal_ledger,missing_in_internal_ledger,REF000377,ACC1002,CAD,2654.23,1,0,Bank statement has a record that is not present in the internal ledger.
+S000378,missing_in_internal_ledger,missing_in_internal_ledger,REF000378,ACC2001,USD,1191.26,1,0,Bank statement has a record that is not present in the internal ledger.
+S000379,missing_in_internal_ledger,missing_in_internal_ledger,REF000379,ACC3001,CAD,9838.57,1,0,Bank statement has a record that is not present in the internal ledger.
+S000380,missing_in_internal_ledger,missing_in_internal_ledger,REF000380,ACC3001,CAD,419.03,1,0,Bank statement has a record that is not present in the internal ledger.
+S000381,missing_in_internal_ledger,missing_in_internal_ledger,REF000381,ACC2001,USD,23823.77,1,0,Bank statement has a record that is not present in the internal ledger.
+S000382,missing_in_internal_ledger,missing_in_internal_ledger,REF000382,ACC2002,USD,526.83,1,0,Bank statement has a record that is not present in the internal ledger.
+S000383,missing_in_internal_ledger,missing_in_internal_ledger,REF000383,ACC2002,USD,3232.64,1,0,Bank statement has a record that is not present in the internal ledger.
+S000384,missing_in_internal_ledger,missing_in_internal_ledger,REF000384,ACC2002,USD,18949.59,1,0,Bank statement has a record that is not present in the internal ledger.
+S000385,missing_in_internal_ledger,missing_in_internal_ledger,REF000385,ACC1002,CAD,561.04,1,0,Bank statement has a record that is not present in the internal ledger.
+S000386,missing_in_internal_ledger,missing_in_internal_ledger,REF000386,ACC1002,CAD,8560.21,1,0,Bank statement has a record that is not present in the internal ledger.
+S000387,missing_in_internal_ledger,missing_in_internal_ledger,REF000387,ACC2001,USD,2792.50,1,0,Bank statement has a record that is not present in the internal ledger.
+S000388,missing_in_internal_ledger,missing_in_internal_ledger,REF000388,ACC3001,CAD,454.61,1,0,Bank statement has a record that is not present in the internal ledger.
+S000389,missing_in_internal_ledger,missing_in_internal_ledger,REF000389,ACC1001,CAD,5983.27,1,0,Bank statement has a record that is not present in the internal ledger.
+S000390,missing_in_internal_ledger,missing_in_internal_ledger,REF000390,ACC2001,USD,17465.32,1,0,Bank statement has a record that is not present in the internal ledger.
+S000391,missing_in_internal_ledger,missing_in_internal_ledger,REF000391,ACC2001,USD,24241.60,1,0,Bank statement has a record that is not present in the internal ledger.
+S000392,missing_in_internal_ledger,missing_in_internal_ledger,REF000392,ACC1001,CAD,24776.24,1,0,Bank statement has a record that is not present in the internal ledger.
+S000393,missing_in_internal_ledger,missing_in_internal_ledger,REF000393,ACC2002,USD,12089.04,1,0,Bank statement has a record that is not present in the internal ledger.
+S000394,missing_in_internal_ledger,missing_in_internal_ledger,REF000394,ACC1001,CAD,791.31,1,0,Bank statement has a record that is not present in the internal ledger.
+S000395,missing_in_internal_ledger,missing_in_internal_ledger,REF000395,ACC1001,CAD,20505.93,1,0,Bank statement has a record that is not present in the internal ledger.
+S000396,missing_in_internal_ledger,missing_in_internal_ledger,REF000396,ACC1002,CAD,3207.49,1,0,Bank statement has a record that is not present in the internal ledger.
+S000397,missing_in_internal_ledger,missing_in_internal_ledger,REF000397,ACC1001,CAD,14773.22,1,0,Bank statement has a record that is not present in the internal ledger.
+S000398,missing_in_internal_ledger,missing_in_internal_ledger,REF000398,ACC1001,CAD,9494.64,1,0,Bank statement has a record that is not present in the internal ledger.
+S000399,missing_in_internal_ledger,missing_in_internal_ledger,REF000399,ACC2001,USD,607.26,1,0,Bank statement has a record that is not present in the internal ledger.
+S000400,missing_in_internal_ledger,missing_in_internal_ledger,REF000400,ACC2001,USD,12496.74,1,0,Bank statement has a record that is not present in the internal ledger.
+S000401,missing_in_internal_ledger,missing_in_internal_ledger,REF000401,ACC2002,USD,22231.66,1,0,Bank statement has a record that is not present in the internal ledger.
+S000402,missing_in_internal_ledger,missing_in_internal_ledger,REF000402,ACC3001,CAD,9618.69,1,0,Bank statement has a record that is not present in the internal ledger.
+S000403,missing_in_internal_ledger,missing_in_internal_ledger,REF000403,ACC3001,CAD,5315.58,1,0,Bank statement has a record that is not present in the internal ledger.
+S000404,missing_in_internal_ledger,missing_in_internal_ledger,REF000404,ACC1002,CAD,942.38,1,0,Bank statement has a record that is not present in the internal ledger.
+S000405,missing_in_internal_ledger,missing_in_internal_ledger,REF000405,ACC1002,CAD,6787.67,1,0,Bank statement has a record that is not present in the internal ledger.
+S000406,missing_in_internal_ledger,missing_in_internal_ledger,REF000406,ACC3001,CAD,24797.01,1,0,Bank statement has a record that is not present in the internal ledger.
+S000407,missing_in_internal_ledger,missing_in_internal_ledger,REF000407,ACC1002,CAD,17743.04,1,0,Bank statement has a record that is not present in the internal ledger.
+S000408,missing_in_internal_ledger,missing_in_internal_ledger,REF000408,ACC2001,USD,903.53,1,0,Bank statement has a record that is not present in the internal ledger.
+S000409,missing_in_internal_ledger,missing_in_internal_ledger,REF000409,ACC2001,USD,100.55,1,0,Bank statement has a record that is not present in the internal ledger.
+S000410,missing_in_internal_ledger,missing_in_internal_ledger,REF000410,ACC3001,CAD,15739.23,1,0,Bank statement has a record that is not present in the internal ledger.
+S000411,missing_in_internal_ledger,missing_in_internal_ledger,REF000411,ACC1002,CAD,577.95,1,0,Bank statement has a record that is not present in the internal ledger.
+S000412,missing_in_internal_ledger,missing_in_internal_ledger,REF000412,ACC3001,CAD,23606.16,1,0,Bank statement has a record that is not present in the internal ledger.
+S000413,missing_in_internal_ledger,missing_in_internal_ledger,REF000413,ACC1001,CAD,24420.66,1,0,Bank statement has a record that is not present in the internal ledger.
+S000414,missing_in_internal_ledger,missing_in_internal_ledger,REF000414,ACC2002,USD,24249.83,1,0,Bank statement has a record that is not present in the internal ledger.
+S000415,missing_in_internal_ledger,missing_in_internal_ledger,REF000415,ACC3001,CAD,17523.96,1,0,Bank statement has a record that is not present in the internal ledger.
+S000416,missing_in_internal_ledger,missing_in_internal_ledger,REF000416,ACC1001,CAD,24862.80,1,0,Bank statement has a record that is not present in the internal ledger.
+S000417,missing_in_internal_ledger,missing_in_internal_ledger,REF000417,ACC3001,CAD,14573.21,1,0,Bank statement has a record that is not present in the internal ledger.
+S000418,missing_in_internal_ledger,missing_in_internal_ledger,REF000418,ACC2001,USD,24577.11,1,0,Bank statement has a record that is not present in the internal ledger.
+S000419,missing_in_internal_ledger,missing_in_internal_ledger,REF000419,ACC1001,CAD,22279.68,1,0,Bank statement has a record that is not present in the internal ledger.
+S000420,missing_in_internal_ledger,missing_in_internal_ledger,REF000420,ACC2001,USD,9411.55,1,0,Bank statement has a record that is not present in the internal ledger.
+S000421,amount_mismatch,amount_mismatch,REF000421,ACC1001,CAD,11071.68,1,1,Same reference but different amount.
+S000422,amount_mismatch,amount_mismatch,REF000422,ACC3001,CAD,19929.52,1,1,Same reference but different amount.
+S000423,amount_mismatch,amount_mismatch,REF000423,ACC2001,USD,3513.40,1,1,Same reference but different amount.
+S000424,amount_mismatch,amount_mismatch,REF000424,ACC1001,CAD,24646.63,1,1,Same reference but different amount.
+S000425,amount_mismatch,amount_mismatch,REF000425,ACC1002,CAD,3430.19,1,1,Same reference but different amount.
+S000426,amount_mismatch,amount_mismatch,REF000426,ACC3001,CAD,6701.16,1,1,Same reference but different amount.
+S000427,amount_mismatch,amount_mismatch,REF000427,ACC2001,USD,791.51,1,1,Same reference but different amount.
+S000428,amount_mismatch,amount_mismatch,REF000428,ACC1002,CAD,12365.70,1,1,Same reference but different amount.
+S000429,amount_mismatch,amount_mismatch,REF000429,ACC2001,USD,5437.15,1,1,Same reference but different amount.
+S000430,amount_mismatch,amount_mismatch,REF000430,ACC2001,USD,21089.89,1,1,Same reference but different amount.
+S000431,amount_mismatch,amount_mismatch,REF000431,ACC2001,USD,15153.43,1,1,Same reference but different amount.
+S000432,amount_mismatch,amount_mismatch,REF000432,ACC2002,USD,2894.92,1,1,Same reference but different amount.
+S000433,amount_mismatch,amount_mismatch,REF000433,ACC1002,CAD,4028.46,1,1,Same reference but different amount.
+S000434,amount_mismatch,amount_mismatch,REF000434,ACC1002,CAD,18450.47,1,1,Same reference but different amount.
+S000435,amount_mismatch,amount_mismatch,REF000435,ACC3001,CAD,23011.89,1,1,Same reference but different amount.
+S000436,amount_mismatch,amount_mismatch,REF000436,ACC1002,CAD,19201.06,1,1,Same reference but different amount.
+S000437,amount_mismatch,amount_mismatch,REF000437,ACC3001,CAD,16714.90,1,1,Same reference but different amount.
+S000438,amount_mismatch,amount_mismatch,REF000438,ACC1002,CAD,10641.28,1,1,Same reference but different amount.
+S000439,amount_mismatch,amount_mismatch,REF000439,ACC2002,USD,785.65,1,1,Same reference but different amount.
+S000440,amount_mismatch,amount_mismatch,REF000440,ACC1001,CAD,18849.37,1,1,Same reference but different amount.
+S000441,amount_mismatch,amount_mismatch,REF000441,ACC1001,CAD,20775.27,1,1,Same reference but different amount.
+S000442,amount_mismatch,amount_mismatch,REF000442,ACC3001,CAD,13163.09,1,1,Same reference but different amount.
+S000443,amount_mismatch,amount_mismatch,REF000443,ACC1002,CAD,95.50,1,1,Same reference but different amount.
+S000444,amount_mismatch,amount_mismatch,REF000444,ACC2002,USD,3972.95,1,1,Same reference but different amount.
+S000445,amount_mismatch,amount_mismatch,REF000445,ACC2002,USD,9394.24,1,1,Same reference but different amount.
+S000446,amount_mismatch,amount_mismatch,REF000446,ACC2002,USD,19715.92,1,1,Same reference but different amount.
+S000447,amount_mismatch,amount_mismatch,REF000447,ACC2001,USD,21751.12,1,1,Same reference but different amount.
+S000448,amount_mismatch,amount_mismatch,REF000448,ACC3001,CAD,20322.05,1,1,Same reference but different amount.
+S000449,amount_mismatch,amount_mismatch,REF000449,ACC2001,USD,8251.48,1,1,Same reference but different amount.
+S000450,amount_mismatch,amount_mismatch,REF000450,ACC2001,USD,7784.25,1,1,Same reference but different amount.
+S000451,amount_mismatch,amount_mismatch,REF000451,ACC2001,USD,23852.51,1,1,Same reference but different amount.
+S000452,amount_mismatch,amount_mismatch,REF000452,ACC1001,CAD,17338.14,1,1,Same reference but different amount.
+S000453,amount_mismatch,amount_mismatch,REF000453,ACC2002,USD,14992.57,1,1,Same reference but different amount.
+S000454,amount_mismatch,amount_mismatch,REF000454,ACC2002,USD,21290.06,1,1,Same reference but different amount.
+S000455,amount_mismatch,amount_mismatch,REF000455,ACC2001,USD,5393.64,1,1,Same reference but different amount.
+S000456,amount_mismatch,amount_mismatch,REF000456,ACC1002,CAD,22284.25,1,1,Same reference but different amount.
+S000457,amount_mismatch,amount_mismatch,REF000457,ACC2002,USD,23663.22,1,1,Same reference but different amount.
+S000458,amount_mismatch,amount_mismatch,REF000458,ACC2002,USD,21900.38,1,1,Same reference but different amount.
+S000459,amount_mismatch,amount_mismatch,REF000459,ACC3001,CAD,18176.04,1,1,Same reference but different amount.
+S000460,amount_mismatch,amount_mismatch,REF000460,ACC2001,USD,296.18,1,1,Same reference but different amount.
+S000461,duplicate_bank_transaction,duplicate_bank_transaction,REF000461,ACC1002,CAD,10681.44,2,1,Bank side contains duplicate records.
+S000462,duplicate_bank_transaction,duplicate_bank_transaction,REF000462,ACC3001,CAD,22408.15,2,1,Bank side contains duplicate records.
+S000463,duplicate_bank_transaction,duplicate_bank_transaction,REF000463,ACC1002,CAD,8490.21,2,1,Bank side contains duplicate records.
+S000464,duplicate_bank_transaction,duplicate_bank_transaction,REF000464,ACC2001,USD,8156.85,2,1,Bank side contains duplicate records.
+S000465,duplicate_bank_transaction,duplicate_bank_transaction,REF000465,ACC3001,CAD,17482.72,2,1,Bank side contains duplicate records.
+S000466,duplicate_bank_transaction,duplicate_bank_transaction,REF000466,ACC1002,CAD,251.89,2,1,Bank side contains duplicate records.
+S000467,duplicate_bank_transaction,duplicate_bank_transaction,REF000467,ACC3001,CAD,690.00,2,1,Bank side contains duplicate records.
+S000468,duplicate_bank_transaction,duplicate_bank_transaction,REF000468,ACC2001,USD,945.21,2,1,Bank side contains duplicate records.
+S000469,duplicate_bank_transaction,duplicate_bank_transaction,REF000469,ACC1001,CAD,10126.09,2,1,Bank side contains duplicate records.
+S000470,duplicate_bank_transaction,duplicate_bank_transaction,REF000470,ACC1002,CAD,8226.79,2,1,Bank side contains duplicate records.
+S000471,duplicate_bank_transaction,duplicate_bank_transaction,REF000471,ACC3001,CAD,797.59,2,1,Bank side contains duplicate records.
+S000472,duplicate_bank_transaction,duplicate_bank_transaction,REF000472,ACC1001,CAD,12945.74,2,1,Bank side contains duplicate records.
+S000473,duplicate_bank_transaction,duplicate_bank_transaction,REF000473,ACC1002,CAD,4848.97,2,1,Bank side contains duplicate records.
+S000474,duplicate_bank_transaction,duplicate_bank_transaction,REF000474,ACC2001,USD,130.10,2,1,Bank side contains duplicate records.
+S000475,duplicate_bank_transaction,duplicate_bank_transaction,REF000475,ACC1002,CAD,701.22,2,1,Bank side contains duplicate records.
+S000476,duplicate_bank_transaction,duplicate_bank_transaction,REF000476,ACC2001,USD,781.86,2,1,Bank side contains duplicate records.
+S000477,duplicate_bank_transaction,duplicate_bank_transaction,REF000477,ACC2001,USD,732.38,2,1,Bank side contains duplicate records.
+S000478,duplicate_bank_transaction,duplicate_bank_transaction,REF000478,ACC1002,CAD,23922.14,2,1,Bank side contains duplicate records.
+S000479,duplicate_bank_transaction,duplicate_bank_transaction,REF000479,ACC2001,USD,24095.44,2,1,Bank side contains duplicate records.
+S000480,duplicate_bank_transaction,duplicate_bank_transaction,REF000480,ACC2002,USD,676.55,2,1,Bank side contains duplicate records.
+S000481,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000481,ACC3001,CAD,5350.25,1,2,Internal ledger side contains duplicate records.
+S000482,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000482,ACC1002,CAD,420.16,1,2,Internal ledger side contains duplicate records.
+S000483,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000483,ACC2001,USD,13595.63,1,2,Internal ledger side contains duplicate records.
+S000484,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000484,ACC3001,CAD,3285.81,1,2,Internal ledger side contains duplicate records.
+S000485,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000485,ACC2002,USD,15709.94,1,2,Internal ledger side contains duplicate records.
+S000486,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000486,ACC2002,USD,492.48,1,2,Internal ledger side contains duplicate records.
+S000487,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000487,ACC3001,CAD,10678.65,1,2,Internal ledger side contains duplicate records.
+S000488,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000488,ACC3001,CAD,11729.63,1,2,Internal ledger side contains duplicate records.
+S000489,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000489,ACC1001,CAD,14371.14,1,2,Internal ledger side contains duplicate records.
+S000490,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000490,ACC3001,CAD,14495.98,1,2,Internal ledger side contains duplicate records.
+S000491,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000491,ACC1002,CAD,15874.19,1,2,Internal ledger side contains duplicate records.
+S000492,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000492,ACC2002,USD,6321.93,1,2,Internal ledger side contains duplicate records.
+S000493,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000493,ACC2001,USD,3551.73,1,2,Internal ledger side contains duplicate records.
+S000494,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000494,ACC2002,USD,5501.04,1,2,Internal ledger side contains duplicate records.
+S000495,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000495,ACC2001,USD,619.92,1,2,Internal ledger side contains duplicate records.
+S000496,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000496,ACC3001,CAD,1104.10,1,2,Internal ledger side contains duplicate records.
+S000497,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000497,ACC2002,USD,5167.61,1,2,Internal ledger side contains duplicate records.
+S000498,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000498,ACC3001,CAD,10231.90,1,2,Internal ledger side contains duplicate records.
+S000499,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000499,ACC2001,USD,592.27,1,2,Internal ledger side contains duplicate records.
+S000500,duplicate_ledger_transaction,duplicate_ledger_transaction,REF000500,ACC3001,CAD,15980.02,1,2,Internal ledger side contains duplicate records.
+S000501,reference_format_mismatch,normalized_reference_match,REF000501,ACC1002,CAD,5267.50,1,1,Raw references differ but normalize to the same core reference.
+S000502,reference_format_mismatch,normalized_reference_match,REF000502,ACC3001,CAD,17011.77,1,1,Raw references differ but normalize to the same core reference.
+S000503,reference_format_mismatch,normalized_reference_match,REF000503,ACC1001,CAD,180.79,1,1,Raw references differ but normalize to the same core reference.
+S000504,reference_format_mismatch,normalized_reference_match,REF000504,ACC2001,USD,105.83,1,1,Raw references differ but normalize to the same core reference.
+S000505,reference_format_mismatch,normalized_reference_match,REF000505,ACC2002,USD,18747.82,1,1,Raw references differ but normalize to the same core reference.
+S000506,reference_format_mismatch,normalized_reference_match,REF000506,ACC3001,CAD,2127.52,1,1,Raw references differ but normalize to the same core reference.
+S000507,reference_format_mismatch,normalized_reference_match,REF000507,ACC2001,USD,276.21,1,1,Raw references differ but normalize to the same core reference.
+S000508,reference_format_mismatch,normalized_reference_match,REF000508,ACC3001,CAD,18397.95,1,1,Raw references differ but normalize to the same core reference.
+S000509,reference_format_mismatch,normalized_reference_match,REF000509,ACC1001,CAD,3864.49,1,1,Raw references differ but normalize to the same core reference.
+S000510,reference_format_mismatch,normalized_reference_match,REF000510,ACC1002,CAD,1135.48,1,1,Raw references differ but normalize to the same core reference.
+S000511,reference_format_mismatch,normalized_reference_match,REF000511,ACC2001,USD,16008.80,1,1,Raw references differ but normalize to the same core reference.
+S000512,reference_format_mismatch,normalized_reference_match,REF000512,ACC1001,CAD,23967.71,1,1,Raw references differ but normalize to the same core reference.
+S000513,reference_format_mismatch,normalized_reference_match,REF000513,ACC3001,CAD,22201.52,1,1,Raw references differ but normalize to the same core reference.
+S000514,reference_format_mismatch,normalized_reference_match,REF000514,ACC3001,CAD,20768.52,1,1,Raw references differ but normalize to the same core reference.
+S000515,reference_format_mismatch,normalized_reference_match,REF000515,ACC3001,CAD,17381.23,1,1,Raw references differ but normalize to the same core reference.
+S000516,reference_format_mismatch,normalized_reference_match,REF000516,ACC3001,CAD,515.18,1,1,Raw references differ but normalize to the same core reference.
+S000517,reference_format_mismatch,normalized_reference_match,REF000517,ACC1001,CAD,13333.47,1,1,Raw references differ but normalize to the same core reference.
+S000518,reference_format_mismatch,normalized_reference_match,REF000518,ACC1001,CAD,6116.20,1,1,Raw references differ but normalize to the same core reference.
+S000519,reference_format_mismatch,normalized_reference_match,REF000519,ACC2002,USD,4690.11,1,1,Raw references differ but normalize to the same core reference.
+S000520,reference_format_mismatch,normalized_reference_match,REF000520,ACC1001,CAD,14394.02,1,1,Raw references differ but normalize to the same core reference.
+S000521,reference_format_mismatch,normalized_reference_match,REF000521,ACC2002,USD,655.97,1,1,Raw references differ but normalize to the same core reference.
+S000522,reference_format_mismatch,normalized_reference_match,REF000522,ACC3001,CAD,9584.80,1,1,Raw references differ but normalize to the same core reference.
+S000523,reference_format_mismatch,normalized_reference_match,REF000523,ACC2001,USD,16857.36,1,1,Raw references differ but normalize to the same core reference.
+S000524,reference_format_mismatch,normalized_reference_match,REF000524,ACC2002,USD,4457.81,1,1,Raw references differ but normalize to the same core reference.
+S000525,reference_format_mismatch,normalized_reference_match,REF000525,ACC1002,CAD,586.99,1,1,Raw references differ but normalize to the same core reference.
+S000526,reference_format_mismatch,normalized_reference_match,REF000526,ACC2001,USD,21435.01,1,1,Raw references differ but normalize to the same core reference.
+S000527,reference_format_mismatch,normalized_reference_match,REF000527,ACC2001,USD,20191.84,1,1,Raw references differ but normalize to the same core reference.
+S000528,reference_format_mismatch,normalized_reference_match,REF000528,ACC1001,CAD,138.38,1,1,Raw references differ but normalize to the same core reference.
+S000529,reference_format_mismatch,normalized_reference_match,REF000529,ACC1002,CAD,22602.85,1,1,Raw references differ but normalize to the same core reference.
+S000530,reference_format_mismatch,normalized_reference_match,REF000530,ACC2001,USD,14604.69,1,1,Raw references differ but normalize to the same core reference.
+S000531,reference_format_mismatch,normalized_reference_match,REF000531,ACC1002,CAD,11466.98,1,1,Raw references differ but normalize to the same core reference.
+S000532,reference_format_mismatch,normalized_reference_match,REF000532,ACC2002,USD,12687.31,1,1,Raw references differ but normalize to the same core reference.
+S000533,reference_format_mismatch,normalized_reference_match,REF000533,ACC1002,CAD,22272.06,1,1,Raw references differ but normalize to the same core reference.
+S000534,reference_format_mismatch,normalized_reference_match,REF000534,ACC1001,CAD,15160.87,1,1,Raw references differ but normalize to the same core reference.
+S000535,reference_format_mismatch,normalized_reference_match,REF000535,ACC2002,USD,6359.36,1,1,Raw references differ but normalize to the same core reference.
+S000536,possible_match,possible_match,REF000536,ACC1001,CAD,16904.28,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000537,possible_match,possible_match,REF000537,ACC3001,CAD,4508.78,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000538,possible_match,possible_match,REF000538,ACC1002,CAD,2027.40,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000539,possible_match,possible_match,REF000539,ACC1001,CAD,17889.67,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000540,possible_match,possible_match,REF000540,ACC2002,USD,21051.26,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000541,possible_match,possible_match,REF000541,ACC2002,USD,843.83,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000542,possible_match,possible_match,REF000542,ACC2001,USD,9693.35,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000543,possible_match,possible_match,REF000543,ACC1001,CAD,6056.89,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000544,possible_match,possible_match,REF000544,ACC1002,CAD,16108.97,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000545,possible_match,possible_match,REF000545,ACC1002,CAD,14526.51,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000546,possible_match,possible_match,REF000546,ACC3001,CAD,20928.73,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000547,possible_match,possible_match,REF000547,ACC2001,USD,6515.53,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000548,possible_match,possible_match,REF000548,ACC3001,CAD,15532.26,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000549,possible_match,possible_match,REF000549,ACC3001,CAD,4127.89,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000550,possible_match,possible_match,REF000550,ACC3001,CAD,12570.96,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000551,possible_match,possible_match,REF000551,ACC2001,USD,3011.62,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000552,possible_match,possible_match,REF000552,ACC1001,CAD,56.47,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000553,possible_match,possible_match,REF000553,ACC1002,CAD,7271.27,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000554,possible_match,possible_match,REF000554,ACC1002,CAD,12579.23,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000555,possible_match,possible_match,REF000555,ACC3001,CAD,4313.64,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000556,possible_match,possible_match,REF000556,ACC1002,CAD,19865.95,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000557,possible_match,possible_match,REF000557,ACC1002,CAD,2537.93,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000558,possible_match,possible_match,REF000558,ACC2002,USD,18078.54,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000559,possible_match,possible_match,REF000559,ACC3001,CAD,589.56,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000560,possible_match,possible_match,REF000560,ACC1001,CAD,19712.15,1,1,Similar transaction characteristics but not enough for deterministic matching.
+S000561,split_payment,split_or_aggregation_difference,REF000561,ACC3001,CAD,131.15,1,2,One bank transaction maps to multiple internal ledger records.
+S000562,split_payment,split_or_aggregation_difference,REF000562,ACC1002,CAD,10694.96,1,2,One bank transaction maps to multiple internal ledger records.
+S000563,split_payment,split_or_aggregation_difference,REF000563,ACC1001,CAD,3808.22,1,2,One bank transaction maps to multiple internal ledger records.
+S000564,split_payment,split_or_aggregation_difference,REF000564,ACC3001,CAD,24069.73,1,2,One bank transaction maps to multiple internal ledger records.
+S000565,split_payment,split_or_aggregation_difference,REF000565,ACC2001,USD,24860.75,1,2,One bank transaction maps to multiple internal ledger records.
+S000566,split_payment,split_or_aggregation_difference,REF000566,ACC2001,USD,656.33,1,2,One bank transaction maps to multiple internal ledger records.
+S000567,split_payment,split_or_aggregation_difference,REF000567,ACC1002,CAD,18907.75,1,2,One bank transaction maps to multiple internal ledger records.
+S000568,split_payment,split_or_aggregation_difference,REF000568,ACC2001,USD,6992.69,1,2,One bank transaction maps to multiple internal ledger records.
+S000569,split_payment,split_or_aggregation_difference,REF000569,ACC2002,USD,13995.37,1,2,One bank transaction maps to multiple internal ledger records.
+S000570,split_payment,split_or_aggregation_difference,REF000570,ACC2001,USD,22984.16,1,2,One bank transaction maps to multiple internal ledger records.
+S000571,split_payment,split_or_aggregation_difference,REF000571,ACC3001,CAD,1781.50,1,2,One bank transaction maps to multiple internal ledger records.
+S000572,split_payment,split_or_aggregation_difference,REF000572,ACC3001,CAD,1283.68,1,2,One bank transaction maps to multiple internal ledger records.
+S000573,split_payment,split_or_aggregation_difference,REF000573,ACC2001,USD,7465.80,1,2,One bank transaction maps to multiple internal ledger records.
+S000574,split_payment,split_or_aggregation_difference,REF000574,ACC2001,USD,5317.34,1,2,One bank transaction maps to multiple internal ledger records.
+S000575,split_payment,split_or_aggregation_difference,REF000575,ACC1002,CAD,5705.52,1,2,One bank transaction maps to multiple internal ledger records.
+S000576,reversal_correction,possible_reversal_or_correction,REF000576,ACC3001,CAD,8200.82,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000577,reversal_correction,possible_reversal_or_correction,REF000577,ACC1002,CAD,12436.95,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000578,reversal_correction,possible_reversal_or_correction,REF000578,ACC2001,USD,23364.27,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000579,reversal_correction,possible_reversal_or_correction,REF000579,ACC1001,CAD,5774.99,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000580,reversal_correction,possible_reversal_or_correction,REF000580,ACC3001,CAD,10145.70,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000581,reversal_correction,possible_reversal_or_correction,REF000581,ACC1002,CAD,15695.44,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000582,reversal_correction,possible_reversal_or_correction,REF000582,ACC2001,USD,7992.55,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000583,reversal_correction,possible_reversal_or_correction,REF000583,ACC2001,USD,13502.46,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000584,reversal_correction,possible_reversal_or_correction,REF000584,ACC1001,CAD,23570.50,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000585,reversal_correction,possible_reversal_or_correction,REF000585,ACC1001,CAD,12356.46,2,1,Opposite-direction transaction appears as a correction/reversal pattern.
+S000586,data_quality_issue,data_quality_issue,REF000586,ACC3001,CAD,4726.58,1,1,Seeded data quality issue: missing_currency.
+S000587,data_quality_issue,data_quality_issue,REF000587,ACC2001,USD,524.07,1,1,Seeded data quality issue: missing_reference.
+S000588,data_quality_issue,data_quality_issue,REF000588,ACC2001,USD,13974.02,1,1,Seeded data quality issue: missing_date.
+S000589,data_quality_issue,data_quality_issue,REF000589,ACC3001,CAD,16145.14,1,1,Seeded data quality issue: invalid_amount.
+S000590,data_quality_issue,data_quality_issue,REF000590,ACC3001,CAD,9778.80,1,1,Seeded data quality issue: invalid_amount.
+S000591,data_quality_issue,data_quality_issue,REF000591,ACC3001,CAD,13842.37,1,1,Seeded data quality issue: invalid_amount.
+S000592,data_quality_issue,data_quality_issue,REF000592,ACC2001,USD,14157.09,1,1,Seeded data quality issue: missing_date.
+S000593,data_quality_issue,data_quality_issue,REF000593,ACC1002,CAD,10080.59,1,1,Seeded data quality issue: missing_date.
+S000594,data_quality_issue,data_quality_issue,REF000594,ACC3001,CAD,7832.24,1,1,Seeded data quality issue: missing_currency.
+S000595,data_quality_issue,data_quality_issue,REF000595,ACC1002,CAD,459.81,1,1,Seeded data quality issue: missing_date.
+S000596,data_quality_issue,data_quality_issue,REF000596,ACC1001,CAD,1531.14,1,1,Seeded data quality issue: invalid_amount.
+S000597,data_quality_issue,data_quality_issue,REF000597,ACC2002,USD,4616.41,1,1,Seeded data quality issue: invalid_amount.
+S000598,data_quality_issue,data_quality_issue,REF000598,ACC2002,USD,1761.69,1,1,Seeded data quality issue: missing_reference.
+S000599,data_quality_issue,data_quality_issue,REF000599,ACC1001,CAD,22496.78,1,1,Seeded data quality issue: missing_reference.
+S000600,data_quality_issue,data_quality_issue,REF000600,ACC1002,CAD,24868.85,1,1,Seeded data quality issue: missing_reference.
+S000601,data_quality_issue,data_quality_issue,REF000601,ACC1002,CAD,8490.62,1,1,Seeded data quality issue: missing_reference.
+S000602,data_quality_issue,data_quality_issue,REF000602,ACC3001,CAD,8171.51,1,1,Seeded data quality issue: missing_currency.
+S000603,data_quality_issue,data_quality_issue,REF000603,ACC2002,USD,7626.40,1,1,Seeded data quality issue: missing_currency.
+S000604,data_quality_issue,data_quality_issue,REF000604,ACC3001,CAD,4719.81,1,1,Seeded data quality issue: missing_currency.
+S000605,data_quality_issue,data_quality_issue,REF000605,ACC3001,CAD,369.97,1,1,Seeded data quality issue: missing_reference.
+S000606,data_quality_issue,data_quality_issue,REF000606,ACC1002,CAD,19160.74,1,1,Seeded data quality issue: missing_currency.
+S000607,data_quality_issue,data_quality_issue,REF000607,ACC2002,USD,1947.73,1,1,Seeded data quality issue: invalid_amount.
+S000608,data_quality_issue,data_quality_issue,REF000608,ACC2002,USD,9343.95,1,1,Seeded data quality issue: missing_currency.
+S000609,data_quality_issue,data_quality_issue,REF000609,ACC1002,CAD,13998.54,1,1,Seeded data quality issue: missing_date.
+S000610,data_quality_issue,data_quality_issue,REF000610,ACC1001,CAD,6730.88,1,1,Seeded data quality issue: missing_date.
