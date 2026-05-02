@@ -1,115 +1,248 @@
-# Cash Reconciliation Exception Detection and Triage Automation
+# Cash Reconciliation Automation
 
-A control-aware automation prototype for cash reconciliation workflows, combining a deterministic reconciliation core with AI-assisted exception support.
+A Python-based reconciliation workflow for matching bank statement activity against internal ledger records, classifying exceptions, and producing analyst-ready review outputs.
 
-This project demonstrates how a manual, exception-heavy finance operations workflow can be structured into repeatable matching logic, classified exception queues, analyst-ready outputs, and business-facing reporting — while preserving a clear boundary between control logic and AI support.
+This project started as a small rule-based reconciliation prototype and has since been expanded into a scenario-driven workflow with richer synthetic data, staged matching logic, data quality checks, and an optional local LLM support layer for exception explanation and note drafting.
 
-## 3-Minute Review Path
+The main design choice is deliberate:
 
-If you are reviewing this project quickly, start here:
+> Reconciliation decisions are handled by deterministic logic.  
+> AI is used only after exceptions are detected, as analyst support.
 
-1. **Interactive Case Presentation**  
-   Visual explanation of the workflow, automation boundary, outputs, and business value.  
-   https://xiangtinghe616-blip.github.io/cash-reconciliation-automation/
+---
 
-2. **Project Brief**  
-   Business-facing summary of the problem, design decision, outputs, and why the case matters.  
-   `docs/project-brief.md`
+## Quick Review
 
-3. **Current Stable Implementation — v1**  
-   Python implementation with synthetic reconciliation data, rule-based matching, exception classification, AI-assisted support output, and generated CSV outputs.  
-   `versions/v1/`
+| Resource | Link |
+|---|---|
+| Live case presentation | https://xiangtinghe616-blip.github.io/cash-reconciliation-automation/ |
+| Project brief | `docs/project-brief.pdf` |
+| Current implementation | `versions/v2/` |
+| Earlier stable prototype | `versions/v1/` |
+| v2 LLM design notes | `docs/v2-llm-design-notes.md` |
 
-4. **Output Samples**  
-   Explanation of matched transactions, exception queue, AI-enhanced exception queue, and summary report.  
-   `docs/output-samples.md`
+---
 
-## Why This Project Matters
+## What This Project Does
 
-Cash reconciliation is not just a row comparison task. It is a control-sensitive operational workflow where teams must determine whether records align across amount, reference, and timing, while also distinguishing routine timing differences from actionable exceptions.
+The workflow compares external bank statement records with internal cash ledger records and separates the result into:
 
-This prototype shows a realistic automation pattern:
+- matched transactions
+- timing-related items
+- possible matches requiring analyst review
+- structured exception queues
+- data quality issues
+- management-style summary reporting
+- optional AI-assisted analyst notes
 
-- automate standard matching first
-- isolate and classify breaks into operationally meaningful exception states
-- produce structured outputs for analyst review
-- use AI only after exception detection to support explanation, next-step guidance, and draft analyst notes
+The goal is not just to label rows as matched or unmatched. The goal is to turn reconciliation breaks into reviewable operating artifacts that an analyst could investigate, explain, and escalate.
 
-## Core Design Decision
+---
 
-This is not a fully AI-driven reconciliation tool.
+## Why This Problem Is Interesting
 
-The reconciliation decision logic remains deterministic and auditable. The AI layer is applied only after the rule-based engine has identified an exception.
+Cash reconciliation looks simple on the surface: compare two sets of records and find differences.
 
-| Layer | Purpose | Why it matters |
-|---|---|---|
-| Rule-based reconciliation core | Match records, isolate breaks, classify exception states | Preserves transparency and auditability |
-| AI-assisted support layer | Explain exceptions, suggest next steps, draft analyst notes | Reduces analyst friction without replacing control judgment |
-| Human review | Validate, investigate, escalate, and resolve | Keeps accountability in a control-sensitive process |
+In practice, the work is more nuanced. Records may differ because of timing, formatting, fees, duplicate posting, missing internal booking, missing bank activity, split payments, reversals, or data quality problems. Some differences can be cleared automatically. Others need to be routed into a review queue with enough context for an analyst to act.
 
-## Current Version
+That makes reconciliation a useful case for automation, but only if the automation is careful about where decisions are made.
 
-### v1 — Rule-Based Reconciliation + AI-Assisted Exception Support
+This project keeps matching and exception classification deterministic, while using AI only for downstream handling work such as explanation, suggested next steps, and draft analyst notes.
 
-Current implementation: `versions/v1/`
+---
 
-v1 includes:
+## Current Version: v2
 
-- synthetic bank statement and internal ledger data
-- duplicate detection
-- exact transaction matching
-- timing difference detection
-- amount mismatch detection
-- missing item classification
-- priority assignment
-- exception queue generation
-- AI-style explanation, next-step, and draft analyst note generation
-- summary reporting
+v2 expands the project in two main ways:
 
-## Project Outputs
+### 1. Larger, Scenario-Driven Synthetic Data
 
-The prototype generates four review-ready outputs:
+v2 moves beyond a small clean sample and generates a controlled reconciliation dataset with:
 
-| Output | File | Purpose |
-|---|---|---|
-| Matched Transactions | `versions/v1/output/matched_transactions.csv` | Shows routine matches and timing-related matched items |
-| Exceptions Queue | `versions/v1/output/exceptions_queue.csv` | Classifies breaks by type, priority, transaction details, and review action |
-| AI-Enhanced Exceptions Queue | `versions/v1/output/exceptions_queue_ai_enhanced.csv` | Adds explanation, recommended next step, and draft analyst note |
-| Summary Report | `versions/v1/output/summary_report.csv` | Provides management-level visibility into counts, amounts, and priority items |
+- 600+ seeded scenarios
+- multiple accounts
+- CAD and USD transactions
+- different transaction types and counterparties
+- timing differences
+- missing bank records
+- missing internal ledger records
+- amount mismatches
+- duplicate bank-side records
+- duplicate ledger-side records
+- reference formatting differences
+- possible matches
+- split / aggregation cases
+- reversal or correction patterns
+- data quality issues
 
-## Repository Structure
+The important file is:
 
 ```text
-cash-reconciliation-automation/
-├── README.md
-├── index.html
-├── docs/
-│   ├── project-brief.md
-│   ├── project-brief.pdf
-│   ├── enterprise-readiness.md
-│   ├── output-samples.md
-│   └── v2-roadmap.md
-├── versions/
-│   └── v1/
-│       ├── README.md
-│       ├── data/
-│       ├── src/
-│       └── output/
-├── requirements.txt
-└── CHANGELOG.md
+versions/v2/data/scenario_manifest_v2.csv
 ```
 
-## Skills Demonstrated
+This manifest records the expected classification for each seeded scenario. It makes the dataset useful for testing and future iteration, rather than just being a larger set of random rows.
 
-This project was designed to demonstrate:
+### 2. Staged Matching and Exception Handling
 
-- Python-based workflow automation
-- Reconciliation logic and exception handling
-- Control-aware automation design
-- Structured output generation
-- Analyst workflow support
-- Business-facing documentation
-- Practical judgment around AI use in financial operations
+v2 uses staged reconciliation logic instead of a single match rule.
+
+The workflow includes:
+
+```text
+data generation
+        ↓
+data quality checks
+        ↓
+exact matching
+        ↓
+timing tolerance matching
+        ↓
+normalized reference matching
+        ↓
+split / aggregation handling
+        ↓
+amount mismatch detection
+        ↓
+possible match queue
+        ↓
+residual exception classification
+        ↓
+analyst and management outputs
+```
+
+This staged approach is closer to how a real reconciliation workflow would separate clear matches from items that require review.
+
+---
+
+## Role of AI in v2
+
+v2 includes an optional local LLM support layer using Ollama.
+
+The LLM does **not** decide whether transactions match. It does **not** classify reconciliation breaks. It reads the already-classified exceptions queue and generates analyst support fields:
+
+- exception explanation
+- recommended next step
+- draft analyst note
+- risk/control consideration
+
+LLM script:
+
+```text
+versions/v2/src/llm_exception_assistant_ollama.py
+```
+
+The script also includes a deterministic template fallback mode, so the pipeline can still run when a local LLM is unavailable.
+
+This keeps the AI component useful but bounded.
+
+---
+
+## v2 Outputs
+
+v2 generates the following output files:
+
+| Output | Purpose |
+|---|---|
+| `matched_transactions.csv` | Transactions matched through exact, timing, normalized-reference, or split/aggregation logic |
+| `possible_matches.csv` | Candidate matches that need analyst review |
+| `exceptions_queue.csv` | Deterministically classified reconciliation exceptions |
+| `data_quality_issues.csv` | Input issues detected before reconciliation |
+| `exceptions_queue_llm_enhanced.csv` | Exception queue enriched with analyst-support text |
+| `summary_report.csv` | Management-style summary of match and exception results |
+
+Output location:
+
+```text
+versions/v2/output/
+```
+
+---
+
+## How to Run v2
+
+Install dependencies from the repository root:
+
+```bash
+pip install -r requirements-v2.txt
+```
+
+Run the full v2 pipeline:
+
+```bash
+cd versions/v2
+python src/run_v2_pipeline.py
+```
+
+This runs:
+
+1. synthetic data generation
+2. reconciliation engine
+3. analyst-support enhancement in template fallback mode
+
+To run the local LLM assistant with Ollama:
+
+```bash
+python src/llm_exception_assistant_ollama.py --mode ollama --model llama3.2
+```
+
+To run without Ollama:
+
+```bash
+python src/llm_exception_assistant_ollama.py --mode template
+```
+
+---
+
+## How to Run v1
+
+From the repository root:
+
+```bash
+cd versions/v1
+python src/reconciliation_engine.py
+python src/ai_exception_assistant.py
+```
+
+v1 outputs are saved in:
+
+```text
+versions/v1/output/
+```
+
+---
+
+## Project Artifacts
+
+| Artifact | Location |
+|---|---|
+| Business project brief | `docs/project-brief.pdf` |
+| Enterprise readiness notes | `docs/enterprise-readiness.md` |
+| Output sample explanation | `docs/output-samples.md` |
+| v2 LLM design notes | `docs/v2-llm-design-notes.md` |
+| Version roadmap | `docs/v2-roadmap.md` |
+| Changelog | `CHANGELOG.md` |
+
+---
+
+## What This Project Demonstrates
+
+This project is meant to show practical workflow judgment, not just code.
+
+It demonstrates:
+
+- Python-based data workflow automation
+- reconciliation matching logic
+- exception classification
+- staged review design
+- data quality checks before processing
+- possible match queue design
+- structured analyst outputs
+- management-style summary reporting
+- business-facing documentation
+- controlled use of AI in a financial operations workflow
+
+The broader skill is translating a manual, exception-heavy process into a structured workflow that can be reviewed, explained, and improved.
 
 ---
 
@@ -119,36 +252,38 @@ This is a portfolio prototype, not a production reconciliation platform.
 
 Current limitations include:
 
-- Synthetic and simplified input data
-- Pre-standardized schema
-- Limited fuzzy matching
-- No external banking or ledger system integration
-- AI support is implemented as a lightweight deterministic assistant layer rather than a live LLM workflow
-- No production deployment, monitoring, or access control layer
+- synthetic data rather than live bank or ledger feeds
+- simplified account and entity structure
+- no production database backend
+- no user authentication or role-based access control
+- no analyst UI for assignment, aging, or resolution tracking
+- limited fuzzy matching
+- no external case management integration
+- local LLM support is used only for analyst assistance, not production decision-making
+
+These limitations are intentional at this stage. The focus is on workflow structure, exception handling, data design, and automation boundaries.
 
 ---
 
-## Future Direction
+## Future Improvements
 
-Planned improvements are documented in:
+Planned improvements include:
 
-```text
-docs/v2-roadmap.md
-```
-
-Potential next steps include:
-
-- Confidence scoring
-- Aging analysis
-- Richer reference matching
-- Dashboard-style review
+- configurable matching rules
+- richer fuzzy matching and reference normalization
+- exception aging
+- analyst status tracking
+- dashboard-style exception review
 - SQL-based validation checks
-- Optional live LLM integration for post-detection analyst support
+- audit trail design
+- comparison between template-generated and LLM-generated notes
+- lightweight database or case-management layer
+- model governance notes for production-style AI use
 
 ---
 
-## Positioning
+## Usage and Rights
 
-This project is intended as an automation and workflow analysis case, not just a scripting exercise.
+This repository is shared as a portfolio and learning project.
 
-It shows how a control-sensitive finance operations process can be redesigned so that standard work is automated, exceptions are surfaced clearly, and analyst effort is redirected toward higher-value investigation and resolution.
+All rights are reserved unless otherwise stated. The code, documentation, workflow design, and project materials may not be copied, redistributed, or used commercially without permission.
