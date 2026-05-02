@@ -4,6 +4,12 @@ A portfolio project demonstrating how exception-based automation can improve cas
 
 This project was designed to show how standard reconciliation activities can be automated using rule-based logic, while more complex breaks are surfaced for analyst review. It also includes an AI-assisted exception support layer that generates explanations, suggested next steps, and draft analyst notes to improve triage efficiency.
 
+## v1 Presentation
+
+Original v1 case presentation:
+
+https://xiangtinghe616-blip.github.io/cash-reconciliation-automation/docs/presentation-v1.html
+
 ## Why this project matters
 
 Cash reconciliation is repetitive, time-sensitive, and control-sensitive. In many operations teams, analysts spend too much time on standard comparisons and routine exception handling instead of focusing on the breaks that actually require judgment.
