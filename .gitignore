@@ -1,6 +1,65 @@
+# Python cache and build artifacts
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+
+# macOS / editor files
 .DS_Store
 .ipynb_checkpoints/
-.env
-venv/
+.vscode/
+.idea/
+
+# Jupyter temporary files
+*.ipynb_checkpoints
+
+# Local logs and temporary files
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Local databases and lightweight app state
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated reconciliation outputs
+versions/*/output/
+versions/*/outputs/
+versions/*/synthetic_output/
+versions/*/reports/
+versions/*/artifacts/
+
+# Do not commit real or local-only source extracts
+local_data/
+private_data/
+raw_data/
+real_data/
+sensitive_data/
+client_data/
+
+# Optional local Streamlit / dashboard files
+.streamlit/secrets.toml
+
+# Local LLM / model artifacts
+models/
+ollama_models/
