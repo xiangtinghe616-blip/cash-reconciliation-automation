@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash Reconciliation Automation | Rules First, AI Second</title>
+  <meta
+    name="description"
+    content="A control-aware cash reconciliation automation case with deterministic matching, scenario-driven data, structured exception handling, and local LLM-assisted analyst support."
+  />
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --bg-soft: #111821;
+      --bg-card: #151d27;
+      --bg-card-2: #101720;
+      --line: rgba(255, 255, 255, 0.11);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #edf2f7;
+      --muted: #a9b4c0;
+      --subtle: #74808d;
+      --accent: #d8e6f3;
+      --accent-2: #9fb8cf;
+      --success: #b7e2c4;
+      --warning: #f0d9a5;
+      --danger: #e8b1b1;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.34);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(121, 151, 178, 0.20), transparent 28rem),
+        radial-gradient(circle at 85% 10%, rgba(74, 96, 123, 0.18), transparent 25rem),
+        linear-gradient(180deg, #090d12 0%, #0b0f14 42%, #080b10 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page-shell {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(11, 15, 20, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .top-nav-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 68px;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--line-strong);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .nav-links a {
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      padding: 9px 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: var(--text) !important;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .hero {
+      padding: 82px 0 44px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.045);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 22px rgba(183, 226, 196, 0.46);
+    }
+
+    h1, h2, h3, h4, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin: 22px 0 18px;
+      max-width: 980px;
+      font-size: clamp(46px, 8vw, 98px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      font-weight: 760;
+    }
+
+    .hero-lede {
+      max-width: 820px;
+      font-size: clamp(18px, 2.1vw, 23px);
+      line-height: 1.55;
+      color: var(--muted);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-lede strong {
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 30px 0 0;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 12px 17px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 650;
+      border: 1px solid var(--line-strong);
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.32);
+    }
+
+    .button.primary {
+      background: rgba(255, 255, 255, 0.93);
+      color: #0c1117;
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.055);
+      color: var(--text);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      margin-top: 44px;
+      align-items: stretch;
+    }
+
+    .hero-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.035)),
+        rgba(15, 22, 30, 0.88);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .pipeline-card {
+      padding: 26px;
+    }
+
+    .pipeline-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+
+    .kicker {
+      color: var(--subtle);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .pipeline-title h2 {
+      font-size: 26px;
+      line-height: 1.12;
+      letter-spacing: -0.04em;
+      margin: 0;
+    }
+
+    .version-pill {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(183, 226, 196, 0.25);
+      color: var(--success);
+      font-size: 12px;
+      background: rgba(183, 226, 196, 0.08);
+      white-space: nowrap;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.075);
+    }
+
+    .flow-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .flow-row h3 {
+      margin: 0 0 2px;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .flow-row p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .metric-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 17px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      margin-bottom: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .metric-note {
+      margin: 20px 0 0;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(216, 230, 243, 0.06);
+      color: var(--muted);
+      font-size: 13px;
+      border: 1px solid rgba(216, 230, 243, 0.11);
+    }
+
+    .section {
+      padding: 58px 0;
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 0.55fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 26px;
+    }
+
+    .section-label {
+      color: var(--subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: clamp(30px, 4.8vw, 58px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+      margin: 0 0 14px;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+      max-width: 780px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.045);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      min-height: 210px;
+    }
+
+    .card .tag {
+      display: inline-flex;
+      color: var(--accent-2);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      font-weight: 750;
+    }
+
+    .card h3 {
+      font-size: 20px;
+      line-height: 1.15;
+      letter-spacing: -0.035em;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.58;
+      margin: 0;
+    }
+
+    .boundary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .boundary-card {
+      padding: 26px;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.035));
+    }
+
+    .boundary-card h3 {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      margin-bottom: 10px;
+    }
+
+    .boundary-card p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .boundary-card ul,
+    .plain-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .boundary-card li,
+    .plain-list li {
+      color: var(--muted);
+      padding-left: 22px;
+      position: relative;
+      font-size: 14px;
+    }
+
+    .boundary-card li::before,
+    .plain-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.72em;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(216, 230, 243, 0.5);
+    }
+
+    .architecture {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.035);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .arch-flow {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .arch-step {
+      position: relative;
+      padding: 16px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid var(--line);
+      min-height: 150px;
+    }
+
+    .arch-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--subtle);
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    .arch-step span {
+      color: var(--subtle);
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-weight: 750;
+    }
+
+    .arch-step h3 {
+      font-size: 15px;
+      line-height: 1.25;
+      margin: 8px 0 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .arch-step p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .outputs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .output-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.045);
+      min-height: 190px;
+    }
+
+    .output-card h3 {
+      font-size: 20px;
+      letter-spacing: -0.035em;
+      margin-bottom: 8px;
+    }
+
+    .file-label {
+      display: inline-flex;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      color: var(--accent-2);
+      padding: 5px 8px;
+      background: rgba(159, 184, 207, 0.08);
+      border: 1px solid rgba(159, 184, 207, 0.16);
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .output-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .example {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .example-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 24px;
+    }
+
+    .example-panel h3 {
+      font-size: 25px;
+      letter-spacing: -0.045em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .example-panel p {
+      color: var(--muted);
+    }
+
+    .record-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      margin-top: 18px;
+      font-size: 13px;
+    }
+
+    .record-table th,
+    .record-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    .record-table th {
+      color: var(--subtle);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .record-table td {
+      color: var(--muted);
+    }
+
+    .decision-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .decision {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .decision span {
+      color: var(--accent-2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 750;
+    }
+
+    .decision h4 {
+      font-size: 17px;
+      margin: 7px 0 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .decision p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .value-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.028));
+      min-height: 220px;
+    }
+
+    .value-card h3 {
+      font-size: 24px;
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      margin-bottom: 12px;
+    }
+
+    .value-card p {
+      color: var(--muted);
+      font-size: 15px;
+      margin: 0;
+    }
+
+    .artifact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .artifact {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 16px;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .artifact:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.065);
+    }
+
+    .artifact strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .artifact span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .closing {
+      padding: 80px 0 92px;
+    }
+
+    .closing-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at top left, rgba(216, 230, 243, 0.12), transparent 28rem),
+        rgba(255, 255, 255, 0.045);
+      padding: clamp(28px, 5vw, 52px);
+      box-shadow: var(--shadow);
+    }
+
+    .closing-panel h2 {
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      margin-bottom: 18px;
+    }
+
+    .closing-panel p {
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    footer {
+      padding: 22px 0 40px;
+      border-top: 1px solid var(--line);
+      color: var(--subtle);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-grid,
+      .section-header,
+      .boundary,
+      .example {
+        grid-template-columns: 1fr;
+      }
+
+      .cards,
+      .outputs-grid,
+      .value-grid,
+      .artifact-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .arch-flow {
+        grid-template-columns: 1fr;
+      }
+
+      .arch-step:not(:last-child)::after {
+        content: "↓";
+        right: auto;
+        left: 24px;
+        top: auto;
+        bottom: -18px;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell,
+      .top-nav-inner,
+      .footer-inner {
+        width: min(100% - 24px, var(--max));
+      }
+
+      .hero {
+        padding-top: 54px;
+      }
+
+      .cards,
+      .outputs-grid,
+      .value-grid,
+      .artifact-grid,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .section {
+        padding: 44px 0;
+      }
+
+      .record-table {
+        font-size: 12px;
+      }
+
+      .record-table th,
+      .record-table td {
+        padding: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a class="brand" href="#intro" aria-label="Cash Reconciliation Automation home">
+        <span class="brand-mark">CR</span>
+        <span>Cash Reconciliation Automation</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#v2">v2 Upgrade</a>
+        <a href="#boundary">Boundary</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#outputs">Outputs</a>
+        <a href="#example">Example</a>
+        <a href="#artifacts" class="nav-cta">Artifacts</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="intro" class="hero">
+      <div class="page-shell">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Cash Operations Automation Case
+        </div>
+
+        <h1>Rules First,<br />AI Second.</h1>
+
+        <p class="hero-lede">
+          A Python-based reconciliation workflow for matching bank statement activity against internal ledger records,
+          classifying exceptions, and producing analyst-ready review outputs. The v2 iteration adds
+          <strong>scenario-driven data</strong>, <strong>staged matching</strong>, and an optional
+          <strong>local LLM support layer</strong> for exception handling.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button primary" href="docs/project-brief.pdf" target="_blank" rel="noopener">View Project Brief</a>
+          <a class="button secondary" href="#v2">Explore v2 Upgrade</a>
+          <a class="button secondary" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation" target="_blank" rel="noopener">GitHub Repository</a>
+        </div>
+
+        <div class="hero-grid">
+          <div class="hero-card pipeline-card">
+            <div class="pipeline-title">
+              <div>
+                <div class="kicker">Current implementation</div>
+                <h2>From reconciliation data to review-ready operating artifacts.</h2>
+              </div>
+              <span class="version-pill">v2</span>
+            </div>
+
+            <div class="flow">
+              <div class="flow-row">
+                <div class="flow-num">01</div>
+                <div>
+                  <h3>Generate scenario-driven data</h3>
+                  <p>Creates a controlled synthetic environment with known exception patterns and expected outcomes.</p>
+                </div>
+              </div>
+
+              <div class="flow-row">
+                <div class="flow-num">02</div>
+                <div>
+                  <h3>Validate data before reconciliation</h3>
+                  <p>Flags missing references, invalid amounts, missing dates, and other input issues before matching.</p>
+                </div>
+              </div>
+
+              <div class="flow-row">
+                <div class="flow-num">03</div>
+                <div>
+                  <h3>Apply deterministic staged matching</h3>
+                  <p>Separates exact matches, timing items, normalized-reference matches, split cases, and unresolved breaks.</p>
+                </div>
+              </div>
+
+              <div class="flow-row">
+                <div class="flow-num">04</div>
+                <div>
+                  <h3>Support analyst handling</h3>
+                  <p>Routes exceptions and possible matches into outputs that can be reviewed, explained, and escalated.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-card metric-card">
+            <div>
+              <div class="kicker">v2 evidence</div>
+              <div class="metric-grid">
+                <div class="metric">
+                  <strong>600+</strong>
+                  <span>seeded reconciliation scenarios</span>
+                </div>
+                <div class="metric">
+                  <strong>6</strong>
+                  <span>analyst and management output files</span>
+                </div>
+                <div class="metric">
+                  <strong>2</strong>
+                  <span>AI support modes: Ollama or template fallback</span>
+                </div>
+                <div class="metric">
+                  <strong>1</strong>
+                  <span>clear boundary: decisions remain deterministic</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="metric-note">
+              The project is not trying to make AI reconcile cash records. It uses deterministic logic for the control-sensitive work, then uses AI only to reduce friction after exceptions have already been identified.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="v2" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">v2 upgrade</div>
+          <div>
+            <h2 class="section-title">From prototype to workflow system.</h2>
+            <p class="section-copy">
+              v1 proved the core idea: use rules for matching and classification, then apply AI-style support after exception detection.
+              v2 turns that idea into a more serious workflow case by expanding the data, staging the reconciliation logic, adding data quality checks, and integrating optional local LLM support.
+            </p>
+          </div>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <span class="tag">Data</span>
+            <h3>Scenario-driven synthetic environment</h3>
+            <p>v2 moves beyond a small clean sample into 600+ seeded cases across accounts, currencies, timing differences, duplicates, missing records, split payments, reversals, and data quality issues.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Logic</span>
+            <h3>Staged reconciliation instead of one-pass matching</h3>
+            <p>The engine separates exact matches, timing tolerance matches, normalized reference matches, split or aggregation cases, amount mismatches, and possible matches.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Review</span>
+            <h3>Operating artifacts, not raw row noise</h3>
+            <p>Outputs are designed as analyst and management artifacts: exception queues, possible matches, data quality issues, enhanced support notes, and summary reporting.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">AI</span>
+            <h3>Local LLM support with a hard boundary</h3>
+            <p>Ollama-based support generates explanation, next step, draft note, and risk/control consideration only after deterministic exception classification has already happened.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="boundary" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Design boundary</div>
+          <div>
+            <h2 class="section-title">The engine decides. The LLM supports.</h2>
+            <p class="section-copy">
+              The important design question is not whether AI can help. It is where AI should stop.
+              In this project, the control-sensitive reconciliation decision remains transparent and deterministic.
+              AI is used downstream, where the work becomes interpretive and documentation-heavy.
+            </p>
+          </div>
+        </div>
+
+        <div class="boundary">
+          <article class="boundary-card">
+            <div class="kicker">Decision layer</div>
+            <h3>Deterministic reconciliation core</h3>
+            <p>Responsible for matching, break detection, exception classification, and possible-match routing.</p>
+            <ul>
+              <li>Compares bank statement and internal ledger records</li>
+              <li>Detects exact matches and timing differences</li>
+              <li>Classifies missing items, amount mismatches, and duplicates</li>
+              <li>Preserves transparency for control-sensitive logic</li>
+            </ul>
+          </article>
+
+          <article class="boundary-card">
+            <div class="kicker">Support layer</div>
+            <h3>LLM-assisted analyst handling</h3>
+            <p>Reads the already-classified exception queue and drafts support content for analyst review.</p>
+            <ul>
+              <li>Explains the likely issue in business language</li>
+              <li>Suggests a practical next step</li>
+              <li>Drafts analyst notes for follow-up</li>
+              <li>Adds risk/control considerations without overriding classification</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Workflow architecture</div>
+          <div>
+            <h2 class="section-title">A reconciliation pipeline with review points.</h2>
+            <p class="section-copy">
+              v2 is organized as a staged workflow, not a single matching rule. Clear cases are handled early.
+              uncertain cases are routed for analyst review, and unresolved breaks are classified into operationally meaningful exception states.
+            </p>
+          </div>
+        </div>
+
+        <div class="architecture">
+          <div class="arch-flow">
+            <div class="arch-step">
+              <span>01</span>
+              <h3>Synthetic Data Generation</h3>
+              <p>Creates bank, ledger, and manifest files with known expected outcomes.</p>
+            </div>
+
+            <div class="arch-step">
+              <span>02</span>
+              <h3>Data Quality Checks</h3>
+              <p>Flags invalid dates, missing references, missing currency, and malformed amounts.</p>
+            </div>
+
+            <div class="arch-step">
+              <span>03</span>
+              <h3>Staged Matching</h3>
+              <p>Runs exact, timing, normalized-reference, split, and mismatch logic in sequence.</p>
+            </div>
+
+            <div class="arch-step">
+              <span>04</span>
+              <h3>Possible Match Queue</h3>
+              <p>Routes lower-confidence candidate pairs into review instead of auto-clearing them.</p>
+            </div>
+
+            <div class="arch-step">
+              <span>05</span>
+              <h3>Exception Classification</h3>
+              <p>Translates residual breaks into categories with priority and recommended action.</p>
+            </div>
+
+            <div class="arch-step">
+              <span>06</span>
+              <h3>LLM / Template Support</h3>
+              <p>Generates analyst-support text only after deterministic classification.</p>
+            </div>
+
+            <div class="arch-step">
+              <span>07</span>
+              <h3>Review Outputs</h3>
+              <p>Produces CSV artifacts for analyst review and management visibility.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="outputs" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Output artifacts</div>
+          <div>
+            <h2 class="section-title">The system becomes credible when the outputs look usable.</h2>
+            <p class="section-copy">
+              v2 produces outputs that map to how reconciliation work would actually be reviewed:
+              clear matches, uncertain candidates, exceptions, data quality issues, analyst-support notes, and management summaries.
+            </p>
+          </div>
+        </div>
+
+        <div class="outputs-grid">
+          <article class="output-card">
+            <span class="file-label">matched_transactions.csv</span>
+            <h3>Matched Transactions</h3>
+            <p>Clears routine work first through exact, timing, normalized-reference, or split/aggregation logic.</p>
+          </article>
+
+          <article class="output-card">
+            <span class="file-label">possible_matches.csv</span>
+            <h3>Possible Matches</h3>
+            <p>Captures lower-confidence candidate pairs that should be reviewed rather than automatically cleared.</p>
+          </article>
+
+          <article class="output-card">
+            <span class="file-label">exceptions_queue.csv</span>
+            <h3>Exceptions Queue</h3>
+            <p>Classifies unresolved breaks by type, priority, transaction context, and recommended review action.</p>
+          </article>
+
+          <article class="output-card">
+            <span class="file-label">data_quality_issues.csv</span>
+            <h3>Data Quality Issues</h3>
+            <p>Separates input quality problems from reconciliation exceptions so source issues are visible early.</p>
+          </article>
+
+          <article class="output-card">
+            <span class="file-label">exceptions_queue_llm_enhanced.csv</span>
+            <h3>LLM-Enhanced Queue</h3>
+            <p>Adds explanation, next step, analyst note, and risk/control consideration after exception classification.</p>
+          </article>
+
+          <article class="output-card">
+            <span class="file-label">summary_report.csv</span>
+            <h3>Summary Report</h3>
+            <p>Makes workload distribution, exception counts, value exposure, and high-priority items easier to review.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="example" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Worked example</div>
+          <div>
+            <h2 class="section-title">Not every near-match should be auto-cleared.</h2>
+            <p class="section-copy">
+              A mature reconciliation workflow needs a middle state. Some records are too similar to ignore,
+              but not strong enough to clear automatically. v2 routes those cases into a possible match queue.
+            </p>
+          </div>
+        </div>
+
+        <div class="example">
+          <div class="example-panel">
+            <div class="kicker">Candidate pair</div>
+            <h3>Possible match requiring analyst review</h3>
+            <p>
+              The bank and ledger records share account, currency, direction, and a close date. The reference is similar
+              but not identical, and the amount is close enough to investigate but not safe to reconcile automatically.
+            </p>
+
+            <table class="record-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Bank</th>
+                  <th>Ledger</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Account</td>
+                  <td>ACC1002</td>
+                  <td>ACC1002</td>
+                </tr>
+                <tr>
+                  <td>Reference</td>
+                  <td>WIRE-REF2048</td>
+                  <td>REF2048-ALT</td>
+                </tr>
+                <tr>
+                  <td>Date</td>
+                  <td>2026-03-17</td>
+                  <td>2026-03-19</td>
+                </tr>
+                <tr>
+                  <td>Amount</td>
+                  <td>$10,000.00</td>
+                  <td>$9,950.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example-panel">
+            <div class="kicker">System response</div>
+            <div class="decision-stack">
+              <div class="decision">
+                <span>Step 1</span>
+                <h4>Do not auto-clear</h4>
+                <p>The pair is not treated as a deterministic match because the amount and reference do not fully align.</p>
+              </div>
+
+              <div class="decision">
+                <span>Step 2</span>
+                <h4>Route to possible match queue</h4>
+                <p>The system records a candidate rationale based on shared account/currency/direction, close date, and reference similarity.</p>
+              </div>
+
+              <div class="decision">
+                <span>Step 3</span>
+                <h4>Add analyst support</h4>
+                <p>The support layer drafts an explanation and recommends reviewing fees, partial posting, adjustment history, or source booking details.</p>
+              </div>
+
+              <div class="decision">
+                <span>Control point</span>
+                <h4>Human review remains required</h4>
+                <p>The workflow accelerates investigation but does not replace validation, escalation, or final sign-off.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="value" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Operational value</div>
+          <div>
+            <h2 class="section-title">The value is not just faster matching.</h2>
+            <p class="section-copy">
+              The bigger value is turning exception-heavy work into a more structured operating process:
+              fewer raw breaks, clearer review paths, better documentation, and stronger visibility into unresolved items.
+            </p>
+          </div>
+        </div>
+
+        <div class="value-grid">
+          <article class="value-card">
+            <h3>Reduce first-pass manual sorting</h3>
+            <p>Routine matches and obvious timing items are separated earlier, allowing analysts to focus on unresolved or higher-risk exceptions.</p>
+          </article>
+
+          <article class="value-card">
+            <h3>Make exceptions easier to manage</h3>
+            <p>Breaks are translated into categories, priorities, review actions, and outputs that can be investigated rather than manually interpreted from raw rows.</p>
+          </article>
+
+          <article class="value-card">
+            <h3>Use AI without weakening controls</h3>
+            <p>AI supports explanation and documentation only after the deterministic engine has already made the classification decision.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="artifacts" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Project artifacts</div>
+          <div>
+            <h2 class="section-title">Review the project from business case to implementation.</h2>
+            <p class="section-copy">
+              These artifacts are intended to make the project easy to review from multiple angles:
+              workflow rationale, implementation, output evidence, and the AI support boundary.
+            </p>
+          </div>
+        </div>
+
+        <div class="artifact-grid">
+          <a class="artifact" href="docs/project-brief.pdf" target="_blank" rel="noopener">
+            <strong>Project Brief</strong>
+            <span>Business-facing summary of the problem, design choice, and outputs.</span>
+          </a>
+
+          <a class="artifact" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation" target="_blank" rel="noopener">
+            <strong>GitHub Repository</strong>
+            <span>Source code, documentation, data, and output samples.</span>
+          </a>
+
+          <a class="artifact" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/tree/main/versions/v2" target="_blank" rel="noopener">
+            <strong>v2 Implementation</strong>
+            <span>Scenario-driven data, staged matching, and local LLM support.</span>
+          </a>
+
+          <a class="artifact" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/tree/main/versions/v2/output" target="_blank" rel="noopener">
+            <strong>v2 Outputs</strong>
+            <span>Matched transactions, possible matches, exceptions, LLM-enhanced queue, and summary.</span>
+          </a>
+
+          <a class="artifact" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/blob/main/docs/v2-llm-design-notes.md" target="_blank" rel="noopener">
+            <strong>LLM Design Notes</strong>
+            <span>How the local LLM layer is bounded and why template fallback is included.</span>
+          </a>
+
+          <a class="artifact" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/tree/main/versions/v1" target="_blank" rel="noopener">
+            <strong>v1 Stable Prototype</strong>
+            <span>Original rule-based reconciliation case with AI-style support output.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap" class="section">
+      <div class="page-shell">
+        <div class="section-header">
+          <div class="section-label">Next iteration</div>
+          <div>
+            <h2 class="section-title">The next step is workflow depth, not feature noise.</h2>
+            <p class="section-copy">
+              Future work would make the prototype more operational: configurable matching rules, exception aging,
+              analyst status tracking, audit trail design, richer fuzzy matching, dashboard-style review, and evaluation of LLM-generated support text.
+            </p>
+          </div>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <span class="tag">Controls</span>
+            <h3>Audit trail and exception lifecycle</h3>
+            <p>Track status, owner, aging, review action, and resolution history for each exception item.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Matching</span>
+            <h3>Configurable matching rules</h3>
+            <p>Move tolerances, reference normalization, and priority rules into configurable parameters.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Review</span>
+            <h3>Dashboard-style analyst view</h3>
+            <p>Turn CSV outputs into a lightweight review interface for triage and management visibility.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">AI governance</span>
+            <h3>Evaluate generated support text</h3>
+            <p>Compare template and LLM-generated notes for accuracy, usefulness, consistency, and unsupported claims.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="page-shell">
+        <div class="closing-panel">
+          <div class="kicker">Closing thought</div>
+          <h2>Reconciliation automation is strongest when it respects the workflow.</h2>
+          <p>
+            This case treats reconciliation as a control-sensitive operations process, not a generic row-matching exercise.
+            The project shows how disciplined automation can reduce manual friction, make exceptions easier to review,
+            and introduce AI support without making the control logic opaque.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button primary" href="docs/project-brief.pdf" target="_blank" rel="noopener">Read the Brief</a>
+            <a class="button secondary" href="https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/tree/main/versions/v2" target="_blank" rel="noopener">View v2 Code</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Cash Reconciliation Automation · Portfolio Project</span>
+      <span class="mono">Rules first · AI second · Human review</span>
+    </div>
+  </footer>
+</body>
+</html>
