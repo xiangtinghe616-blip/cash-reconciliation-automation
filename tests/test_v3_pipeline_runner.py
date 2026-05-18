@@ -19,6 +19,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "validation_issues.csv",
         "canonical_bank_transactions.csv",
         "canonical_internal_transactions.csv",
+        "reconciliation_links.csv",
         "pipeline_run_summary.csv",
     ]
 
@@ -29,6 +30,11 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["canonical_bank_count"] == 595
     assert result["canonical_ledger_count"] == 600
     assert result["validation_issue_count"] >= 1
+    assert result["exact_match_count"] >= 1
+
+    reconciliation_links = pd.read_csv(output_dir / "reconciliation_links.csv")
+    assert not reconciliation_links.empty
+    assert "EXACT_CANONICAL_MATCH" in set(reconciliation_links["match_type"])
 
     summary = pd.read_csv(output_dir / "pipeline_run_summary.csv")
 
@@ -36,4 +42,5 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "schema_validation",
         "bank_standardization",
         "ledger_standardization",
+        "deterministic_exact_matching",
     }
