@@ -1,0 +1,54 @@
+fields:
+  - name: bank_transaction_id
+    type: string
+    constraints:
+      required: true
+
+  - name: account_id
+    type: string
+    constraints:
+      required: true
+
+  - name: transaction_date
+    type: date
+    constraints:
+      required: true
+
+  - name: posting_date
+    type: date
+
+  - name: currency
+    type: string
+    constraints:
+      required: true
+      enum:
+        - CAD
+        - USD
+
+  - name: amount
+    type: number
+    constraints:
+      required: true
+
+  - name: direction
+    type: string
+    constraints:
+      required: true
+
+  - name: transaction_type
+    type: string
+
+  - name: reference_id
+    type: string
+
+  - name: raw_reference
+    type: string
+
+  - name: counterparty
+    type: string
+
+  - name: description
+    type: string
+
+  - name: source_file_id
+    type: string

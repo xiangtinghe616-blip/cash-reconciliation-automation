@@ -1,0 +1,63 @@
+fields:
+  - name: ledger_transaction_id
+    type: string
+    constraints:
+      required: true
+
+  - name: account_id
+    type: string
+    constraints:
+      required: true
+
+  - name: entity
+    type: string
+
+  - name: ledger_date
+    type: date
+    constraints:
+      required: true
+
+  - name: value_date
+    type: date
+
+  - name: currency
+    type: string
+    constraints:
+      required: true
+      enum:
+        - CAD
+        - USD
+
+  - name: amount
+    type: number
+    constraints:
+      required: true
+
+  - name: direction
+    type: string
+    constraints:
+      required: true
+
+  - name: transaction_type
+    type: string
+
+  - name: reference_id
+    type: string
+
+  - name: raw_reference
+    type: string
+
+  - name: counterparty
+    type: string
+
+  - name: description
+    type: string
+
+  - name: source_system
+    type: string
+
+  - name: batch_id
+    type: string
+
+  - name: created_by
+    type: string
