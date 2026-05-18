@@ -18,7 +18,7 @@ from versions.v3.src.core.standardize import (  # noqa: E402
     standardize_bank_transactions,
     standardize_internal_ledger,
 )
-from versions.v3.src.matching.deterministic_rules import find_exact_matches  # noqa: E402
+from versions.v3.src.matching.deterministic_rules import find_deterministic_matches  # noqa: E402
 from versions.v3.src.reconciliation.exception_builder import build_exception_queue  # noqa: E402
 
 
@@ -93,18 +93,32 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Canonical bank output: {canonical_bank_output_path}")
     print(f"Canonical ledger output: {canonical_ledger_output_path}")
 
-    print("Step 3/5: Running deterministic exact matching...")
+    print("Step 3/5: Running deterministic matching...")
 
-    reconciliation_links = find_exact_matches(
+    reconciliation_links = find_deterministic_matches(
         canonical_bank=canonical_bank,
         canonical_ledger=canonical_ledger,
         run_id=run_id,
     )
 
+    exact_match_count = (
+        int((reconciliation_links["match_type"] == "EXACT_CANONICAL_MATCH").sum())
+        if not reconciliation_links.empty
+        else 0
+    )
+
+    timing_match_count = (
+        int((reconciliation_links["match_type"] == "POTENTIAL_TIMING_DIFFERENCE").sum())
+        if not reconciliation_links.empty
+        else 0
+    )
+
     reconciliation_links_output_path = V3_OUTPUT_DIR / "reconciliation_links.csv"
     write_csv(reconciliation_links, reconciliation_links_output_path)
 
-    print(f"Exact reconciliation links: {len(reconciliation_links)}")
+    print(f"Exact reconciliation links: {exact_match_count}")
+    print(f"Timing-difference links: {timing_match_count}")
+    print(f"Total deterministic links: {len(reconciliation_links)}")
     print(f"Reconciliation links output: {reconciliation_links_output_path}")
 
     print("Step 4/5: Building exception queue...")
@@ -146,7 +160,7 @@ def run_v3_pipeline() -> dict[str, Any]:
             },
             {
                 "run_id": run_id,
-                "stage": "deterministic_exact_matching",
+                "stage": "deterministic_matching",
                 "output_file": "reconciliation_links.csv",
                 "record_count": len(reconciliation_links),
             },
@@ -170,7 +184,9 @@ def run_v3_pipeline() -> dict[str, Any]:
         "validation_issue_count": len(validation_issues_df),
         "canonical_bank_count": len(canonical_bank),
         "canonical_ledger_count": len(canonical_ledger),
-        "exact_match_count": len(reconciliation_links),
+        "exact_match_count": exact_match_count,
+        "timing_match_count": timing_match_count,
+        "deterministic_match_count": len(reconciliation_links),
         "exception_count": len(exception_queue),
         "summary_output_path": summary_output_path,
     }

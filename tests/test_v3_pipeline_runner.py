@@ -32,6 +32,8 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["canonical_ledger_count"] == 600
     assert result["validation_issue_count"] >= 1
     assert result["exact_match_count"] >= 1
+    assert result["timing_match_count"] >= 0
+    assert result["deterministic_match_count"] >= result["exact_match_count"]
     assert result["exception_count"] >= 1
 
     reconciliation_links = pd.read_csv(output_dir / "reconciliation_links.csv")
@@ -50,6 +52,6 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "schema_validation",
         "bank_standardization",
         "ledger_standardization",
-        "deterministic_exact_matching",
+        "deterministic_matching",
         "exception_queue_build",
     }
