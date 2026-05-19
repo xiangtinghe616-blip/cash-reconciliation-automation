@@ -16,6 +16,7 @@ The current workflow is:
 schema validation
 → canonical standardization
 → deterministic exact matching
+→ reference-format matching
 → timing difference matching
 → candidate link generation
 → amount mismatch detection
@@ -113,6 +114,7 @@ Current match types include:
 
 ```text
 EXACT_CANONICAL_MATCH
+REFERENCE_FORMAT_MATCH
 POTENTIAL_TIMING_DIFFERENCE
 ```
 
@@ -247,7 +249,8 @@ Runs deterministic matching stages in priority order.
 Current matching stages include:
 
 1. Exact canonical match
-2. Timing difference match
+2. Reference-format match
+3. Timing difference match
 
 Exact matching uses:
 
@@ -257,6 +260,16 @@ Exact matching uses:
 - Amount
 - Normalized reference
 - Canonical date
+
+Reference-format matching uses:
+
+- Account
+- Currency
+- Direction
+- Amount
+- Canonical date
+- Normalized reference
+- Differing raw reference formats
 
 Timing difference matching uses:
 
@@ -379,13 +392,12 @@ These are planned future upgrades.
 
 Possible next v3 enhancements include:
 
-1. Reference-format mismatch detection
-2. Split-payment detection
-3. Exception aging and status tracking
-4. Analyst review UI with Streamlit and Plotly
-5. Pipeline orchestration with Prefect
-6. Probabilistic matching with Splink
-7. Optional LLM-assisted exception explanation using a local assistant layer
+1. Split-payment detection
+2. Exception aging and status tracking
+3. Analyst review UI with Streamlit and Plotly
+4. Pipeline orchestration with Prefect
+5. Probabilistic matching with Splink
+6. Optional LLM-assisted exception explanation using a local assistant layer
 
 ## Positioning
 
