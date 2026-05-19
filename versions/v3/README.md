@@ -6,30 +6,9 @@ The goal is to evolve the v2 prototype into a more modular, testable, and review
 
 > deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
 
-## Current v3 Capabilities
-
-The current v3 pipeline can run the following workflow:
-
-```text
-schema validation
-→ canonical standardization
-→ deterministic exact matching
-→ timing difference matching
-→ amount mismatch detection
-→ unmatched exception queue
-→ pipeline summary
-cat > versions/v3/README.md <<'EOF'
-# Cash Reconciliation Automation v3
-
-v3 is the enterprise-readiness upgrade of the cash reconciliation automation project.
-
-The goal is to evolve the v2 prototype into a more modular, testable, and reviewable reconciliation workflow while keeping the same core design principle:
-
-> deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
-
 ## Current v3 Status
 
-v3 currently includes a local end-to-end pipeline that can validate source files, standardize raw transactions, run deterministic matching, identify common reconciliation breaks, and produce an analyst-facing exception queue.
+v3 currently includes a local end-to-end pipeline that can validate source files, standardize raw transactions, run deterministic matching, generate possible-match candidates, identify common reconciliation breaks, and produce an analyst-facing exception queue.
 
 The current workflow is:
 
@@ -38,6 +17,7 @@ schema validation
 → canonical standardization
 → deterministic exact matching
 → timing difference matching
+→ candidate link generation
 → amount mismatch detection
 → unmatched exception queue
 → pipeline summary
@@ -80,6 +60,7 @@ validation_issues.csv
 canonical_bank_transactions.csv
 canonical_internal_transactions.csv
 reconciliation_links.csv
+candidate_links.csv
 exception_queue.csv
 pipeline_run_summary.csv
 ```
@@ -117,7 +98,7 @@ This output adds fields such as:
 
 Standardized internal ledger transaction records.
 
-This output follows the same canonical structure as the bank-side file, while preserving ledger-specific fields such as:
+This output follows the same canonical structure as the bank-side file while preserving ledger-specific fields such as:
 
 - `ledger_transaction_id`
 - `source_system`
@@ -135,9 +116,36 @@ EXACT_CANONICAL_MATCH
 POTENTIAL_TIMING_DIFFERENCE
 ```
 
+These links represent high-confidence deterministic outcomes.
+
+### candidate_links.csv
+
+Contains possible match candidates for analyst review.
+
+Candidate links are not final reconciliation decisions. They are generated from rows that remain unmatched after deterministic matching and are scored using review signals such as:
+
+- Amount similarity
+- Date proximity
+- Normalized reference similarity
+- Counterparty similarity
+- Shared account, currency, and direction
+
+Current candidate fields include:
+
+- `candidate_id`
+- `candidate_status`
+- `confidence_score`
+- `bank_source_row_id`
+- `ledger_source_row_id`
+- `feature_amount_similarity`
+- `feature_date_gap_days`
+- `feature_ref_similarity`
+- `feature_counterparty_similarity`
+- `rationale`
+
 ### exception_queue.csv
 
-Contains records that require analyst review after deterministic matching.
+Contains records that require analyst review after deterministic matching and candidate generation.
 
 Current break types include:
 
@@ -168,6 +176,7 @@ schema_validation
 bank_standardization
 ledger_standardization
 deterministic_matching
+candidate_link_generation
 exception_queue_build
 ```
 
@@ -258,6 +267,18 @@ Timing difference matching uses:
 - Normalized reference
 - Date gap tolerance
 
+### Candidate Link Scoring
+
+```text
+versions/v3/src/matching/candidate_links.py
+```
+
+Builds possible-match candidate links for analyst review.
+
+Candidate links are generated from rows that remain unmatched after deterministic matching. They are scored using amount similarity, date proximity, reference similarity, and counterparty similarity.
+
+The candidate layer is intentionally review-oriented. It does not automatically mark rows as matched.
+
 ### Exception Queue Builder
 
 ```text
@@ -288,8 +309,9 @@ Current pipeline stages:
 1. Schema validation
 2. Source transaction standardization
 3. Deterministic matching
-4. Exception queue building
-5. Pipeline summary generation
+4. Candidate link generation
+5. Exception queue building
+6. Pipeline summary generation
 ```
 
 ## Current Test Coverage
@@ -301,6 +323,7 @@ The project includes tests for:
 - v3 canonicalization utilities
 - v3 standardization layer
 - v3 deterministic matching rules
+- v3 candidate link scoring
 - v3 exception queue builder
 - v3 pipeline runner
 
@@ -318,6 +341,7 @@ v3 follows these design principles:
 - Validate source files before reconciliation.
 - Standardize raw transaction data into canonical, traceable records.
 - Prioritize deterministic, explainable rules before fuzzy matching or AI support.
+- Use candidate links as analyst review suggestions, not final reconciliation decisions.
 - Treat AI-generated explanations as analyst support, not final decision logic.
 - Keep public presentation assets separate from code, data, and generated artifacts.
 - Preserve existing v2 behavior through regression tests while v3 evolves.
@@ -355,14 +379,13 @@ These are planned future upgrades.
 
 Possible next v3 enhancements include:
 
-1. Candidate link generation for possible matches
-2. Reference-format mismatch detection
-3. Split-payment detection
-4. Exception aging and status tracking
-5. Analyst review UI with Streamlit and Plotly
-6. Pipeline orchestration with Prefect
-7. Probabilistic matching with Splink
-8. Optional LLM-assisted exception explanation using a local assistant layer
+1. Reference-format mismatch detection
+2. Split-payment detection
+3. Exception aging and status tracking
+4. Analyst review UI with Streamlit and Plotly
+5. Pipeline orchestration with Prefect
+6. Probabilistic matching with Splink
+7. Optional LLM-assisted exception explanation using a local assistant layer
 
 ## Positioning
 
