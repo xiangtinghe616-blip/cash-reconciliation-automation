@@ -8,7 +8,7 @@ The goal is to evolve the v2 prototype into a more modular, testable, and review
 
 ## Current v3 Status
 
-v3 currently includes a local end-to-end pipeline that can validate source files, standardize raw transactions, run deterministic matching, generate possible-match candidates, identify common reconciliation breaks, and produce an analyst-facing exception queue.
+v3 currently includes a local end-to-end pipeline that can validate source files, standardize raw transactions, run deterministic matching, generate possible-match candidates, identify split-payment candidates, identify common reconciliation breaks, and produce an analyst-facing exception queue.
 
 The current workflow is:
 
@@ -19,6 +19,7 @@ schema validation
 → reference-format matching
 → timing difference matching
 → candidate link generation
+→ split-payment candidate generation
 → amount mismatch detection
 → unmatched exception queue
 → pipeline summary
@@ -62,6 +63,7 @@ canonical_bank_transactions.csv
 canonical_internal_transactions.csv
 reconciliation_links.csv
 candidate_links.csv
+split_payment_candidates.csv
 exception_queue.csv
 pipeline_run_summary.csv
 ```
@@ -76,11 +78,11 @@ Captures schema and data-quality issues found before reconciliation.
 
 Examples include:
 
-- Missing required transaction dates
-- Missing required currencies
-- Invalid date values
-- Invalid numeric amount values
-- Values outside allowed schema definitions
+* Missing required transaction dates
+* Missing required currencies
+* Invalid date values
+* Invalid numeric amount values
+* Values outside allowed schema definitions
 
 ### canonical_bank_transactions.csv
 
@@ -88,12 +90,12 @@ Standardized bank-side transaction records.
 
 This output adds fields such as:
 
-- `run_id`
-- `source_row_id`
-- `canonical_date`
-- `amount_numeric`
-- `normalized_reference`
-- `row_hash`
+* `run_id`
+* `source_row_id`
+* `canonical_date`
+* `amount_numeric`
+* `normalized_reference`
+* `row_hash`
 
 ### canonical_internal_transactions.csv
 
@@ -101,10 +103,10 @@ Standardized internal ledger transaction records.
 
 This output follows the same canonical structure as the bank-side file while preserving ledger-specific fields such as:
 
-- `ledger_transaction_id`
-- `source_system`
-- `batch_id`
-- `created_by`
+* `ledger_transaction_id`
+* `source_system`
+* `batch_id`
+* `created_by`
 
 ### reconciliation_links.csv
 
@@ -126,24 +128,46 @@ Contains possible match candidates for analyst review.
 
 Candidate links are not final reconciliation decisions. They are generated from rows that remain unmatched after deterministic matching and are scored using review signals such as:
 
-- Amount similarity
-- Date proximity
-- Normalized reference similarity
-- Counterparty similarity
-- Shared account, currency, and direction
+* Amount similarity
+* Date proximity
+* Normalized reference similarity
+* Counterparty similarity
+* Shared account, currency, and direction
 
 Current candidate fields include:
 
-- `candidate_id`
-- `candidate_status`
-- `confidence_score`
-- `bank_source_row_id`
-- `ledger_source_row_id`
-- `feature_amount_similarity`
-- `feature_date_gap_days`
-- `feature_ref_similarity`
-- `feature_counterparty_similarity`
-- `rationale`
+* `candidate_id`
+* `candidate_status`
+* `confidence_score`
+* `bank_source_row_id`
+* `ledger_source_row_id`
+* `feature_amount_similarity`
+* `feature_date_gap_days`
+* `feature_ref_similarity`
+* `feature_counterparty_similarity`
+* `rationale`
+
+### split_payment_candidates.csv
+
+Contains possible one-to-many split-payment candidates for analyst review.
+
+A split-payment candidate means one bank transaction may correspond to two internal ledger transactions.
+
+Current split-payment candidate fields include:
+
+* `candidate_id`
+* `candidate_type`
+* `candidate_status`
+* `bank_source_row_id`
+* `ledger_source_row_ids`
+* `amount_bank`
+* `amount_internal_sum`
+* `amount_difference`
+* `feature_ledger_row_count`
+* `feature_max_date_gap_days`
+* `rationale`
+
+Split-payment candidates are review suggestions. They are not final reconciliation decisions.
 
 ### exception_queue.csv
 
@@ -159,13 +183,13 @@ UNMATCHED_LEDGER_TRANSACTION
 
 Each exception includes review-oriented fields such as:
 
-- `exception_id`
-- `break_type`
-- `priority`
-- `stage_detected`
-- `recommended_review_action`
-- `analyst_status`
-- `rationale`
+* `exception_id`
+* `break_type`
+* `priority`
+* `stage_detected`
+* `recommended_review_action`
+* `analyst_status`
+* `rationale`
 
 ### pipeline_run_summary.csv
 
@@ -179,6 +203,7 @@ bank_standardization
 ledger_standardization
 deterministic_matching
 candidate_link_generation
+split_payment_candidate_generation
 exception_queue_build
 ```
 
@@ -215,10 +240,10 @@ Provides reusable utilities for preparing raw fields for reconciliation.
 
 Current utilities include:
 
-- Reference normalization
-- Amount parsing
-- Date parsing
-- Deterministic row hash generation
+* Reference normalization
+* Amount parsing
+* Date parsing
+* Deterministic row hash generation
 
 Example transformations:
 
@@ -254,31 +279,31 @@ Current matching stages include:
 
 Exact matching uses:
 
-- Account
-- Currency
-- Direction
-- Amount
-- Normalized reference
-- Canonical date
+* Account
+* Currency
+* Direction
+* Amount
+* Normalized reference
+* Canonical date
 
 Reference-format matching uses:
 
-- Account
-- Currency
-- Direction
-- Amount
-- Canonical date
-- Normalized reference
-- Differing raw reference formats
+* Account
+* Currency
+* Direction
+* Amount
+* Canonical date
+* Normalized reference
+* Differing raw reference formats
 
 Timing difference matching uses:
 
-- Account
-- Currency
-- Direction
-- Amount
-- Normalized reference
-- Date gap tolerance
+* Account
+* Currency
+* Direction
+* Amount
+* Normalized reference
+* Date gap tolerance
 
 ### Candidate Link Scoring
 
@@ -291,6 +316,25 @@ Builds possible-match candidate links for analyst review.
 Candidate links are generated from rows that remain unmatched after deterministic matching. They are scored using amount similarity, date proximity, reference similarity, and counterparty similarity.
 
 The candidate layer is intentionally review-oriented. It does not automatically mark rows as matched.
+
+### Split-Payment Candidate Detection
+
+```text
+versions/v3/src/matching/split_payment_candidates.py
+```
+
+Identifies possible one-to-many reconciliation cases where one bank transaction may correspond to two ledger transactions.
+
+The current split-payment candidate logic checks:
+
+* Same account
+* Same currency
+* Same direction
+* Same normalized reference
+* Ledger amounts sum to the bank amount within tolerance
+* Ledger dates are within the review window
+
+This layer is intentionally review-oriented and outputs candidates rather than final reconciliation links.
 
 ### Exception Queue Builder
 
@@ -323,22 +367,25 @@ Current pipeline stages:
 2. Source transaction standardization
 3. Deterministic matching
 4. Candidate link generation
-5. Exception queue building
-6. Pipeline summary generation
+5. Split-payment candidate generation
+6. Exception queue building
+7. Pipeline summary generation
 ```
 
 ## Current Test Coverage
 
 The project includes tests for:
 
-- v2 regression baseline
-- v3 schema validator
-- v3 canonicalization utilities
-- v3 standardization layer
-- v3 deterministic matching rules
-- v3 candidate link scoring
-- v3 exception queue builder
-- v3 pipeline runner
+* v2 regression baseline
+* v3 schema validator
+* v3 canonicalization utilities
+* v3 standardization layer
+* v3 deterministic matching rules
+* v3 reference-format matching
+* v3 candidate link scoring
+* v3 split-payment candidate detection
+* v3 exception queue builder
+* v3 pipeline runner
 
 Run all tests with:
 
@@ -350,14 +397,15 @@ pytest -q
 
 v3 follows these design principles:
 
-- Use synthetic or anonymized demonstration data only.
-- Validate source files before reconciliation.
-- Standardize raw transaction data into canonical, traceable records.
-- Prioritize deterministic, explainable rules before fuzzy matching or AI support.
-- Use candidate links as analyst review suggestions, not final reconciliation decisions.
-- Treat AI-generated explanations as analyst support, not final decision logic.
-- Keep public presentation assets separate from code, data, and generated artifacts.
-- Preserve existing v2 behavior through regression tests while v3 evolves.
+* Use synthetic or anonymized demonstration data only.
+* Validate source files before reconciliation.
+* Standardize raw transaction data into canonical, traceable records.
+* Prioritize deterministic, explainable rules before fuzzy matching or AI support.
+* Use candidate links as analyst review suggestions, not final reconciliation decisions.
+* Use split-payment candidates as analyst review suggestions, not final reconciliation decisions.
+* Treat AI-generated explanations as analyst support, not final decision logic.
+* Keep public presentation assets separate from code, data, and generated artifacts.
+* Preserve existing v2 behavior through regression tests while v3 evolves.
 
 ## Data Safety
 
@@ -377,14 +425,14 @@ DATA_POLICY.md
 
 v3 is still a local prototype and does not yet include:
 
-- Real bank or ERP source adapters
-- Database persistence
-- A Streamlit analyst review interface
-- Splink-based probabilistic matching
-- Full exception lifecycle tracking
-- Prefect orchestration
-- Great Expectations integration
-- Production deployment configuration
+* Real bank or ERP source adapters
+* Database persistence
+* A Streamlit analyst review interface
+* Splink-based probabilistic matching
+* Full exception lifecycle tracking
+* Prefect orchestration
+* Great Expectations integration
+* Production deployment configuration
 
 These are planned future upgrades.
 
@@ -392,12 +440,11 @@ These are planned future upgrades.
 
 Possible next v3 enhancements include:
 
-1. Split-payment detection
-2. Exception aging and status tracking
-3. Analyst review UI with Streamlit and Plotly
-4. Pipeline orchestration with Prefect
-5. Probabilistic matching with Splink
-6. Optional LLM-assisted exception explanation using a local assistant layer
+1. Exception aging and status tracking
+2. Analyst review UI with Streamlit and Plotly
+3. Pipeline orchestration with Prefect
+4. Probabilistic matching with Splink
+5. Optional LLM-assisted exception explanation using a local assistant layer
 
 ## Positioning
 
