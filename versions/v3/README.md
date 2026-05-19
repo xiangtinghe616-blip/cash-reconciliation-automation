@@ -1,52 +1,371 @@
 # Cash Reconciliation Automation v3
 
-v3 is the planned enterprise-readiness upgrade of the cash reconciliation automation project.
+v3 is the enterprise-readiness upgrade of the cash reconciliation automation project.
 
-The goal is to evolve the current v2 prototype into a more modular, testable, and reviewable reconciliation workflow while keeping the same core design principle:
+The goal is to evolve the v2 prototype into a more modular, testable, and reviewable reconciliation workflow while keeping the same core design principle:
 
 > deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
 
-## Planned v3 Direction
+## Current v3 Capabilities
 
-v3 will focus on four upgrade areas:
-
-1. **Data contracts and validation**
-   - Add schema checks for bank statement and internal ledger files.
-   - Validate required columns, data types, allowed values, and missing fields before reconciliation.
-
-2. **Modular reconciliation engine**
-   - Refactor standardization, canonicalization, matching, exception classification, and publishing logic into separate modules.
-   - Preserve v2 output behavior through regression tests.
-
-3. **Candidate matching and review workflow**
-   - Keep exact and high-confidence deterministic matching first.
-   - Add a more structured candidate review layer for possible matches and exceptions.
-
-4. **Analyst-facing review interface**
-   - Build toward a dashboard or workbench that allows users to inspect matched transactions, possible matches, exceptions, and data-quality issues.
-
-## Proposed Structure
+The current v3 pipeline can run the following workflow:
 
 ```text
-versions/v3/
-  schemas/
-  contracts/
-    gx/
-  src/
-    adapters/
-    core/
-    generation/
-    matching/
-    reconciliation/
-    assistant/
-    orchestration/
-    ui/
-  tests/
-  ```
+schema validation
+→ canonical standardization
+→ deterministic exact matching
+→ timing difference matching
+→ amount mismatch detection
+→ unmatched exception queue
+→ pipeline summary
+cat > versions/v3/README.md <<'EOF'
+# Cash Reconciliation Automation v3
+
+v3 is the enterprise-readiness upgrade of the cash reconciliation automation project.
+
+The goal is to evolve the v2 prototype into a more modular, testable, and reviewable reconciliation workflow while keeping the same core design principle:
+
+> deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
+
+## Current v3 Status
+
+v3 currently includes a local end-to-end pipeline that can validate source files, standardize raw transactions, run deterministic matching, identify common reconciliation breaks, and produce an analyst-facing exception queue.
+
+The current workflow is:
+
+```text
+schema validation
+→ canonical standardization
+→ deterministic exact matching
+→ timing difference matching
+→ amount mismatch detection
+→ unmatched exception queue
+→ pipeline summary
+```
+
+This version is still a prototype, but it is structured as the foundation for a more enterprise-style reconciliation workflow.
+
+## How to Run v3 Locally
+
+From the repository root, install v3 requirements:
+
+```bash
+pip install -r requirements-v3.txt
+```
+
+Run the v3 pipeline:
+
+```bash
+python versions/v3/src/reconciliation/run_v3_pipeline.py
+```
+
+Run the test suite:
+
+```bash
+pytest -q
+```
+
+## Current v3 Outputs
+
+The v3 pipeline writes generated local outputs to:
+
+```text
+versions/v3/output/
+```
+
+Generated output files include:
+
+```text
+validation_issues.csv
+canonical_bank_transactions.csv
+canonical_internal_transactions.csv
+reconciliation_links.csv
+exception_queue.csv
+pipeline_run_summary.csv
+```
+
+These files are treated as generated local artifacts and are not committed by default.
+
+## Output File Descriptions
+
+### validation_issues.csv
+
+Captures schema and data-quality issues found before reconciliation.
+
+Examples include:
+
+- Missing required transaction dates
+- Missing required currencies
+- Invalid date values
+- Invalid numeric amount values
+- Values outside allowed schema definitions
+
+### canonical_bank_transactions.csv
+
+Standardized bank-side transaction records.
+
+This output adds fields such as:
+
+- `run_id`
+- `source_row_id`
+- `canonical_date`
+- `amount_numeric`
+- `normalized_reference`
+- `row_hash`
+
+### canonical_internal_transactions.csv
+
+Standardized internal ledger transaction records.
+
+This output follows the same canonical structure as the bank-side file, while preserving ledger-specific fields such as:
+
+- `ledger_transaction_id`
+- `source_system`
+- `batch_id`
+- `created_by`
+
+### reconciliation_links.csv
+
+Contains deterministic reconciliation links found by the v3 matching engine.
+
+Current match types include:
+
+```text
+EXACT_CANONICAL_MATCH
+POTENTIAL_TIMING_DIFFERENCE
+```
+
+### exception_queue.csv
+
+Contains records that require analyst review after deterministic matching.
+
+Current break types include:
+
+```text
+AMOUNT_MISMATCH
+UNMATCHED_BANK_TRANSACTION
+UNMATCHED_LEDGER_TRANSACTION
+```
+
+Each exception includes review-oriented fields such as:
+
+- `exception_id`
+- `break_type`
+- `priority`
+- `stage_detected`
+- `recommended_review_action`
+- `analyst_status`
+- `rationale`
+
+### pipeline_run_summary.csv
+
+Summarizes each pipeline stage and its record count.
+
+Current stages include:
+
+```text
+schema_validation
+bank_standardization
+ledger_standardization
+deterministic_matching
+exception_queue_build
+```
+
+## Core v3 Modules
+
+### Schema Validation
+
+```text
+versions/v3/src/core/schema_validator.py
+```
+
+Validates source CSV files against v3 schema contracts and outputs validation issues.
+
+Schema files are stored in:
+
+```text
+versions/v3/schemas/
+```
+
+Current schema contracts include:
+
+```text
+bank_statement.schema.yaml
+internal_cash_ledger.schema.yaml
+```
+
+### Canonicalization Utilities
+
+```text
+versions/v3/src/core/canonicalize.py
+```
+
+Provides reusable utilities for preparing raw fields for reconciliation.
+
+Current utilities include:
+
+- Reference normalization
+- Amount parsing
+- Date parsing
+- Deterministic row hash generation
+
+Example transformations:
+
+```text
+" ref-000123 "  →  "REF000123"
+"1,250.50"      →  1250.50
+"03/12/2026"    →  "2026-03-12"
+```
+
+### Standardization Layer
+
+```text
+versions/v3/src/core/standardize.py
+```
+
+Transforms raw bank and ledger files into canonical transaction tables.
+
+This creates a more stable matching layer by standardizing dates, amounts, references, source row IDs, and row hashes before reconciliation logic is applied.
+
+### Deterministic Matching Rules
+
+```text
+versions/v3/src/matching/deterministic_rules.py
+```
+
+Runs deterministic matching stages in priority order.
+
+Current matching stages include:
+
+1. Exact canonical match
+2. Timing difference match
+
+Exact matching uses:
+
+- Account
+- Currency
+- Direction
+- Amount
+- Normalized reference
+- Canonical date
+
+Timing difference matching uses:
+
+- Account
+- Currency
+- Direction
+- Amount
+- Normalized reference
+- Date gap tolerance
+
+### Exception Queue Builder
+
+```text
+versions/v3/src/reconciliation/exception_builder.py
+```
+
+Builds the analyst review queue after deterministic matching.
+
+Current exception logic includes:
+
+1. Amount mismatch detection
+2. Residual unmatched bank transaction detection
+3. Residual unmatched ledger transaction detection
+
+Amount mismatch detection identifies cases where bank and ledger records share the same account, currency, direction, normalized reference, and near-date alignment, but the amounts differ.
+
+### Pipeline Runner
+
+```text
+versions/v3/src/reconciliation/run_v3_pipeline.py
+```
+
+Runs the local v3 workflow end to end.
+
+Current pipeline stages:
+
+```text
+1. Schema validation
+2. Source transaction standardization
+3. Deterministic matching
+4. Exception queue building
+5. Pipeline summary generation
+```
+
+## Current Test Coverage
+
+The project includes tests for:
+
+- v2 regression baseline
+- v3 schema validator
+- v3 canonicalization utilities
+- v3 standardization layer
+- v3 deterministic matching rules
+- v3 exception queue builder
+- v3 pipeline runner
+
+Run all tests with:
+
+```bash
+pytest -q
+```
+
 ## Design Principles
 
+v3 follows these design principles:
+
 - Use synthetic or anonymized demonstration data only.
-- Keep reconciliation decisions auditable and explainable.
-- Treat AI-generated explanations as support, not final decision logic.
-- Separate public presentation assets from code, data, and generated artifacts.
-- Preserve existing v2 behavior before adding new functionality.
+- Validate source files before reconciliation.
+- Standardize raw transaction data into canonical, traceable records.
+- Prioritize deterministic, explainable rules before fuzzy matching or AI support.
+- Treat AI-generated explanations as analyst support, not final decision logic.
+- Keep public presentation assets separate from code, data, and generated artifacts.
+- Preserve existing v2 behavior through regression tests while v3 evolves.
+
+## Data Safety
+
+This repository is public and should use synthetic, sample, or anonymized demonstration data only.
+
+Do not commit real bank statements, internal ledger extracts, client records, account numbers, vendor payment files, ERP exports, credentials, tokens, or confidential financial information.
+
+Generated outputs under `versions/v3/output/` are local artifacts and should not be committed by default.
+
+For more details, see:
+
+```text
+DATA_POLICY.md
+```
+
+## Current Limitations
+
+v3 is still a local prototype and does not yet include:
+
+- Real bank or ERP source adapters
+- Database persistence
+- A Streamlit analyst review interface
+- Splink-based probabilistic matching
+- Full exception lifecycle tracking
+- Prefect orchestration
+- Great Expectations integration
+- Production deployment configuration
+
+These are planned future upgrades.
+
+## Planned Next Upgrades
+
+Possible next v3 enhancements include:
+
+1. Candidate link generation for possible matches
+2. Reference-format mismatch detection
+3. Split-payment detection
+4. Exception aging and status tracking
+5. Analyst review UI with Streamlit and Plotly
+6. Pipeline orchestration with Prefect
+7. Probabilistic matching with Splink
+8. Optional LLM-assisted exception explanation using a local assistant layer
+
+## Positioning
+
+v3 is intended to demonstrate the evolution from a portfolio-grade reconciliation prototype into a more structured, control-aware reconciliation workflow.
+
+The project is not designed to replace human review. It is designed to reduce manual matching work, surface explainable exceptions, and give analysts a clearer review queue.
