@@ -18,6 +18,7 @@ from versions.v3.src.core.standardize import (  # noqa: E402
     standardize_bank_transactions,
     standardize_internal_ledger,
 )
+from versions.v3.src.matching.candidate_links import build_candidate_links  # noqa: E402
 from versions.v3.src.matching.deterministic_rules import find_deterministic_matches  # noqa: E402
 from versions.v3.src.reconciliation.exception_builder import build_exception_queue  # noqa: E402
 
@@ -49,7 +50,7 @@ def run_v3_pipeline() -> dict[str, Any]:
     ledger_schema_path = V3_SCHEMA_DIR / "internal_cash_ledger.schema.yaml"
 
     print(f"Starting v3 pipeline run: {run_id}")
-    print("Step 1/5: Running schema validation...")
+    print("Step 1/6: Running schema validation...")
 
     validation_issues = []
     validation_issues.extend(
@@ -74,7 +75,7 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Validation issues found: {len(validation_issues_df)}")
     print(f"Validation output: {validation_output_path}")
 
-    print("Step 2/5: Standardizing source transactions...")
+    print("Step 2/6: Standardizing source transactions...")
 
     bank_df = pd.read_csv(bank_input_path)
     ledger_df = pd.read_csv(ledger_input_path)
@@ -93,7 +94,7 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Canonical bank output: {canonical_bank_output_path}")
     print(f"Canonical ledger output: {canonical_ledger_output_path}")
 
-    print("Step 3/5: Running deterministic matching...")
+    print("Step 3/6: Running deterministic matching...")
 
     reconciliation_links = find_deterministic_matches(
         canonical_bank=canonical_bank,
@@ -121,7 +122,22 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Total deterministic links: {len(reconciliation_links)}")
     print(f"Reconciliation links output: {reconciliation_links_output_path}")
 
-    print("Step 4/5: Building exception queue...")
+    print("Step 4/6: Building candidate links for analyst review...")
+
+    candidate_links = build_candidate_links(
+        canonical_bank=canonical_bank,
+        canonical_ledger=canonical_ledger,
+        reconciliation_links=reconciliation_links,
+        run_id=run_id,
+    )
+
+    candidate_links_output_path = V3_OUTPUT_DIR / "candidate_links.csv"
+    write_csv(candidate_links, candidate_links_output_path)
+
+    print(f"Candidate links for review: {len(candidate_links)}")
+    print(f"Candidate links output: {candidate_links_output_path}")
+
+    print("Step 5/6: Building exception queue...")
 
     exception_queue = build_exception_queue(
         canonical_bank=canonical_bank,
@@ -143,7 +159,7 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Exception queue rows: {len(exception_queue)}")
     print(f"Exception queue output: {exception_queue_output_path}")
 
-    print("Step 5/5: Writing pipeline summary...")
+    print("Step 6/6: Writing pipeline summary...")
 
     summary = pd.DataFrame(
         [
@@ -173,6 +189,12 @@ def run_v3_pipeline() -> dict[str, Any]:
             },
             {
                 "run_id": run_id,
+                "stage": "candidate_link_generation",
+                "output_file": "candidate_links.csv",
+                "record_count": len(candidate_links),
+            },
+            {
+                "run_id": run_id,
                 "stage": "exception_queue_build",
                 "output_file": "exception_queue.csv",
                 "record_count": len(exception_queue),
@@ -194,6 +216,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         "exact_match_count": exact_match_count,
         "timing_match_count": timing_match_count,
         "deterministic_match_count": len(reconciliation_links),
+        "candidate_link_count": len(candidate_links),
         "amount_mismatch_count": amount_mismatch_count,
         "exception_count": len(exception_queue),
         "summary_output_path": summary_output_path,
