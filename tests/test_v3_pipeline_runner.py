@@ -21,6 +21,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "canonical_internal_transactions.csv",
         "reconciliation_links.csv",
         "candidate_links.csv",
+        "split_payment_candidates.csv",
         "exception_queue.csv",
         "pipeline_run_summary.csv",
     ]
@@ -33,9 +34,11 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["canonical_ledger_count"] == 600
     assert result["validation_issue_count"] >= 1
     assert result["exact_match_count"] >= 1
+    assert result["reference_format_match_count"] >= 0
     assert result["timing_match_count"] >= 0
     assert result["deterministic_match_count"] >= result["exact_match_count"]
     assert result["candidate_link_count"] >= 0
+    assert result["split_payment_candidate_count"] >= 0
     assert result["amount_mismatch_count"] >= 0
     assert result["exception_count"] >= 1
 
@@ -53,6 +56,18 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "rationale",
     }.issubset(set(candidate_links.columns))
 
+    split_payment_candidates = pd.read_csv(output_dir / "split_payment_candidates.csv")
+    assert {
+        "candidate_id",
+        "candidate_type",
+        "candidate_status",
+        "bank_source_row_id",
+        "ledger_source_row_ids",
+        "amount_bank",
+        "amount_internal_sum",
+        "rationale",
+    }.issubset(set(split_payment_candidates.columns))
+
     exception_queue = pd.read_csv(output_dir / "exception_queue.csv")
     assert not exception_queue.empty
     assert {"UNMATCHED_BANK_TRANSACTION", "UNMATCHED_LEDGER_TRANSACTION"} & set(
@@ -67,5 +82,6 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "ledger_standardization",
         "deterministic_matching",
         "candidate_link_generation",
+        "split_payment_candidate_generation",
         "exception_queue_build",
     }
