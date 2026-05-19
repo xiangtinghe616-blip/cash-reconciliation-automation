@@ -46,9 +46,20 @@ RECONCILIATION_LINK_COLUMNS = [
 ]
 
 
+def _is_missing(value: Any) -> bool:
+    if value is None:
+        return True
+
+    try:
+        return bool(pd.isna(value))
+    except (TypeError, ValueError):
+        return False
+
+
 def _clean_value(value: Any) -> Any:
-    if pd.isna(value):
+    if _is_missing(value):
         return None
+
     return value
 
 
@@ -59,7 +70,51 @@ def _empty_links() -> pd.DataFrame:
 def _matched_ids(reconciliation_links: pd.DataFrame, column_name: str) -> set[int]:
     if reconciliation_links.empty or column_name not in reconciliation_links.columns:
         return set()
+
     return {int(value) for value in reconciliation_links[column_name].dropna()}
+
+
+def _raw_references_differ(row: pd.Series) -> bool:
+    bank_raw = row.get("raw_reference_bank")
+    ledger_raw = row.get("raw_reference_ledger")
+
+    if _is_missing(bank_raw) or _is_missing(ledger_raw):
+        return False
+
+    return str(bank_raw).strip() != str(ledger_raw).strip()
+
+
+def _build_link_record(
+    row: pd.Series,
+    run_id: str,
+    link_number: int,
+    match_type: str,
+    stage_detected: str,
+    confidence_score: float,
+    rationale: str,
+) -> dict[str, Any]:
+    return {
+        "run_id": run_id,
+        "link_id": f"LINK-{link_number:06d}",
+        "match_type": match_type,
+        "stage_detected": stage_detected,
+        "confidence_score": confidence_score,
+        "bank_source_row_id": int(row["source_row_id_bank"]),
+        "ledger_source_row_id": int(row["source_row_id_ledger"]),
+        "bank_transaction_id": _clean_value(row.get("bank_transaction_id")),
+        "ledger_transaction_id": _clean_value(row.get("ledger_transaction_id")),
+        "account_id": row["account_id"],
+        "currency": row["currency"],
+        "direction": row["direction"],
+        "amount_bank": row["amount_numeric"],
+        "amount_internal": row["amount_numeric"],
+        "transaction_date_bank": row["canonical_date"],
+        "transaction_date_internal": row["canonical_date"],
+        "normalized_reference": row["normalized_reference"],
+        "counterparty_bank": _clean_value(row.get("counterparty_bank")),
+        "counterparty_internal": _clean_value(row.get("counterparty_ledger")),
+        "rationale": rationale,
+    }
 
 
 def find_exact_matches(
@@ -68,6 +123,7 @@ def find_exact_matches(
     run_id: str,
     link_start_index: int = 1,
 ) -> pd.DataFrame:
+    """Find exact matches where canonical fields align and raw references do not conflict."""
     bank_candidates = canonical_bank.dropna(subset=EXACT_MATCH_KEY_COLUMNS).copy()
     ledger_candidates = canonical_ledger.dropna(subset=EXACT_MATCH_KEY_COLUMNS).copy()
 
@@ -94,6 +150,9 @@ def find_exact_matches(
     links: list[dict[str, Any]] = []
 
     for _, row in merged.iterrows():
+        if _raw_references_differ(row):
+            continue
+
         bank_source_row_id = int(row["source_row_id_bank"])
         ledger_source_row_id = int(row["source_row_id_ledger"])
 
@@ -108,28 +167,99 @@ def find_exact_matches(
         link_number = link_start_index + len(links)
 
         links.append(
-            {
-                "run_id": run_id,
-                "link_id": f"LINK-{link_number:06d}",
-                "match_type": "EXACT_CANONICAL_MATCH",
-                "stage_detected": "deterministic_exact",
-                "confidence_score": 1.0,
-                "bank_source_row_id": bank_source_row_id,
-                "ledger_source_row_id": ledger_source_row_id,
-                "bank_transaction_id": _clean_value(row.get("bank_transaction_id")),
-                "ledger_transaction_id": _clean_value(row.get("ledger_transaction_id")),
-                "account_id": row["account_id"],
-                "currency": row["currency"],
-                "direction": row["direction"],
-                "amount_bank": row["amount_numeric"],
-                "amount_internal": row["amount_numeric"],
-                "transaction_date_bank": row["canonical_date"],
-                "transaction_date_internal": row["canonical_date"],
-                "normalized_reference": row["normalized_reference"],
-                "counterparty_bank": _clean_value(row.get("counterparty_bank")),
-                "counterparty_internal": _clean_value(row.get("counterparty_ledger")),
-                "rationale": "Matched on account, currency, direction, amount, normalized reference, and canonical date.",
-            }
+            _build_link_record(
+                row=row,
+                run_id=run_id,
+                link_number=link_number,
+                match_type="EXACT_CANONICAL_MATCH",
+                stage_detected="deterministic_exact",
+                confidence_score=1.0,
+                rationale=(
+                    "Matched on account, currency, direction, amount, normalized "
+                    "reference, and canonical date."
+                ),
+            )
+        )
+
+    return pd.DataFrame(links, columns=RECONCILIATION_LINK_COLUMNS)
+
+
+def find_reference_format_matches(
+    canonical_bank: pd.DataFrame,
+    canonical_ledger: pd.DataFrame,
+    run_id: str,
+    existing_links: pd.DataFrame | None = None,
+    link_start_index: int = 1,
+) -> pd.DataFrame:
+    """Find matches where raw references differ but normalized references align."""
+    existing_links = existing_links if existing_links is not None else _empty_links()
+
+    matched_bank_rows = _matched_ids(existing_links, "bank_source_row_id")
+    matched_ledger_rows = _matched_ids(existing_links, "ledger_source_row_id")
+
+    bank_candidates = canonical_bank.dropna(subset=EXACT_MATCH_KEY_COLUMNS).copy()
+    ledger_candidates = canonical_ledger.dropna(subset=EXACT_MATCH_KEY_COLUMNS).copy()
+
+    bank_candidates = bank_candidates[
+        ~bank_candidates["source_row_id"].isin(matched_bank_rows)
+    ].copy()
+    ledger_candidates = ledger_candidates[
+        ~ledger_candidates["source_row_id"].isin(matched_ledger_rows)
+    ].copy()
+
+    if bank_candidates.empty or ledger_candidates.empty:
+        return _empty_links()
+
+    merged = bank_candidates.merge(
+        ledger_candidates,
+        on=EXACT_MATCH_KEY_COLUMNS,
+        suffixes=("_bank", "_ledger"),
+        how="inner",
+    )
+
+    if merged.empty:
+        return _empty_links()
+
+    merged = merged.sort_values(
+        by=["source_row_id_bank", "source_row_id_ledger"],
+        kind="stable",
+    )
+
+    matched_bank_rows = set()
+    matched_ledger_rows = set()
+    links: list[dict[str, Any]] = []
+
+    for _, row in merged.iterrows():
+        if not _raw_references_differ(row):
+            continue
+
+        bank_source_row_id = int(row["source_row_id_bank"])
+        ledger_source_row_id = int(row["source_row_id_ledger"])
+
+        if bank_source_row_id in matched_bank_rows:
+            continue
+        if ledger_source_row_id in matched_ledger_rows:
+            continue
+
+        matched_bank_rows.add(bank_source_row_id)
+        matched_ledger_rows.add(ledger_source_row_id)
+
+        link_number = link_start_index + len(links)
+
+        links.append(
+            _build_link_record(
+                row=row,
+                run_id=run_id,
+                link_number=link_number,
+                match_type="REFERENCE_FORMAT_MATCH",
+                stage_detected="deterministic_reference_format",
+                confidence_score=0.92,
+                rationale=(
+                    "Matched on account, currency, direction, amount, canonical date, "
+                    "and normalized reference. Raw reference formats differ and should "
+                    "be reviewed as a formatting variation."
+                ),
+            )
         )
 
     return pd.DataFrame(links, columns=RECONCILIATION_LINK_COLUMNS)
@@ -143,6 +273,7 @@ def find_timing_difference_matches(
     max_day_gap: int = 2,
     link_start_index: int = 1,
 ) -> pd.DataFrame:
+    """Find deterministic timing-difference matches."""
     existing_links = existing_links if existing_links is not None else _empty_links()
 
     matched_bank_rows = _matched_ids(existing_links, "bank_source_row_id")
@@ -242,7 +373,10 @@ def find_timing_difference_matches(
                 "normalized_reference": row["normalized_reference"],
                 "counterparty_bank": _clean_value(row.get("counterparty_bank")),
                 "counterparty_internal": _clean_value(row.get("counterparty_ledger")),
-                "rationale": f"Matched on account, currency, direction, amount, and normalized reference with a {int(row['date_gap_days'])}-day date gap.",
+                "rationale": (
+                    "Matched on account, currency, direction, amount, and normalized "
+                    f"reference with a {int(row['date_gap_days'])}-day date gap."
+                ),
             }
         )
 
@@ -254,6 +388,7 @@ def find_deterministic_matches(
     canonical_ledger: pd.DataFrame,
     run_id: str,
 ) -> pd.DataFrame:
+    """Run deterministic matching stages in priority order."""
     exact_matches = find_exact_matches(
         canonical_bank=canonical_bank,
         canonical_ledger=canonical_ledger,
@@ -261,7 +396,7 @@ def find_deterministic_matches(
         link_start_index=1,
     )
 
-    timing_matches = find_timing_difference_matches(
+    reference_format_matches = find_reference_format_matches(
         canonical_bank=canonical_bank,
         canonical_ledger=canonical_ledger,
         run_id=run_id,
@@ -269,7 +404,29 @@ def find_deterministic_matches(
         link_start_index=len(exact_matches) + 1,
     )
 
-    all_links = [df for df in [exact_matches, timing_matches] if not df.empty]
+    exact_and_reference_links = [
+        df for df in [exact_matches, reference_format_matches] if not df.empty
+    ]
+
+    existing_before_timing = (
+        pd.concat(exact_and_reference_links, ignore_index=True)
+        if exact_and_reference_links
+        else _empty_links()
+    )
+
+    timing_matches = find_timing_difference_matches(
+        canonical_bank=canonical_bank,
+        canonical_ledger=canonical_ledger,
+        run_id=run_id,
+        existing_links=existing_before_timing,
+        link_start_index=len(existing_before_timing) + 1,
+    )
+
+    all_links = [
+        df
+        for df in [exact_matches, reference_format_matches, timing_matches]
+        if not df.empty
+    ]
 
     if not all_links:
         return _empty_links()
