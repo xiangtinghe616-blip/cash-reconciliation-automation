@@ -130,9 +130,16 @@ def run_v3_pipeline() -> dict[str, Any]:
         run_id=run_id,
     )
 
+    amount_mismatch_count = (
+        int((exception_queue["break_type"] == "AMOUNT_MISMATCH").sum())
+        if not exception_queue.empty
+        else 0
+    )
+
     exception_queue_output_path = V3_OUTPUT_DIR / "exception_queue.csv"
     write_csv(exception_queue, exception_queue_output_path)
 
+    print(f"Amount mismatch exceptions: {amount_mismatch_count}")
     print(f"Exception queue rows: {len(exception_queue)}")
     print(f"Exception queue output: {exception_queue_output_path}")
 
@@ -187,6 +194,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         "exact_match_count": exact_match_count,
         "timing_match_count": timing_match_count,
         "deterministic_match_count": len(reconciliation_links),
+        "amount_mismatch_count": amount_mismatch_count,
         "exception_count": len(exception_queue),
         "summary_output_path": summary_output_path,
     }

@@ -34,6 +34,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["exact_match_count"] >= 1
     assert result["timing_match_count"] >= 0
     assert result["deterministic_match_count"] >= result["exact_match_count"]
+    assert result["amount_mismatch_count"] >= 0
     assert result["exception_count"] >= 1
 
     reconciliation_links = pd.read_csv(output_dir / "reconciliation_links.csv")
