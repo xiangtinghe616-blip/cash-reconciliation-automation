@@ -230,6 +230,23 @@ bank_statement.schema.yaml
 internal_cash_ledger.schema.yaml
 ```
 
+### Frictionless Schema Validation Layer
+
+`versions/v3/src/core/frictionless_validator.py`
+
+Adds an external-tool validation layer using Frictionless Table Schema.
+
+This does not replace the custom v3 schema validator. It provides a second, standards-based validation path that can read the same v3 schema contracts and return validation issues in the same review-oriented structure used by the project.
+
+Current purpose:
+
+* Demonstrate external data-contract tooling
+* Validate CSV-first schema assumptions
+* Keep the custom validator available for project-specific control logic
+* Prepare the validation layer for future enterprise-style data-quality upgrades
+
+This layer is tested independently and is not yet wired into the main v3 pipeline runner.
+
 ### Canonicalization Utilities
 
 ```text
@@ -378,6 +395,7 @@ The project includes tests for:
 
 * v2 regression baseline
 * v3 schema validator
+* v3 Frictionless schema validator
 * v3 canonicalization utilities
 * v3 standardization layer
 * v3 deterministic matching rules
