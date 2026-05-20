@@ -18,6 +18,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     expected_outputs = [
         "validation_issues.csv",
         "frictionless_validation_issues.csv",
+        "great_expectations_validation_issues.csv",
         "canonical_bank_transactions.csv",
         "canonical_internal_transactions.csv",
         "reconciliation_links.csv",
@@ -35,6 +36,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["canonical_ledger_count"] == 600
     assert result["validation_issue_count"] >= 1
     assert result["frictionless_validation_issue_count"] >= 0
+    assert result["great_expectations_validation_issue_count"] >= 0
     assert result["exact_match_count"] >= 1
     assert result["reference_format_match_count"] >= 0
     assert result["timing_match_count"] >= 0
@@ -81,6 +83,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert set(summary["stage"]) == {
         "schema_validation",
         "frictionless_schema_validation",
+        "great_expectations_schema_validation",
         "bank_standardization",
         "ledger_standardization",
         "deterministic_matching",

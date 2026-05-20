@@ -17,6 +17,9 @@ from versions.v3.src.core.schema_validator import validate_source_file  # noqa: 
 from versions.v3.src.core.frictionless_validator import (
     validate_source_file as validate_source_file_with_frictionless,
 )  # noqa: E402
+from versions.v3.src.core.great_expectations_validator import (
+    validate_source_file as validate_source_file_with_great_expectations,
+)  # noqa: E402
 from versions.v3.src.core.standardize import (  # noqa: E402
     standardize_bank_transactions,
     standardize_internal_ledger,
@@ -105,6 +108,44 @@ def run_v3_pipeline() -> dict[str, Any]:
 
     print(f"Frictionless validation issues found: {len(frictionless_validation_issues_df)}")
     print(f"Frictionless validation output: {frictionless_validation_output_path}")
+
+    print("Step 1c/7: Running Great Expectations schema validation...")
+
+    great_expectations_validation_issues = []
+    great_expectations_validation_issues.extend(
+        validate_source_file_with_great_expectations(
+            source_name="bank_statement",
+            csv_path=bank_input_path,
+            schema_path=bank_schema_path,
+        )
+    )
+    great_expectations_validation_issues.extend(
+        validate_source_file_with_great_expectations(
+            source_name="internal_cash_ledger",
+            csv_path=ledger_input_path,
+            schema_path=ledger_schema_path,
+        )
+    )
+
+    great_expectations_validation_issues_df = pd.DataFrame(
+        great_expectations_validation_issues
+    )
+    great_expectations_validation_output_path = (
+        V3_OUTPUT_DIR / "great_expectations_validation_issues.csv"
+    )
+    write_csv(
+        great_expectations_validation_issues_df,
+        great_expectations_validation_output_path,
+    )
+
+    print(
+        "Great Expectations validation issues found: "
+        f"{len(great_expectations_validation_issues_df)}"
+    )
+    print(
+        "Great Expectations validation output: "
+        f"{great_expectations_validation_output_path}"
+    )
 
     print("Step 2/7: Standardizing source transactions...")
 
@@ -229,6 +270,12 @@ def run_v3_pipeline() -> dict[str, Any]:
         },
         {
             "run_id": run_id,
+            "stage": "great_expectations_schema_validation",
+            "output_file": "great_expectations_validation_issues.csv",
+            "record_count": len(great_expectations_validation_issues_df),
+        },
+        {
+            "run_id": run_id,
             "stage": "bank_standardization",
             "output_file": "canonical_bank_transactions.csv",
             "record_count": len(canonical_bank),
@@ -276,6 +323,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         "run_id": run_id,
         "validation_issue_count": len(validation_issues_df),
         "frictionless_validation_issue_count": len(frictionless_validation_issues_df),
+        "great_expectations_validation_issue_count": len(great_expectations_validation_issues_df),
         "canonical_bank_count": len(canonical_bank),
         "canonical_ledger_count": len(canonical_ledger),
         "exact_match_count": exact_match_count,

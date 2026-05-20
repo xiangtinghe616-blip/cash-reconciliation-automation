@@ -13,7 +13,9 @@ v3 currently includes a local end-to-end pipeline that can validate source files
 The current workflow is:
 
 ```text
-schema validation
+custom schema validation
+→ Frictionless schema validation
+→ Great Expectations schema validation
 → canonical standardization
 → deterministic exact matching
 → reference-format matching
@@ -60,6 +62,7 @@ Generated output files include:
 ```text
 validation_issues.csv
 frictionless_validation_issues.csv
+great_expectations_validation_issues.csv
 canonical_bank_transactions.csv
 canonical_internal_transactions.csv
 reconciliation_links.csv
@@ -90,6 +93,18 @@ Examples include:
 Captures schema and data-quality issues identified by the Frictionless validation layer.
 
 This output is separate from `validation_issues.csv` so the project can preserve the custom control-aware validator while also demonstrating standards-based external data-contract validation.
+
+### great_expectations_validation_issues.csv
+
+Captures schema and data-quality issues identified by the Great Expectations validation layer.
+
+This output is separate from `validation_issues.csv` and `frictionless_validation_issues.csv`. It allows the project to demonstrate a third validation path using an external data-quality framework while preserving the custom control-aware validator and the Frictionless schema validation output.
+
+Current Great Expectations checks include:
+
+* Required column existence
+* Non-null checks for required fields
+* Allowed value checks for schema-defined enumerations
 
 ### canonical_bank_transactions.csv
 
@@ -207,6 +222,7 @@ Current stages include:
 ```text
 schema_validation
 frictionless_schema_validation
+great_expectations_schema_validation
 bank_standardization
 ledger_standardization
 deterministic_matching
@@ -254,6 +270,16 @@ Current purpose:
 * Prepare the validation layer for future enterprise-style data-quality upgrades
 
 This layer is tested independently and is now wired into the main v3 pipeline runner as a separate validation output. It does not replace the custom `validation_issues.csv` output.
+
+### Great Expectations Schema Validation Layer
+
+`versions/v3/src/core/great_expectations_validator.py`
+
+Adds a lightweight Great Expectations validation layer over the same v3 schema contracts.
+
+This layer complements both the custom schema validator and the Frictionless validator. Its current role is to express core data-quality expectations such as required columns, non-null required values, and allowed enumerated values in an external data-quality framework.
+
+It is wired into the v3 pipeline as a separate validation output and does not replace `validation_issues.csv` or `frictionless_validation_issues.csv`.
 
 ### Canonicalization Utilities
 
@@ -404,6 +430,7 @@ The project includes tests for:
 * v2 regression baseline
 * v3 schema validator
 * v3 Frictionless schema validator
+* v3 Great Expectations schema validator
 * v3 canonicalization utilities
 * v3 standardization layer
 * v3 deterministic matching rules
@@ -457,7 +484,6 @@ v3 is still a local prototype and does not yet include:
 * Splink-based probabilistic matching
 * Full exception lifecycle tracking
 * Prefect orchestration
-* Great Expectations integration
 * Production deployment configuration
 
 These are planned future upgrades.
