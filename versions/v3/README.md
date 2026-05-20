@@ -59,6 +59,7 @@ Generated output files include:
 
 ```text
 validation_issues.csv
+frictionless_validation_issues.csv
 canonical_bank_transactions.csv
 canonical_internal_transactions.csv
 reconciliation_links.csv
@@ -83,6 +84,12 @@ Examples include:
 * Invalid date values
 * Invalid numeric amount values
 * Values outside allowed schema definitions
+
+### frictionless_validation_issues.csv
+
+Captures schema and data-quality issues identified by the Frictionless validation layer.
+
+This output is separate from `validation_issues.csv` so the project can preserve the custom control-aware validator while also demonstrating standards-based external data-contract validation.
 
 ### canonical_bank_transactions.csv
 
@@ -199,6 +206,7 @@ Current stages include:
 
 ```text
 schema_validation
+frictionless_schema_validation
 bank_standardization
 ledger_standardization
 deterministic_matching
@@ -245,7 +253,7 @@ Current purpose:
 * Keep the custom validator available for project-specific control logic
 * Prepare the validation layer for future enterprise-style data-quality upgrades
 
-This layer is tested independently and is not yet wired into the main v3 pipeline runner.
+This layer is tested independently and is now wired into the main v3 pipeline runner as a separate validation output. It does not replace the custom `validation_issues.csv` output.
 
 ### Canonicalization Utilities
 

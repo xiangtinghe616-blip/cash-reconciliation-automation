@@ -14,6 +14,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from versions.v3.src.core.schema_validator import validate_source_file  # noqa: E402
+from versions.v3.src.core.frictionless_validator import (
+    validate_source_file as validate_source_file_with_frictionless,
+)  # noqa: E402
 from versions.v3.src.core.standardize import (  # noqa: E402
     standardize_bank_transactions,
     standardize_internal_ledger,
@@ -77,6 +80,31 @@ def run_v3_pipeline() -> dict[str, Any]:
 
     print(f"Validation issues found: {len(validation_issues_df)}")
     print(f"Validation output: {validation_output_path}")
+
+    print("Step 1b/7: Running Frictionless schema validation...")
+
+    frictionless_validation_issues = []
+    frictionless_validation_issues.extend(
+        validate_source_file_with_frictionless(
+            source_name="bank_statement",
+            csv_path=bank_input_path,
+            schema_path=bank_schema_path,
+        )
+    )
+    frictionless_validation_issues.extend(
+        validate_source_file_with_frictionless(
+            source_name="internal_cash_ledger",
+            csv_path=ledger_input_path,
+            schema_path=ledger_schema_path,
+        )
+    )
+
+    frictionless_validation_issues_df = pd.DataFrame(frictionless_validation_issues)
+    frictionless_validation_output_path = V3_OUTPUT_DIR / "frictionless_validation_issues.csv"
+    write_csv(frictionless_validation_issues_df, frictionless_validation_output_path)
+
+    print(f"Frictionless validation issues found: {len(frictionless_validation_issues_df)}")
+    print(f"Frictionless validation output: {frictionless_validation_output_path}")
 
     print("Step 2/7: Standardizing source transactions...")
 
@@ -195,6 +223,12 @@ def run_v3_pipeline() -> dict[str, Any]:
         },
         {
             "run_id": run_id,
+            "stage": "frictionless_schema_validation",
+            "output_file": "frictionless_validation_issues.csv",
+            "record_count": len(frictionless_validation_issues_df),
+        },
+        {
+            "run_id": run_id,
             "stage": "bank_standardization",
             "output_file": "canonical_bank_transactions.csv",
             "record_count": len(canonical_bank),
@@ -241,6 +275,7 @@ def run_v3_pipeline() -> dict[str, Any]:
     return {
         "run_id": run_id,
         "validation_issue_count": len(validation_issues_df),
+        "frictionless_validation_issue_count": len(frictionless_validation_issues_df),
         "canonical_bank_count": len(canonical_bank),
         "canonical_ledger_count": len(canonical_ledger),
         "exact_match_count": exact_match_count,
