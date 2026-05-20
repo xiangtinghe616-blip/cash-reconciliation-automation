@@ -49,6 +49,27 @@ Run the test suite:
 pytest -q
 ```
 
+## v3 Scenario Manifest
+
+v3 includes a scenario manifest: `versions/v3/scenario_manifest.yaml`.
+
+The manifest documents the intended synthetic reconciliation scenarios covered by the v3 workflow. It connects scenario intent to detection layers and generated outputs, so the dataset is easier to review, extend, and audit.
+
+Current scenario coverage includes:
+
+* Schema-required field issues
+* External data-contract validation issues
+* Exact canonical matches
+* Reference-format matches
+* Timing-difference matches
+* Candidate links for analyst review
+* Split-payment candidates
+* Amount mismatch exceptions
+* Unmatched bank transactions
+* Unmatched ledger transactions
+
+This file does not add reconciliation logic. It documents the dataset design and expected control coverage.
+
 ## v3 Data Package Manifest
 
 v3 includes a lightweight data package manifest: `versions/v3/datapackage.json`.
@@ -456,6 +477,7 @@ The project includes tests for:
 * v3 Great Expectations schema validator
 * v3 datapackage manifest
 * v3 Frictionless datapackage validator
+* v3 scenario manifest
 * v3 canonicalization utilities
 * v3 standardization layer
 * v3 deterministic matching rules

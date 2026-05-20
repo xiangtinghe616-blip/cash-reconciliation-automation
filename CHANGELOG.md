@@ -4,6 +4,22 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-20 — v3 Scenario Manifest Milestone
+
+### Added
+
+- Added `versions/v3/scenario_manifest.yaml`.
+- Added `tests/test_v3_scenario_manifest.py`.
+- Documented intended v3 synthetic reconciliation scenarios.
+- Added test coverage to verify scenario metadata, required fields, unique scenario IDs, and expected output coverage.
+
+### Design Notes
+
+- The scenario manifest documents dataset intent without adding new reconciliation logic.
+- The manifest connects synthetic data scenarios to detection layers and generated outputs.
+- This strengthens test planning, data-quality review, and future dataset governance.
+- The core reconciliation design remains deterministic-first with human review for exceptions and candidate links.
+
 ## 2026-05-20 — v3 Frictionless Data Package Validation Milestone
 
 ### Added

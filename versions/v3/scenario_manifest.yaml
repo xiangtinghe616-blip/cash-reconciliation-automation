@@ -1,0 +1,100 @@
+manifest_name: cash_reconciliation_v3_scenario_manifest
+version: "0.3.0"
+pipeline_version: v3
+data_policy: Synthetic or anonymized demonstration data only.
+
+design_principle: Deterministic reconciliation logic first, human review for exceptions, AI only as assistant layer.
+
+purpose: >
+  Documents the intended synthetic reconciliation scenarios represented in the v3
+  workflow. This manifest supports data-quality review, test coverage planning,
+  and future dataset governance without adding new reconciliation logic.
+
+input_resources:
+  - name: bank_statement_v2
+    path: ../v2/data/bank_statement_v2.csv
+    schema: schemas/bank_statement.schema.yaml
+  - name: internal_cash_ledger_v2
+    path: ../v2/data/internal_cash_ledger_v2.csv
+    schema: schemas/internal_cash_ledger.schema.yaml
+
+scenarios:
+  - id: SCHEMA_REQUIRED_FIELD_ISSUE
+    category: data_quality
+    description: Required source fields are missing or blank.
+    expected_detection_layer: schema_validation
+    expected_output: validation_issues.csv
+    decision_type: control_check
+    review_required: true
+
+  - id: SCHEMA_EXTERNAL_CONTRACT_ISSUE
+    category: data_contract
+    description: Source data is checked through external schema and data-quality validation layers.
+    expected_detection_layer: frictionless_and_great_expectations_validation
+    expected_output: frictionless_validation_issues.csv; great_expectations_validation_issues.csv
+    decision_type: control_check
+    review_required: true
+
+  - id: EXACT_CANONICAL_MATCH
+    category: deterministic_match
+    description: Bank and ledger records match exactly after canonical standardization.
+    expected_detection_layer: deterministic_matching
+    expected_output: reconciliation_links.csv
+    decision_type: deterministic_reconciliation_link
+    review_required: false
+
+  - id: REFERENCE_FORMAT_MATCH
+    category: deterministic_match
+    description: Bank and ledger records match after reference normalization despite different raw reference formats.
+    expected_detection_layer: deterministic_matching
+    expected_output: reconciliation_links.csv
+    decision_type: deterministic_reconciliation_link
+    review_required: false
+
+  - id: TIMING_DIFFERENCE_MATCH
+    category: deterministic_match
+    description: Bank and ledger records match by amount, account, direction, currency, and reference but have near-date timing differences.
+    expected_detection_layer: deterministic_matching
+    expected_output: reconciliation_links.csv
+    decision_type: deterministic_reconciliation_link
+    review_required: false
+
+  - id: CANDIDATE_LINK_REVIEW
+    category: analyst_review_candidate
+    description: Unmatched rows are surfaced as possible match candidates using review signals.
+    expected_detection_layer: candidate_link_generation
+    expected_output: candidate_links.csv
+    decision_type: review_suggestion
+    review_required: true
+
+  - id: SPLIT_PAYMENT_CANDIDATE
+    category: analyst_review_candidate
+    description: One bank transaction may correspond to multiple ledger transactions.
+    expected_detection_layer: split_payment_candidate_generation
+    expected_output: split_payment_candidates.csv
+    decision_type: review_suggestion
+    review_required: true
+
+  - id: AMOUNT_MISMATCH_EXCEPTION
+    category: exception
+    description: Bank and ledger records share key identifiers but have different amounts.
+    expected_detection_layer: exception_queue_build
+    expected_output: exception_queue.csv
+    decision_type: exception_queue_item
+    review_required: true
+
+  - id: UNMATCHED_BANK_TRANSACTION
+    category: exception
+    description: A bank transaction remains unmatched after deterministic matching and candidate generation.
+    expected_detection_layer: exception_queue_build
+    expected_output: exception_queue.csv
+    decision_type: exception_queue_item
+    review_required: true
+
+  - id: UNMATCHED_LEDGER_TRANSACTION
+    category: exception
+    description: A ledger transaction remains unmatched after deterministic matching and candidate generation.
+    expected_detection_layer: exception_queue_build
+    expected_output: exception_queue.csv
+    decision_type: exception_queue_item
+    review_required: true
