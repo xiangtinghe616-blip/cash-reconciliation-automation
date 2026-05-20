@@ -1,0 +1,63 @@
+{
+  "profile": "data-package",
+  "name": "cash-reconciliation-automation-v3",
+  "title": "Cash Reconciliation Automation v3 Synthetic Data Package",
+  "description": "Synthetic CSV input resources and schema contracts used by the v3 control-aware cash reconciliation automation workflow.",
+  "version": "0.3.0",
+  "licenses": [
+    {
+      "name": "MIT"
+    }
+  ],
+  "keywords": [
+    "cash-reconciliation",
+    "data-contracts",
+    "synthetic-data",
+    "frictionless",
+    "great-expectations",
+    "financial-operations"
+  ],
+  "sources": [
+    {
+      "title": "Project repository",
+      "path": "https://github.com/xiangtinghe616-blip/cash-reconciliation-automation"
+    }
+  ],
+  "contributors": [
+    {
+      "title": "Sienna He",
+      "role": "author"
+    }
+  ],
+  "custom": {
+    "data_policy": "Synthetic or anonymized demonstration data only. Do not use real bank statements, internal ledgers, client records, account numbers, ERP exports, credentials, tokens, or confidential financial information.",
+    "reconciliation_design_principle": "Deterministic reconciliation logic first, human review for exceptions, AI only as assistant layer.",
+    "pipeline_version": "v3"
+  },
+  "resources": [
+    {
+      "name": "bank_statement_v2",
+      "title": "Synthetic Bank Statement Input",
+      "path": "../v2/data/bank_statement_v2.csv",
+      "profile": "tabular-data-resource",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "path": "schemas/bank_statement.schema.yaml"
+      }
+    },
+    {
+      "name": "internal_cash_ledger_v2",
+      "title": "Synthetic Internal Cash Ledger Input",
+      "path": "../v2/data/internal_cash_ledger_v2.csv",
+      "profile": "tabular-data-resource",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "path": "schemas/internal_cash_ledger.schema.yaml"
+      }
+    }
+  ]
+}

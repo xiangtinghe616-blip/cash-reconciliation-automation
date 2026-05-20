@@ -4,6 +4,22 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-20 — v3 Data Package Manifest Milestone
+
+### Added
+
+- Added `versions/v3/datapackage.json`.
+- Added `tests/test_v3_datapackage_manifest.py`.
+- Declared v3 synthetic CSV input resources and their schema contracts.
+- Added test coverage to verify datapackage metadata, resource paths, schema paths, and synthetic data policy.
+
+### Design Notes
+
+- The datapackage manifest documents the v3 data layer without adding new reconciliation logic.
+- The manifest supports the broader data-contract direction of the project.
+- All declared resources remain synthetic demonstration data only.
+- Generated pipeline outputs under `versions/v3/output/` remain local artifacts and should not be committed by default.
+
 ## 2026-05-20 — v3 Great Expectations Validation Milestone
 
 ### Added

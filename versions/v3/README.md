@@ -49,6 +49,19 @@ Run the test suite:
 pytest -q
 ```
 
+## v3 Data Package Manifest
+
+v3 includes a lightweight data package manifest: `versions/v3/datapackage.json`.
+
+The manifest declares the synthetic CSV input resources used by the v3 workflow and links each resource to its schema contract.
+
+Current declared resources:
+
+* `bank_statement_v2`
+* `internal_cash_ledger_v2`
+
+The manifest also records the project data policy and the core reconciliation design principle: deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
+
 ## Current v3 Outputs
 
 The v3 pipeline writes generated local outputs to:
@@ -431,6 +444,7 @@ The project includes tests for:
 * v3 schema validator
 * v3 Frictionless schema validator
 * v3 Great Expectations schema validator
+* v3 datapackage manifest
 * v3 canonicalization utilities
 * v3 standardization layer
 * v3 deterministic matching rules
