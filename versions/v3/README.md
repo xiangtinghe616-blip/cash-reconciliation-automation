@@ -284,6 +284,16 @@ Current purpose:
 
 This layer is tested independently and is now wired into the main v3 pipeline runner as a separate validation output. It does not replace the custom `validation_issues.csv` output.
 
+### Frictionless Data Package Validation
+
+`versions/v3/src/core/datapackage_validator.py`
+
+Validates the v3 data package manifest using Frictionless Package validation.
+
+This module loads `versions/v3/datapackage.json`, resolves the declared synthetic CSV resources, attaches the existing v3 schema contracts, and returns a structured validation report.
+
+The purpose is to make the v3 data package manifest executable rather than purely descriptive. This supports the broader data-contract direction of the project without changing reconciliation logic.
+
 ### Great Expectations Schema Validation Layer
 
 `versions/v3/src/core/great_expectations_validator.py`
@@ -445,6 +455,7 @@ The project includes tests for:
 * v3 Frictionless schema validator
 * v3 Great Expectations schema validator
 * v3 datapackage manifest
+* v3 Frictionless datapackage validator
 * v3 canonicalization utilities
 * v3 standardization layer
 * v3 deterministic matching rules

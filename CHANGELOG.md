@@ -4,6 +4,22 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-20 — v3 Frictionless Data Package Validation Milestone
+
+### Added
+
+- Added `versions/v3/src/core/datapackage_validator.py`.
+- Added `tests/test_v3_datapackage_validator.py`.
+- Added Frictionless Package validation for `versions/v3/datapackage.json`.
+- Added structured datapackage validation reporting for declared v3 resources.
+
+### Design Notes
+
+- The datapackage validator makes the v3 data package manifest executable rather than purely descriptive.
+- The validator resolves synthetic CSV resources and schema contracts before calling Frictionless Package validation.
+- This does not add new reconciliation logic.
+- This strengthens the data-contract layer of the project and prepares the project for future dataset governance upgrades.
+
 ## 2026-05-20 — v3 Data Package Manifest Milestone
 
 ### Added
