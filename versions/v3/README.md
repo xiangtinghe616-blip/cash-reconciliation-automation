@@ -305,6 +305,16 @@ Current purpose:
 
 This layer is tested independently and is now wired into the main v3 pipeline runner as a separate validation output. It does not replace the custom `validation_issues.csv` output.
 
+### Scenario Manifest Validation
+
+`versions/v3/src/core/scenario_manifest_validator.py`
+
+Validates `versions/v3/scenario_manifest.yaml` as an executable governance artifact.
+
+This validator checks required top-level fields, declared input resources, schema paths, scenario IDs, known detection layers, expected pipeline outputs, and review-required flags.
+
+The purpose is to make the scenario manifest testable instead of purely descriptive. This supports dataset governance and future scenario expansion without changing reconciliation logic.
+
 ### Frictionless Data Package Validation
 
 `versions/v3/src/core/datapackage_validator.py`
@@ -478,6 +488,7 @@ The project includes tests for:
 * v3 datapackage manifest
 * v3 Frictionless datapackage validator
 * v3 scenario manifest
+* v3 scenario manifest validator
 * v3 canonicalization utilities
 * v3 standardization layer
 * v3 deterministic matching rules
