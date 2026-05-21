@@ -4,6 +4,26 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-21 — v3 Pipeline Summary Hardening Milestone
+
+### Added
+
+- Added `versions/v3/src/reconciliation/pipeline_summary.py`.
+- Added `tests/test_v3_pipeline_summary.py`.
+- Added audit-friendly pipeline summary fields including stage order, stage type, control area, status, issue count, review-required count, and notes.
+
+### Changed
+
+- Updated `run_v3_pipeline.py` to build `pipeline_run_summary.csv` through the new pipeline summary helper.
+- Updated pipeline runner tests to verify the hardened summary structure and exception review counts.
+
+### Design Notes
+
+- The pipeline summary now functions more like a control and audit summary instead of a simple row-count log.
+- The summary covers governance, validation, standardization, matching, analyst review candidate generation, and exception queue stages.
+- This does not change reconciliation logic.
+- This strengthens run-level traceability and prepares the project for future workflow, lineage, or dashboard layers.
+
 ## 2026-05-21 — v3 Scenario Manifest Pipeline Governance Milestone
 
 ### Changed

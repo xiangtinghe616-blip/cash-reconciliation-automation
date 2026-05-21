@@ -481,6 +481,16 @@ Current pipeline stages:
 7. Pipeline summary generation
 ```
 
+### Pipeline Summary Hardening
+
+`versions/v3/src/reconciliation/pipeline_summary.py`
+
+Builds an audit-friendly pipeline summary for each v3 run.
+
+The pipeline summary now records more than basic row counts. It includes stage order, stage type, control area, status, output file, record count, issue count, review-required count, and notes.
+
+This makes `pipeline_run_summary.csv` easier to use as a control and audit summary across validation, governance, standardization, matching, review candidate generation, and exception queue stages.
+
 ## Current Test Coverage
 
 The project includes tests for:
@@ -501,6 +511,7 @@ The project includes tests for:
 * v3 split-payment candidate detection
 * v3 exception queue builder
 * v3 pipeline runner
+* v3 pipeline summary hardening
 
 Run all tests with:
 

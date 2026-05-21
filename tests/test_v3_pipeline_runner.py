@@ -95,3 +95,29 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "split_payment_candidate_generation",
         "exception_queue_build",
     }
+
+    expected_summary_columns = {
+        "run_id",
+        "stage_order",
+        "stage",
+        "stage_type",
+        "control_area",
+        "status",
+        "output_file",
+        "record_count",
+        "issue_count",
+        "review_required_count",
+        "notes",
+    }
+
+    assert expected_summary_columns.issubset(set(summary.columns))
+    assert summary["stage_order"].is_monotonic_increasing
+    assert summary["stage_order"].min() == 1
+    assert summary["stage_order"].max() == 10
+
+    exception_summary = summary[
+        summary["stage"] == "exception_queue_build"
+    ].iloc[0]
+
+    assert exception_summary["control_area"] == "analyst_review"
+    assert exception_summary["review_required_count"] == result["exception_count"]
