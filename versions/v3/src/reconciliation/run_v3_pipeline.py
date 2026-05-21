@@ -20,6 +20,9 @@ from versions.v3.src.core.frictionless_validator import (
 from versions.v3.src.core.great_expectations_validator import (
     validate_source_file as validate_source_file_with_great_expectations,
 )  # noqa: E402
+from versions.v3.src.core.scenario_manifest_validator import (  # noqa: E402
+    validate_scenario_manifest,
+)
 from versions.v3.src.core.standardize import (  # noqa: E402
     standardize_bank_transactions,
     standardize_internal_ledger,
@@ -59,6 +62,20 @@ def run_v3_pipeline() -> dict[str, Any]:
     ledger_schema_path = V3_SCHEMA_DIR / "internal_cash_ledger.schema.yaml"
 
     print(f"Starting v3 pipeline run: {run_id}")
+    print("Governance check: Validating scenario manifest...")
+
+    scenario_manifest_result = validate_scenario_manifest()
+
+    print(f"Scenario manifest valid: {scenario_manifest_result['valid']}")
+    print(f"Scenario manifest scenarios: {scenario_manifest_result['scenario_count']}")
+    print(f"Scenario manifest issues: {scenario_manifest_result['issue_count']}")
+
+    if not scenario_manifest_result["valid"]:
+        raise ValueError(
+            "Scenario manifest validation failed. "
+            "Review versions/v3/scenario_manifest.yaml before running reconciliation."
+        )
+
     print("Step 1/7: Running schema validation...")
 
     validation_issues = []
@@ -258,6 +275,12 @@ def run_v3_pipeline() -> dict[str, Any]:
     summary_rows = [
         {
             "run_id": run_id,
+            "stage": "scenario_manifest_validation",
+            "output_file": "scenario_manifest.yaml",
+            "record_count": scenario_manifest_result["scenario_count"],
+        },
+        {
+            "run_id": run_id,
             "stage": "schema_validation",
             "output_file": "validation_issues.csv",
             "record_count": len(validation_issues_df),
@@ -321,6 +344,9 @@ def run_v3_pipeline() -> dict[str, Any]:
 
     return {
         "run_id": run_id,
+        "scenario_manifest_valid": scenario_manifest_result["valid"],
+        "scenario_manifest_issue_count": scenario_manifest_result["issue_count"],
+        "scenario_manifest_scenario_count": scenario_manifest_result["scenario_count"],
         "validation_issue_count": len(validation_issues_df),
         "frictionless_validation_issue_count": len(frictionless_validation_issues_df),
         "great_expectations_validation_issue_count": len(great_expectations_validation_issues_df),

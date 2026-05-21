@@ -13,7 +13,8 @@ v3 currently includes a local end-to-end pipeline that can validate source files
 The current workflow is:
 
 ```text
-custom schema validation
+scenario manifest governance check
+→ custom schema validation
 → Frictionless schema validation
 → Great Expectations schema validation
 → canonical standardization
@@ -254,6 +255,7 @@ Summarizes each pipeline stage and its record count.
 Current stages include:
 
 ```text
+scenario_manifest_validation
 schema_validation
 frictionless_schema_validation
 great_expectations_schema_validation
@@ -314,6 +316,8 @@ Validates `versions/v3/scenario_manifest.yaml` as an executable governance artif
 This validator checks required top-level fields, declared input resources, schema paths, scenario IDs, known detection layers, expected pipeline outputs, and review-required flags.
 
 The purpose is to make the scenario manifest testable instead of purely descriptive. This supports dataset governance and future scenario expansion without changing reconciliation logic.
+
+This validation now runs at the start of the v3 pipeline as a governance check. If the scenario manifest is invalid, the pipeline fails before reconciliation begins. The check is also recorded in `pipeline_run_summary.csv` as `scenario_manifest_validation`.
 
 ### Frictionless Data Package Validation
 

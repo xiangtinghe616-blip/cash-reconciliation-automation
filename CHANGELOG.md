@@ -4,6 +4,21 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-21 — v3 Scenario Manifest Pipeline Governance Milestone
+
+### Changed
+
+- Wired scenario manifest validation into the v3 pipeline as a pre-reconciliation governance check.
+- Added `scenario_manifest_validation` to the v3 pipeline summary.
+- Updated pipeline runner tests to verify scenario manifest validation results.
+
+### Design Notes
+
+- The pipeline now validates `versions/v3/scenario_manifest.yaml` before running reconciliation.
+- If the scenario manifest is invalid, the pipeline fails before schema validation, standardization, matching, or exception generation begins.
+- This does not add new reconciliation logic.
+- This strengthens the governance layer around synthetic dataset design, scenario coverage, and control traceability.
+
 ## 2026-05-20 — v3 Scenario Manifest Validation Milestone
 
 ### Added

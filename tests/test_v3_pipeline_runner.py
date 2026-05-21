@@ -32,6 +32,9 @@ def test_run_v3_pipeline_creates_expected_outputs():
         assert (output_dir / filename).exists(), f"Missing pipeline output: {filename}"
 
     assert result["run_id"].startswith("v3_local_run_")
+    assert result["scenario_manifest_valid"] is True
+    assert result["scenario_manifest_issue_count"] == 0
+    assert result["scenario_manifest_scenario_count"] >= 8
     assert result["canonical_bank_count"] == 595
     assert result["canonical_ledger_count"] == 600
     assert result["validation_issue_count"] >= 1
@@ -81,6 +84,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     summary = pd.read_csv(output_dir / "pipeline_run_summary.csv")
 
     assert set(summary["stage"]) == {
+        "scenario_manifest_validation",
         "schema_validation",
         "frictionless_schema_validation",
         "great_expectations_schema_validation",
