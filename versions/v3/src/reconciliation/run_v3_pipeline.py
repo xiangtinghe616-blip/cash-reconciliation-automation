@@ -36,6 +36,9 @@ from versions.v3.src.reconciliation.exception_builder import build_exception_que
 from versions.v3.src.reconciliation.exception_lifecycle import (  # noqa: E402
     build_exception_lifecycle_view,
 )
+from versions.v3.src.reconciliation.exception_actions import (  # noqa: E402
+    build_exception_actions,
+)
 from versions.v3.src.reconciliation.pipeline_summary import (  # noqa: E402
     build_pipeline_summary,
     make_summary_row,
@@ -300,6 +303,23 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Breached SLA exceptions: {breached_sla_count}")
     print(f"Exception lifecycle output: {exception_lifecycle_output_path}")
 
+    print("Step 6c/7: Building exception action recommendations...")
+
+    exception_actions = build_exception_actions(exception_lifecycle)
+
+    escalation_action_count = (
+        int((exception_actions["action_type"] == "ESCALATE").sum())
+        if not exception_actions.empty
+        else 0
+    )
+
+    exception_actions_output_path = V3_OUTPUT_DIR / "exception_actions.csv"
+    write_csv(exception_actions, exception_actions_output_path)
+
+    print(f"Exception action recommendations: {len(exception_actions)}")
+    print(f"Escalation actions: {escalation_action_count}")
+    print(f"Exception actions output: {exception_actions_output_path}")
+
     print("Step 7/7: Writing pipeline summary...")
 
     summary_rows = [
@@ -438,6 +458,19 @@ def run_v3_pipeline() -> dict[str, Any]:
             review_required_count=len(exception_lifecycle),
             notes="Exception lifecycle view built with aging buckets and SLA status.",
         ),
+        make_summary_row(
+            run_id=run_id,
+            stage_order=12,
+            stage="exception_action_generation",
+            stage_type="review_workflow",
+            control_area="analyst_review",
+            status=review_status(len(exception_actions)),
+            output_file="exception_actions.csv",
+            record_count=len(exception_actions),
+            issue_count=escalation_action_count,
+            review_required_count=len(exception_actions),
+            notes="System-recommended analyst actions generated from exception lifecycle status.",
+        ),
     ]
 
     summary = build_pipeline_summary(summary_rows)
@@ -467,6 +500,8 @@ def run_v3_pipeline() -> dict[str, Any]:
         "exception_count": len(exception_queue),
         "exception_lifecycle_count": len(exception_lifecycle),
         "breached_sla_count": breached_sla_count,
+        "exception_action_count": len(exception_actions),
+        "escalation_action_count": escalation_action_count,
         "summary_output_path": summary_output_path,
     }
 

@@ -4,6 +4,28 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-21 — v3 Exception Action Recommendations Milestone
+
+### Added
+
+- Added `versions/v3/src/reconciliation/exception_actions.py`.
+- Added `tests/test_v3_exception_actions.py`.
+- Added system-recommended analyst action generation based on exception lifecycle status.
+- Added `exception_actions.csv` as a generated v3 pipeline output.
+- Added `exception_action_generation` to the hardened pipeline summary.
+
+### Changed
+
+- Updated `run_v3_pipeline.py` to build exception action recommendations after the exception lifecycle view.
+- Updated pipeline runner tests to verify the action recommendation output and summary stage.
+
+### Design Notes
+
+- Exception actions are system-recommended analyst actions, not final human decisions.
+- The action layer supports standard review, prioritized review, escalation, and no-action-required recommendations.
+- This strengthens the human review workflow without changing reconciliation matching logic.
+- The core reconciliation design remains deterministic-first with human review for exceptions.
+
 ## 2026-05-21 — v3 Exception Lifecycle Milestone
 
 ### Added

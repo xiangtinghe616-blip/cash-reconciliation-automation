@@ -266,6 +266,7 @@ candidate_link_generation
 split_payment_candidate_generation
 exception_queue_build
 exception_lifecycle_build
+exception_action_generation
 ```
 
 ## Core v3 Modules
@@ -482,6 +483,18 @@ Current pipeline stages:
 7. Pipeline summary generation
 ```
 
+### Exception Action Recommendations
+
+`versions/v3/src/reconciliation/exception_actions.py`
+
+Builds system-recommended analyst actions from the exception lifecycle view.
+
+The action layer generates pending review recommendations such as standard review, prioritized review, escalation, or no action required for already closed exceptions.
+
+The v3 pipeline now writes this output as `exception_actions.csv`.
+
+These actions are not final analyst decisions. They are system-generated recommendations that support the human review workflow.
+
 ### Exception Lifecycle Tracking
 
 `versions/v3/src/reconciliation/exception_lifecycle.py`
@@ -526,6 +539,7 @@ The project includes tests for:
 * v3 pipeline runner
 * v3 pipeline summary hardening
 * v3 exception lifecycle tracking
+* v3 exception action recommendations
 
 Run all tests with:
 
