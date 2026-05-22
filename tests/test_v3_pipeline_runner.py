@@ -25,6 +25,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "candidate_links.csv",
         "split_payment_candidates.csv",
         "exception_queue.csv",
+        "exception_lifecycle.csv",
         "pipeline_run_summary.csv",
     ]
 
@@ -48,6 +49,8 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["split_payment_candidate_count"] >= 0
     assert result["amount_mismatch_count"] >= 0
     assert result["exception_count"] >= 1
+    assert result["exception_lifecycle_count"] >= 0
+    assert result["breached_sla_count"] >= 0
 
     reconciliation_links = pd.read_csv(output_dir / "reconciliation_links.csv")
     assert not reconciliation_links.empty
@@ -81,6 +84,16 @@ def test_run_v3_pipeline_creates_expected_outputs():
         exception_queue["break_type"]
     )
 
+    exception_lifecycle = pd.read_csv(output_dir / "exception_lifecycle.csv")
+    assert {
+        "exception_id",
+        "age_days",
+        "aging_bucket",
+        "review_sla_days",
+        "sla_status",
+        "recommended_next_action",
+    }.issubset(set(exception_lifecycle.columns))
+
     summary = pd.read_csv(output_dir / "pipeline_run_summary.csv")
 
     assert set(summary["stage"]) == {
@@ -94,6 +107,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "candidate_link_generation",
         "split_payment_candidate_generation",
         "exception_queue_build",
+        "exception_lifecycle_build",
     }
 
     expected_summary_columns = {
@@ -113,7 +127,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert expected_summary_columns.issubset(set(summary.columns))
     assert summary["stage_order"].is_monotonic_increasing
     assert summary["stage_order"].min() == 1
-    assert summary["stage_order"].max() == 10
+    assert summary["stage_order"].max() == 11
 
     exception_summary = summary[
         summary["stage"] == "exception_queue_build"

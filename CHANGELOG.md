@@ -4,6 +4,28 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-21 — v3 Exception Lifecycle Milestone
+
+### Added
+
+- Added `versions/v3/src/reconciliation/exception_lifecycle.py`.
+- Added `tests/test_v3_exception_lifecycle.py`.
+- Added lifecycle tracking fields for exception age, aging bucket, review SLA days, SLA status, and recommended next action.
+- Added `exception_lifecycle.csv` as a generated v3 pipeline output.
+- Added `exception_lifecycle_build` to the hardened pipeline summary.
+
+### Changed
+
+- Updated `run_v3_pipeline.py` to build an exception lifecycle view after the exception queue.
+- Updated pipeline runner tests to verify the lifecycle output and lifecycle summary stage.
+
+### Design Notes
+
+- Exception lifecycle tracking does not change reconciliation decisions.
+- The lifecycle view supports analyst prioritization, SLA monitoring, and escalation.
+- This strengthens the human review workflow around unresolved reconciliation breaks.
+- The core reconciliation design remains deterministic-first with human review for exceptions.
+
 ## 2026-05-21 — v3 Pipeline Summary Hardening Milestone
 
 ### Added

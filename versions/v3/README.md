@@ -265,6 +265,7 @@ deterministic_matching
 candidate_link_generation
 split_payment_candidate_generation
 exception_queue_build
+exception_lifecycle_build
 ```
 
 ## Core v3 Modules
@@ -481,6 +482,18 @@ Current pipeline stages:
 7. Pipeline summary generation
 ```
 
+### Exception Lifecycle Tracking
+
+`versions/v3/src/reconciliation/exception_lifecycle.py`
+
+Builds an exception lifecycle view from the v3 exception queue.
+
+The lifecycle view adds aging and SLA-oriented review fields, including source transaction date, age in days, aging bucket, review SLA days, SLA status, and recommended next action.
+
+The v3 pipeline now writes this output as `exception_lifecycle.csv`.
+
+This does not change reconciliation decisions. It extends the analyst review workflow by making open exceptions easier to prioritize, monitor, and escalate.
+
 ### Pipeline Summary Hardening
 
 `versions/v3/src/reconciliation/pipeline_summary.py`
@@ -512,6 +525,7 @@ The project includes tests for:
 * v3 exception queue builder
 * v3 pipeline runner
 * v3 pipeline summary hardening
+* v3 exception lifecycle tracking
 
 Run all tests with:
 

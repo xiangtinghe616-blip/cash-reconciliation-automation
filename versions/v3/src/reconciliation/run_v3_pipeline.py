@@ -33,6 +33,9 @@ from versions.v3.src.matching.split_payment_candidates import (  # noqa: E402
     build_split_payment_candidates,
 )
 from versions.v3.src.reconciliation.exception_builder import build_exception_queue  # noqa: E402
+from versions.v3.src.reconciliation.exception_lifecycle import (  # noqa: E402
+    build_exception_lifecycle_view,
+)
 from versions.v3.src.reconciliation.pipeline_summary import (  # noqa: E402
     build_pipeline_summary,
     make_summary_row,
@@ -276,6 +279,27 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Exception queue rows: {len(exception_queue)}")
     print(f"Exception queue output: {exception_queue_output_path}")
 
+    print("Step 6b/7: Building exception lifecycle view...")
+
+    lifecycle_as_of_date = datetime.now(timezone.utc).date()
+    exception_lifecycle = build_exception_lifecycle_view(
+        exception_queue=exception_queue,
+        as_of_date=lifecycle_as_of_date,
+    )
+
+    breached_sla_count = (
+        int((exception_lifecycle["sla_status"] == "BREACHED").sum())
+        if not exception_lifecycle.empty
+        else 0
+    )
+
+    exception_lifecycle_output_path = V3_OUTPUT_DIR / "exception_lifecycle.csv"
+    write_csv(exception_lifecycle, exception_lifecycle_output_path)
+
+    print(f"Exception lifecycle rows: {len(exception_lifecycle)}")
+    print(f"Breached SLA exceptions: {breached_sla_count}")
+    print(f"Exception lifecycle output: {exception_lifecycle_output_path}")
+
     print("Step 7/7: Writing pipeline summary...")
 
     summary_rows = [
@@ -401,6 +425,19 @@ def run_v3_pipeline() -> dict[str, Any]:
             review_required_count=len(exception_queue),
             notes="Exception queue built for unresolved reconciliation breaks.",
         ),
+        make_summary_row(
+            run_id=run_id,
+            stage_order=11,
+            stage="exception_lifecycle_build",
+            stage_type="exception_management",
+            control_area="analyst_review",
+            status=review_status(len(exception_lifecycle)),
+            output_file="exception_lifecycle.csv",
+            record_count=len(exception_lifecycle),
+            issue_count=breached_sla_count,
+            review_required_count=len(exception_lifecycle),
+            notes="Exception lifecycle view built with aging buckets and SLA status.",
+        ),
     ]
 
     summary = build_pipeline_summary(summary_rows)
@@ -428,6 +465,8 @@ def run_v3_pipeline() -> dict[str, Any]:
         "split_payment_candidate_count": len(split_payment_candidates),
         "amount_mismatch_count": amount_mismatch_count,
         "exception_count": len(exception_queue),
+        "exception_lifecycle_count": len(exception_lifecycle),
+        "breached_sla_count": breached_sla_count,
         "summary_output_path": summary_output_path,
     }
 
