@@ -360,7 +360,7 @@ def run_v3_pipeline() -> dict[str, Any]:
             record_count=len(frictionless_validation_issues_df),
             issue_count=len(frictionless_validation_issues_df),
             review_required_count=len(frictionless_validation_issues_df),
-            notes="Frictionless table schema validation completed.",
+            notes="Frictionless table schema validation completed; issue_count may be capped by the validation error limit.",
         ),
         make_summary_row(
             run_id=run_id,
@@ -456,7 +456,7 @@ def run_v3_pipeline() -> dict[str, Any]:
             record_count=len(exception_lifecycle),
             issue_count=breached_sla_count,
             review_required_count=len(exception_lifecycle),
-            notes="Exception lifecycle view built with aging buckets and SLA status.",
+            notes="Exception lifecycle view built with aging buckets and SLA status; issue_count represents breached SLA exceptions.",
         ),
         make_summary_row(
             run_id=run_id,
@@ -469,7 +469,7 @@ def run_v3_pipeline() -> dict[str, Any]:
             record_count=len(exception_actions),
             issue_count=escalation_action_count,
             review_required_count=len(exception_actions),
-            notes="System-recommended analyst actions generated from exception lifecycle status.",
+            notes="System-recommended analyst actions generated from exception lifecycle status; issue_count represents escalation action recommendations.",
         ),
     ]
 

@@ -150,3 +150,18 @@ def test_run_v3_pipeline_creates_expected_outputs():
 
     assert exception_summary["control_area"] == "analyst_review"
     assert exception_summary["review_required_count"] == result["exception_count"]
+
+    frictionless_summary = summary[
+        summary["stage"] == "frictionless_schema_validation"
+    ].iloc[0]
+    assert "capped by the validation error limit" in frictionless_summary["notes"]
+
+    lifecycle_summary = summary[
+        summary["stage"] == "exception_lifecycle_build"
+    ].iloc[0]
+    assert "breached SLA exceptions" in lifecycle_summary["notes"]
+
+    action_summary = summary[
+        summary["stage"] == "exception_action_generation"
+    ].iloc[0]
+    assert "escalation action recommendations" in action_summary["notes"]

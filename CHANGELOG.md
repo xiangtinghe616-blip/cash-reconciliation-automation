@@ -4,6 +4,22 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-22 — v3 Pipeline Summary Notes Clarification
+
+### Changed
+
+- Clarified pipeline summary notes for validation and exception workflow stages.
+- Added explicit wording that Frictionless validation issue counts may be capped by the validation error limit.
+- Added explicit wording that exception lifecycle issue counts represent breached SLA exceptions.
+- Added explicit wording that exception action issue counts represent escalation action recommendations.
+- Updated pipeline runner tests to verify these summary notes.
+
+### Design Notes
+
+- This does not change reconciliation logic.
+- This improves interpretability of `pipeline_run_summary.csv`.
+- The summary is now less likely to be misread as a generic error log.
+
 ## 2026-05-21 — v3 Manual Action Log File Validation Milestone
 
 ### Added
