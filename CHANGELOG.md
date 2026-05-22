@@ -4,6 +4,23 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-21 — v3 Manual Exception Action Log Milestone
+
+### Added
+
+- Added `versions/v3/src/reconciliation/exception_action_log.py`.
+- Added `tests/test_v3_exception_action_log.py`.
+- Added `versions/v3/templates/manual_exception_action_log_template.csv`.
+- Added a manual analyst action log template and validator.
+
+### Design Notes
+
+- The manual action log is separate from system-generated `exception_actions.csv`.
+- `exception_actions.csv` contains system-recommended actions.
+- The manual action log template is intended for human-entered review records.
+- The validator checks required columns, required values, duplicate action IDs, allowed action types, allowed status values, and required review notes for escalation or resolution actions.
+- This strengthens the human review audit trail without changing reconciliation logic.
+
 ## 2026-05-21 — v3 Exception Action Recommendations Milestone
 
 ### Added

@@ -483,6 +483,18 @@ Current pipeline stages:
 7. Pipeline summary generation
 ```
 
+### Manual Exception Action Log Template
+
+`versions/v3/src/reconciliation/exception_action_log.py`
+
+Provides a template and validator for manual analyst review actions.
+
+The project includes an empty manual action log template at `versions/v3/templates/manual_exception_action_log_template.csv`.
+
+This template is intended for real analyst review activity after system-generated recommendations are produced. It separates system-recommended actions from human-entered action records.
+
+The validator checks required columns, required values, duplicate action IDs, allowed action types, allowed status values, and required review notes for escalation or resolution actions.
+
 ### Exception Action Recommendations
 
 `versions/v3/src/reconciliation/exception_actions.py`
@@ -540,6 +552,7 @@ The project includes tests for:
 * v3 pipeline summary hardening
 * v3 exception lifecycle tracking
 * v3 exception action recommendations
+* v3 manual exception action log template and validator
 
 Run all tests with:
 
