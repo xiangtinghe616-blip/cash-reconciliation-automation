@@ -495,6 +495,8 @@ This template is intended for real analyst review activity after system-generate
 
 The validator checks required columns, required values, duplicate action IDs, allowed action types, allowed status values, and required review notes for escalation or resolution actions.
 
+The file-level governance check can validate the default template or a filled manual action log CSV through `validate_manual_action_log_file`. This allows manually maintained review logs to be checked for missing columns, required values, invalid statuses, duplicate action IDs, and missing review notes.
+
 ### Exception Action Recommendations
 
 `versions/v3/src/reconciliation/exception_actions.py`

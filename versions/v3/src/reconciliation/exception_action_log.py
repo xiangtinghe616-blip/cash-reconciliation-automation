@@ -1,8 +1,19 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
+
+
+REPO_ROOT = Path(__file__).resolve().parents[4]
+DEFAULT_MANUAL_ACTION_LOG_TEMPLATE_PATH = (
+    REPO_ROOT
+    / "versions"
+    / "v3"
+    / "templates"
+    / "manual_exception_action_log_template.csv"
+)
 
 
 MANUAL_ACTION_LOG_COLUMNS = [
@@ -192,3 +203,45 @@ def validate_manual_action_log(action_log: pd.DataFrame) -> list[dict[str, Any]]
             )
 
     return issues
+
+def load_manual_action_log(csv_path: Path) -> pd.DataFrame:
+    return pd.read_csv(csv_path)
+
+
+def validate_manual_action_log_file(
+    csv_path: Path = DEFAULT_MANUAL_ACTION_LOG_TEMPLATE_PATH,
+) -> dict[str, Any]:
+    csv_path = Path(csv_path)
+
+    if not csv_path.exists():
+        issues = [
+            {
+                "row_number": "file",
+                "field_name": "csv_path",
+                "issue_code": "ACTION_LOG_FILE_NOT_FOUND",
+                "severity": "High",
+                "observed_value": str(csv_path),
+                "expected_rule": "Manual action log file should exist before validation.",
+                "suggested_fix": "Create the manual action log file or provide a valid path.",
+            }
+        ]
+
+        return {
+            "valid": False,
+            "validated_file": str(csv_path),
+            "row_count": 0,
+            "issue_count": len(issues),
+            "issues": issues,
+        }
+
+    action_log = load_manual_action_log(csv_path)
+    issues = validate_manual_action_log(action_log)
+
+    return {
+        "valid": len(issues) == 0,
+        "validated_file": str(csv_path),
+        "row_count": len(action_log),
+        "issue_count": len(issues),
+        "issues": issues,
+    }
+

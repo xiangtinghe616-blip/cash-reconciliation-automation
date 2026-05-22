@@ -4,6 +4,22 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-21 — v3 Manual Action Log File Validation Milestone
+
+### Added
+
+- Added file-level validation for manual exception action logs.
+- Added `validate_manual_action_log_file` to `versions/v3/src/reconciliation/exception_action_log.py`.
+- Added `tests/test_v3_exception_action_log_file.py`.
+- Added checks for default template validation, valid filled logs, invalid logs, and missing manual action log files.
+
+### Design Notes
+
+- This validates manually maintained analyst review logs without treating them as generated pipeline output.
+- The validator supports governance over human-entered review records.
+- This keeps system-generated action recommendations separate from human-entered action history.
+- This strengthens the manual review audit trail without changing reconciliation logic.
+
 ## 2026-05-21 — v3 Manual Exception Action Log Milestone
 
 ### Added
