@@ -66,5 +66,14 @@ def test_v3_scenario_manifest_covers_core_v3_outputs():
     assert "great_expectations_validation_issues.csv" in joined_outputs
     assert "reconciliation_links.csv" in joined_outputs
     assert "candidate_links.csv" in joined_outputs
+    assert "splink_candidate_links.csv" in joined_outputs
     assert "split_payment_candidates.csv" in joined_outputs
     assert "exception_queue.csv" in joined_outputs
+
+
+
+def test_v3_scenario_manifest_includes_splink_candidate_layer():
+    manifest = load_manifest()
+    scenario_ids = {scenario["id"] for scenario in manifest["scenarios"]}
+
+    assert "SPLINK_PROBABILISTIC_CANDIDATE" in scenario_ids

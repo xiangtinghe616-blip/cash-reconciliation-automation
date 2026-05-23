@@ -4,6 +4,22 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-23 — v3 Splink Scenario Manifest Coverage Milestone
+
+### Changed
+
+- Added `SPLINK_PROBABILISTIC_CANDIDATE` to `versions/v3/scenario_manifest.yaml`.
+- Added `splink_candidate_link_generation` to known scenario detection layers.
+- Added `splink_candidate_links.csv` to known scenario expected outputs.
+- Updated scenario manifest tests and validator tests for Splink candidate coverage.
+
+### Design Notes
+
+- Splink candidate generation is now represented in dataset governance metadata.
+- Splink remains a probabilistic analyst review suggestion layer.
+- Splink does not replace deterministic reconciliation links.
+- Splink does not make final reconciliation decisions.
+
 ## 2026-05-23 — v3 Splink Pipeline Integration Milestone
 
 ### Added

@@ -44,6 +44,7 @@ KNOWN_DETECTION_LAYERS = {
     "frictionless_and_great_expectations_validation",
     "deterministic_matching",
     "candidate_link_generation",
+    "splink_candidate_link_generation",
     "split_payment_candidate_generation",
     "exception_queue_build",
 }
@@ -57,6 +58,7 @@ KNOWN_PIPELINE_OUTPUTS = {
     "canonical_internal_transactions.csv",
     "reconciliation_links.csv",
     "candidate_links.csv",
+    "splink_candidate_links.csv",
     "split_payment_candidates.csv",
     "exception_queue.csv",
     "pipeline_run_summary.csv",

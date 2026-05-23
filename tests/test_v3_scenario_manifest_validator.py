@@ -19,6 +19,7 @@ def test_validate_scenario_manifest_accepts_default_manifest():
     assert result["issue_count"] == 0
     assert result["scenario_count"] >= 8
     assert "EXACT_CANONICAL_MATCH" in result["scenario_ids"]
+    assert "SPLINK_PROBABILISTIC_CANDIDATE" in result["scenario_ids"]
 
 
 def test_validate_scenario_manifest_flags_duplicate_ids(tmp_path):

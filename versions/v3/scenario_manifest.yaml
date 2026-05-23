@@ -67,6 +67,14 @@ scenarios:
     decision_type: review_suggestion
     review_required: true
 
+  - id: SPLINK_PROBABILISTIC_CANDIDATE
+    category: analyst_review_candidate
+    description: Splink generates probabilistic candidate links from rows that remain unmatched after deterministic matching.
+    expected_detection_layer: splink_candidate_link_generation
+    expected_output: splink_candidate_links.csv
+    decision_type: probabilistic_review_suggestion
+    review_required: true
+
   - id: SPLIT_PAYMENT_CANDIDATE
     category: analyst_review_candidate
     description: One bank transaction may correspond to multiple ledger transactions.

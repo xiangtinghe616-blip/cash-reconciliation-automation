@@ -64,12 +64,15 @@ Current scenario coverage includes:
 * Reference-format matches
 * Timing-difference matches
 * Candidate links for analyst review
+* Splink probabilistic candidate links
 * Split-payment candidates
 * Amount mismatch exceptions
 * Unmatched bank transactions
 * Unmatched ledger transactions
 
 This file does not add reconciliation logic. It documents the dataset design and expected control coverage.
+
+The scenario manifest now includes Splink probabilistic candidate coverage as a review-only candidate layer after deterministic matching.
 
 ## v3 Data Package Manifest
 
