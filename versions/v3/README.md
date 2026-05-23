@@ -416,6 +416,16 @@ Timing difference matching uses:
 * Normalized reference
 * Date gap tolerance
 
+### Splink Probabilistic Candidate Links
+
+`versions/v3/src/matching/splink_candidate_links.py`
+
+Builds a Splink-based probabilistic candidate layer for unmatched bank and ledger records.
+
+This layer prepares unmatched records after deterministic reconciliation, creates conservative link-only Splink settings, and formats probabilistic predictions as analyst review candidates.
+
+Splink candidates are not final reconciliation decisions. They are review suggestions only. Deterministic reconciliation links remain the authoritative matching layer, and human review is required before any uncertain candidate is accepted.
+
 ### Candidate Link Scoring
 
 ```text
@@ -548,6 +558,7 @@ The project includes tests for:
 * v3 deterministic matching rules
 * v3 reference-format matching
 * v3 candidate link scoring
+* v3 Splink probabilistic candidate links
 * v3 split-payment candidate detection
 * v3 exception queue builder
 * v3 pipeline runner
