@@ -102,6 +102,7 @@ canonical_bank_transactions.csv
 canonical_internal_transactions.csv
 reconciliation_links.csv
 candidate_links.csv
+splink_candidate_links.csv
 split_payment_candidates.csv
 exception_queue.csv
 pipeline_run_summary.csv
@@ -204,6 +205,25 @@ Current candidate fields include:
 * `feature_counterparty_similarity`
 * `rationale`
 
+### splink_candidate_links.csv
+
+Contains Splink-based probabilistic candidate links for analyst review.
+
+This output is generated after deterministic matching and uses only rows that remain unmatched by deterministic rules.
+
+Splink candidate links are not final reconciliation decisions. They are probabilistic review suggestions and must be reviewed by an analyst before any reconciliation action is accepted.
+
+Current Splink candidate fields include:
+
+* `splink_candidate_id`
+* `candidate_status`
+* `candidate_source`
+* `match_probability`
+* `match_weight`
+* `bank_source_row_id`
+* `ledger_source_row_id`
+* `rationale`
+
 ### split_payment_candidates.csv
 
 Contains possible one-to-many split-payment candidates for analyst review.
@@ -263,6 +283,7 @@ bank_standardization
 ledger_standardization
 deterministic_matching
 candidate_link_generation
+splink_candidate_link_generation
 split_payment_candidate_generation
 exception_queue_build
 exception_lifecycle_build
@@ -422,7 +443,7 @@ Timing difference matching uses:
 
 Builds a Splink-based probabilistic candidate layer for unmatched bank and ledger records.
 
-This layer prepares unmatched records after deterministic reconciliation, creates conservative link-only Splink settings, and formats probabilistic predictions as analyst review candidates.
+This layer prepares unmatched records after deterministic reconciliation, creates conservative link-only Splink settings, formats probabilistic predictions as analyst review candidates, and is now wired into the v3 pipeline as `splink_candidate_links.csv`.
 
 Splink candidates are not final reconciliation decisions. They are review suggestions only. Deterministic reconciliation links remain the authoritative matching layer, and human review is required before any uncertain candidate is accepted.
 
@@ -608,7 +629,6 @@ v3 is still a local prototype and does not yet include:
 * Real bank or ERP source adapters
 * Database persistence
 * A Streamlit analyst review interface
-* Splink-based probabilistic matching
 * Full exception lifecycle tracking
 * Prefect orchestration
 * Production deployment configuration

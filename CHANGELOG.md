@@ -4,6 +4,27 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-23 — v3 Splink Pipeline Integration Milestone
+
+### Added
+
+- Added `splink_candidate_links.csv` as a generated v3 pipeline output.
+- Added `splink_candidate_link_generation` to the hardened pipeline summary.
+- Added pipeline runner test coverage for Splink candidate output and summary stage.
+
+### Changed
+
+- Wired `build_splink_candidate_links` into `run_v3_pipeline.py`.
+- Updated `versions/v3/README.md` to document Splink pipeline integration.
+
+### Design Notes
+
+- Splink runs after deterministic matching and only considers remaining unmatched rows.
+- Splink candidates are probabilistic analyst review suggestions.
+- Splink does not replace deterministic reconciliation links.
+- Splink does not make final reconciliation decisions.
+- Human review remains required before uncertain candidates are accepted.
+
 ## 2026-05-23 — v3 Splink Candidate Builder Milestone
 
 ### Added

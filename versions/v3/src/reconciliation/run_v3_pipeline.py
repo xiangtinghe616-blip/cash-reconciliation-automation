@@ -28,6 +28,9 @@ from versions.v3.src.core.standardize import (  # noqa: E402
     standardize_internal_ledger,
 )
 from versions.v3.src.matching.candidate_links import build_candidate_links  # noqa: E402
+from versions.v3.src.matching.splink_candidate_links import (  # noqa: E402
+    build_splink_candidate_links,
+)
 from versions.v3.src.matching.deterministic_rules import find_deterministic_matches  # noqa: E402
 from versions.v3.src.matching.split_payment_candidates import (  # noqa: E402
     build_split_payment_candidates,
@@ -260,6 +263,21 @@ def run_v3_pipeline() -> dict[str, Any]:
     print(f"Candidate links for review: {len(candidate_links)}")
     print(f"Candidate links output: {candidate_links_output_path}")
 
+    print("Step 5b/7: Building Splink probabilistic candidates...")
+
+    splink_candidate_links = build_splink_candidate_links(
+        canonical_bank=canonical_bank,
+        canonical_ledger=canonical_ledger,
+        reconciliation_links=reconciliation_links,
+        run_id=run_id,
+    )
+
+    splink_candidate_links_output_path = V3_OUTPUT_DIR / "splink_candidate_links.csv"
+    write_csv(splink_candidate_links, splink_candidate_links_output_path)
+
+    print(f"Splink probabilistic candidates: {len(splink_candidate_links)}")
+    print(f"Splink candidate links output: {splink_candidate_links_output_path}")
+
     print("Step 6/7: Building exception queue...")
 
     exception_queue = build_exception_queue(
@@ -423,6 +441,18 @@ def run_v3_pipeline() -> dict[str, Any]:
         make_summary_row(
             run_id=run_id,
             stage_order=9,
+            stage="splink_candidate_link_generation",
+            stage_type="review_generation",
+            control_area="probabilistic_linkage",
+            status=review_status(len(splink_candidate_links)),
+            output_file="splink_candidate_links.csv",
+            record_count=len(splink_candidate_links),
+            review_required_count=len(splink_candidate_links),
+            notes="Splink probabilistic candidates generated for analyst review; not final reconciliation decisions.",
+        ),
+        make_summary_row(
+            run_id=run_id,
+            stage_order=10,
             stage="split_payment_candidate_generation",
             stage_type="review_generation",
             control_area="analyst_review",
@@ -434,7 +464,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         ),
         make_summary_row(
             run_id=run_id,
-            stage_order=10,
+            stage_order=11,
             stage="exception_queue_build",
             stage_type="exception_management",
             control_area="analyst_review",
@@ -447,7 +477,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         ),
         make_summary_row(
             run_id=run_id,
-            stage_order=11,
+            stage_order=12,
             stage="exception_lifecycle_build",
             stage_type="exception_management",
             control_area="analyst_review",
@@ -460,7 +490,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         ),
         make_summary_row(
             run_id=run_id,
-            stage_order=12,
+            stage_order=13,
             stage="exception_action_generation",
             stage_type="review_workflow",
             control_area="analyst_review",
@@ -495,6 +525,7 @@ def run_v3_pipeline() -> dict[str, Any]:
         "timing_match_count": timing_match_count,
         "deterministic_match_count": len(reconciliation_links),
         "candidate_link_count": len(candidate_links),
+        "splink_candidate_link_count": len(splink_candidate_links),
         "split_payment_candidate_count": len(split_payment_candidates),
         "amount_mismatch_count": amount_mismatch_count,
         "exception_count": len(exception_queue),

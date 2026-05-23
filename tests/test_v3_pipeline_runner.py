@@ -23,6 +23,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "canonical_internal_transactions.csv",
         "reconciliation_links.csv",
         "candidate_links.csv",
+        "splink_candidate_links.csv",
         "split_payment_candidates.csv",
         "exception_queue.csv",
         "exception_lifecycle.csv",
@@ -47,6 +48,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert result["timing_match_count"] >= 0
     assert result["deterministic_match_count"] >= result["exact_match_count"]
     assert result["candidate_link_count"] >= 0
+    assert result["splink_candidate_link_count"] >= 0
     assert result["split_payment_candidate_count"] >= 0
     assert result["amount_mismatch_count"] >= 0
     assert result["exception_count"] >= 1
@@ -68,6 +70,17 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "ledger_source_row_id",
         "rationale",
     }.issubset(set(candidate_links.columns))
+
+    splink_candidate_links = pd.read_csv(output_dir / "splink_candidate_links.csv")
+    assert {
+        "splink_candidate_id",
+        "candidate_status",
+        "candidate_source",
+        "match_probability",
+        "bank_source_row_id",
+        "ledger_source_row_id",
+        "rationale",
+    }.issubset(set(splink_candidate_links.columns))
 
     split_payment_candidates = pd.read_csv(output_dir / "split_payment_candidates.csv")
     assert {
@@ -119,6 +132,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
         "ledger_standardization",
         "deterministic_matching",
         "candidate_link_generation",
+        "splink_candidate_link_generation",
         "split_payment_candidate_generation",
         "exception_queue_build",
         "exception_lifecycle_build",
@@ -142,7 +156,7 @@ def test_run_v3_pipeline_creates_expected_outputs():
     assert expected_summary_columns.issubset(set(summary.columns))
     assert summary["stage_order"].is_monotonic_increasing
     assert summary["stage_order"].min() == 1
-    assert summary["stage_order"].max() == 12
+    assert summary["stage_order"].max() == 13
 
     exception_summary = summary[
         summary["stage"] == "exception_queue_build"
@@ -165,3 +179,9 @@ def test_run_v3_pipeline_creates_expected_outputs():
         summary["stage"] == "exception_action_generation"
     ].iloc[0]
     assert "escalation action recommendations" in action_summary["notes"]
+
+    splink_summary = summary[
+        summary["stage"] == "splink_candidate_link_generation"
+    ].iloc[0]
+    assert splink_summary["control_area"] == "probabilistic_linkage"
+    assert "not final reconciliation decisions" in splink_summary["notes"]
