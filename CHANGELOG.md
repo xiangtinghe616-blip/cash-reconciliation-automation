@@ -4,6 +4,21 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-23 — v3 Splink Dependency Smoke Test Milestone
+
+### Added
+
+- Added `splink>=4.0.0,<5.0.0` to `requirements-v3.txt`.
+- Added `tests/test_v3_splink_import.py`.
+- Added a Splink import smoke test for the current v3 environment.
+
+### Design Notes
+
+- This step only verifies Splink dependency availability and core API imports.
+- No Splink matching logic has been added yet.
+- Splink will be used only as a probabilistic candidate suggestion layer after deterministic matching.
+- Splink will not make final reconciliation decisions.
+
 ## 2026-05-22 — v3 Pipeline Summary Notes Clarification
 
 ### Changed
