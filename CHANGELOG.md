@@ -4,6 +4,21 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-23 — v3 Splink Candidate Scaffold Milestone
+
+### Added
+
+- Added `versions/v3/src/matching/splink_candidate_links.py`.
+- Added `tests/test_v3_splink_candidate_links.py`.
+- Added Splink candidate layer scaffold for preparing unmatched bank and ledger records.
+- Added conservative Splink settings for link-only probabilistic candidate generation.
+
+### Design Notes
+
+- This step prepares the Splink candidate layer but does not yet generate Splink candidate predictions.
+- Deterministic reconciliation remains the primary match decision layer.
+- Splink will be used only for analyst review candidate suggestions, not final reconciliation decisions.
+
 ## 2026-05-23 — v3 Splink Dependency Smoke Test Milestone
 
 ### Added
