@@ -4,6 +4,24 @@ All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
 
+## 2026-05-23 — v3 Analyst Dashboard Scaffold Milestone
+
+### Added
+
+- Added `versions/v3/app/dashboard_data.py`.
+- Added `versions/v3/app/dashboard_charts.py`.
+- Added `versions/v3/app/analyst_dashboard.py`.
+- Added Streamlit and Plotly dependencies to `requirements-v3.txt`.
+- Added dashboard tests for data loading, chart generation, and tab structure.
+
+### Design Notes
+
+- This is the first Streamlit analyst dashboard scaffold.
+- The dashboard reads generated v3 pipeline outputs and organizes them into analyst review tabs.
+- The dashboard supports review visibility but does not make reconciliation decisions.
+- Splink candidates remain probabilistic review suggestions only.
+- Future dashboard work will focus on cognitive review flow, filters, layout polish, and review prioritization.
+
 ## 2026-05-23 — v3 Splink Scenario Manifest Coverage Milestone
 
 ### Changed

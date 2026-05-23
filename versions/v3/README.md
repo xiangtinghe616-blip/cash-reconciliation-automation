@@ -87,6 +87,31 @@ Current declared resources:
 
 The manifest also records the project data policy and the core reconciliation design principle: deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
 
+## v3 Analyst Dashboard
+
+v3 includes a local Streamlit analyst dashboard:
+
+`versions/v3/app/analyst_dashboard.py`
+
+The dashboard is designed as an analyst review cockpit for the generated v3 outputs. It helps reviewers understand the pipeline run, control checks, deterministic matches, review candidates, Splink probabilistic candidates, exceptions, lifecycle / SLA status, and system-recommended actions.
+
+Current dashboard tabs:
+
+* Overview
+* Controls
+* Deterministic Matches
+* Review Candidates
+* Splink Candidates
+* Exceptions
+* Lifecycle / SLA
+* Actions
+
+The dashboard uses synthetic demo outputs only. It supports analyst review and does not make final reconciliation decisions.
+
+To run locally after generating v3 outputs:
+
+`python -m streamlit run versions/v3/app/analyst_dashboard.py`
+
 ## Current v3 Outputs
 
 The v3 pipeline writes generated local outputs to:
@@ -591,6 +616,9 @@ The project includes tests for:
 * v3 exception action recommendations
 * v3 manual exception action log template and validator
 
+* v3 analyst dashboard data loading
+* v3 analyst dashboard charts
+* v3 analyst dashboard tab structure
 Run all tests with:
 
 ```bash
