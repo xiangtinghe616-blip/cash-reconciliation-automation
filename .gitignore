@@ -63,3 +63,10 @@ client_data/
 # Local LLM / model artifacts
 models/
 ollama_models/
+# Frontend / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+frontend/.env.local
+frontend/.env.*.local
