@@ -5,3 +5,4 @@ great_expectations>=1.0.0,<2.0.0
 splink>=4.0.0,<5.0.0
 streamlit>=1.30.0,<2.0.0
 plotly>=5.0.0,<7.0.0
+streamlit-shadcn-ui>=0.1.0,<0.2.0

@@ -22,6 +22,22 @@ This project is a control-aware cash reconciliation automation portfolio project
 - Splink candidates remain probabilistic review suggestions only.
 - Future dashboard work will focus on cognitive review flow, filters, layout polish, and review prioritization.
 
+## 2026-05-23 — v3 Streamlit Workbench Prototype Checkpoint
+
+### Added
+
+- Added Streamlit analyst dashboard prototype files under `versions/v3/app/`.
+- Added dashboard component, theme, view-model, and break-workbench view-model scaffolding.
+- Added tests for dashboard data loading, charts, components, theme, and workbench view models.
+- Added Streamlit UI dependencies for Python-side prototyping.
+
+### Design Notes
+
+- This checkpoint preserves the Streamlit prototype as an internal analyst-workbench experiment.
+- The Streamlit app is not the final polished frontend direction.
+- The project will continue toward a product-grade Next.js frontend while preserving the Python reconciliation engine.
+- The intended final UI direction is a break-resolution workbench, not a pipeline-output viewer.
+
 ## 2026-05-23 — v3 Splink Scenario Manifest Coverage Milestone
 
 ### Changed
