@@ -1,14 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  candidatesByExceptionId,
-  evidenceByExceptionId,
-  priorityQueue,
+  candidatesByExceptionId as fallbackCandidatesByExceptionId,
+  evidenceByExceptionId as fallbackEvidenceByExceptionId,
+  priorityQueue as fallbackPriorityQueue,
   type BreakItem,
   type Candidate,
   type EvidenceField,
 } from "@/lib/demoData";
+
+type WorkbenchData = {
+  priorityQueue: BreakItem[];
+  evidenceByExceptionId: Record<string, EvidenceField[]>;
+  candidatesByExceptionId: Record<string, Candidate[]>;
+};
+
+const fallbackWorkbenchData: WorkbenchData = {
+  priorityQueue: fallbackPriorityQueue,
+  evidenceByExceptionId: fallbackEvidenceByExceptionId,
+  candidatesByExceptionId: fallbackCandidatesByExceptionId,
+};
 
 function StatusBadge({ value }: { value: string }) {
   const style =
@@ -145,16 +157,84 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
 }
 
 export default function BreakResolutionWorkbench() {
-  const [selectedId, setSelectedId] = useState(priorityQueue[0].exceptionId);
+  const [workbenchData, setWorkbenchData] = useState<WorkbenchData>(fallbackWorkbenchData);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
+  const [dataSource, setDataSource] = useState("static fallback");
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
+  useEffect(() => {
+    async function loadWorkbenchData() {
+      try {
+        const response = await fetch("/demo-data/workbench-data.json", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Could not load generated workbench JSON.");
+        }
+
+        const payload = (await response.json()) as Partial<WorkbenchData>;
+
+        if (
+          Array.isArray(payload.priorityQueue) &&
+          payload.priorityQueue.length > 0 &&
+          payload.evidenceByExceptionId &&
+          payload.candidatesByExceptionId
+        ) {
+          setWorkbenchData({
+            priorityQueue: payload.priorityQueue,
+            evidenceByExceptionId: payload.evidenceByExceptionId,
+            candidatesByExceptionId: payload.candidatesByExceptionId,
+          });
+          setDataSource("generated v3 output");
+        }
+      } catch {
+        setWorkbenchData(fallbackWorkbenchData);
+        setDataSource("static fallback");
+      } finally {
+        setIsLoadingData(false);
+      }
+    }
+
+    void loadWorkbenchData();
+  }, []);
+
+  useEffect(() => {
+    if (workbenchData.priorityQueue.length === 0) {
+      return;
+    }
+
+    const selectedStillExists = workbenchData.priorityQueue.some(
+      (item) => item.exceptionId === selectedId,
+    );
+
+    if (!selectedId || !selectedStillExists) {
+      setSelectedId(workbenchData.priorityQueue[0].exceptionId);
+    }
+  }, [selectedId, workbenchData.priorityQueue]);
 
   const selectedBreak = useMemo(
-    () => priorityQueue.find((item) => item.exceptionId === selectedId) ?? priorityQueue[0],
-    [selectedId],
+    () =>
+      workbenchData.priorityQueue.find((item) => item.exceptionId === selectedId) ??
+      workbenchData.priorityQueue[0],
+    [selectedId, workbenchData.priorityQueue],
   );
 
-  const evidenceFields = evidenceByExceptionId[selectedBreak.exceptionId] ?? [];
-  const relatedCandidates = candidatesByExceptionId[selectedBreak.exceptionId] ?? [];
+  if (!selectedBreak) {
+    return (
+      <main className="min-h-screen bg-[#f4f6f8] p-8 text-slate-950">
+        <div className="rounded-3xl bg-white p-8 shadow-sm">
+          No workbench data available. Run the v3 pipeline and frontend exporter.
+        </div>
+      </main>
+    );
+  }
+
+  const evidenceFields =
+    workbenchData.evidenceByExceptionId[selectedBreak.exceptionId] ?? [];
+  const relatedCandidates =
+    workbenchData.candidatesByExceptionId[selectedBreak.exceptionId] ?? [];
 
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
@@ -181,6 +261,9 @@ export default function BreakResolutionWorkbench() {
               <div className="mt-1 leading-6">
                 System recommends. Analyst decides. Action log records.
               </div>
+              <div className="mt-3 text-xs text-amber-200/80">
+                Data source: {isLoadingData ? "loading..." : dataSource}
+              </div>
             </div>
           </div>
         </header>
@@ -198,7 +281,7 @@ export default function BreakResolutionWorkbench() {
             </div>
 
             <div className="space-y-3">
-              {priorityQueue.map((item) => (
+              {workbenchData.priorityQueue.map((item) => (
                 <QueueCard
                   key={item.exceptionId}
                   item={item}
