@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-25 — Next.js Workbench Interaction Polish Milestone
+
+### Changed
+
+- Improved the interactive Next.js break resolution workbench.
+- Added structured action log preview metadata.
+- Added decision timestamps for analyst action preview.
+- Improved candidate evidence cards with source badges and review-only boundary copy.
+- Preserved the control boundary that system recommendations are not final reconciliation decisions.
+
+### Design Notes
+
+- This milestone improves the workbench as a task-oriented break resolution interface.
+- The UI now better supports the flow from priority queue to evidence review to action logging.
+- The frontend still uses generated synthetic demo data and does not submit real analyst actions.
+
 ## 2026-05-25 — Frontend Workbench Data Exporter Milestone
 
 ### Added

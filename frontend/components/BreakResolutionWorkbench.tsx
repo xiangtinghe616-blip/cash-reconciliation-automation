@@ -145,13 +145,30 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
 }
 
 function CandidateCard({ candidate }: { candidate: Candidate }) {
+  const sourceStyle =
+    candidate.source === "Splink"
+      ? "bg-blue-50 text-blue-700 ring-blue-200"
+      : candidate.source === "Split-payment"
+        ? "bg-amber-50 text-amber-700 ring-amber-200"
+        : "bg-slate-100 text-slate-700 ring-slate-200";
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
-        {candidate.source}
+      <div className="flex items-center justify-between gap-3">
+        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${sourceStyle}`}>
+          {candidate.source}
+        </span>
+        <span className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+          Review only
+        </span>
       </div>
-      <div className="mt-3 text-2xl font-black">{candidate.confidence}</div>
+
+      <div className="mt-4 text-2xl font-black">{candidate.confidence}</div>
       <p className="mt-3 text-sm leading-6 text-slate-600">{candidate.rationale}</p>
+
+      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
+        Candidate evidence supports review prioritization. It does not confirm a match.
+      </div>
     </div>
   );
 }
@@ -160,6 +177,7 @@ export default function BreakResolutionWorkbench() {
   const [workbenchData, setWorkbenchData] = useState<WorkbenchData>(fallbackWorkbenchData);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
+  const [decisionTimestamp, setDecisionTimestamp] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
 
@@ -289,6 +307,7 @@ export default function BreakResolutionWorkbench() {
                   onSelect={() => {
                     setSelectedId(item.exceptionId);
                     setDecision(null);
+                    setDecisionTimestamp(null);
                   }}
                 />
               ))}
@@ -336,25 +355,37 @@ export default function BreakResolutionWorkbench() {
 
             <div className="mt-5 space-y-3">
               <button
-                onClick={() => setDecision("Accepted recommendation")}
+                onClick={() => {
+                  setDecision("Accepted recommendation");
+                  setDecisionTimestamp(new Date().toISOString());
+                }}
                 className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white"
               >
                 Accept recommendation
               </button>
               <button
-                onClick={() => setDecision("Rejected recommendation")}
+                onClick={() => {
+                  setDecision("Rejected recommendation");
+                  setDecisionTimestamp(new Date().toISOString());
+                }}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
               >
                 Reject recommendation
               </button>
               <button
-                onClick={() => setDecision("Requested more information")}
+                onClick={() => {
+                  setDecision("Requested more information");
+                  setDecisionTimestamp(new Date().toISOString());
+                }}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
               >
                 Request info
               </button>
               <button
-                onClick={() => setDecision("Added analyst note")}
+                onClick={() => {
+                  setDecision("Added analyst note");
+                  setDecisionTimestamp(new Date().toISOString());
+                }}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
               >
                 Add analyst note
@@ -363,11 +394,33 @@ export default function BreakResolutionWorkbench() {
 
             <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
               <div className="font-bold text-slate-900">Action log preview</div>
-              <p className="mt-2">
-                {decision
-                  ? `${decision} for ${selectedBreak.exceptionId}. The system would record analyst identity, timestamp, recommendation source, and evidence snapshot.`
-                  : "Choose an action to preview the audit log entry before submission."}
-              </p>
+
+              {decision ? (
+                <div className="mt-3 space-y-2">
+                  <div className="flex justify-between gap-3">
+                    <span className="text-slate-500">Exception</span>
+                    <span className="font-semibold text-slate-900">{selectedBreak.exceptionId}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span className="text-slate-500">Decision</span>
+                    <span className="font-semibold text-slate-900">{decision}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span className="text-slate-500">Timestamp</span>
+                    <span className="text-right font-semibold text-slate-900">
+                      {decisionTimestamp ?? "Pending"}
+                    </span>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
+                    This preview would become a manual action log entry with analyst identity,
+                    recommendation source, selected evidence, and disposition.
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-2">
+                  Choose an action to preview the audit log entry before submission.
+                </p>
+              )}
             </div>
           </aside>
         </section>
