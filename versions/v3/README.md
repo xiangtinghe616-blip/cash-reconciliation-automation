@@ -87,6 +87,39 @@ Current declared resources:
 
 The manifest also records the project data policy and the core reconciliation design principle: deterministic reconciliation logic first, human review for exceptions, and AI only as an assistant layer.
 
+## Next.js Break Resolution Workbench
+
+The project now includes a product-grade frontend prototype under:
+
+`frontend/`
+
+This frontend is separate from the Streamlit prototype. Streamlit remains useful for Python-side internal review, while the Next.js frontend is intended to demonstrate a more polished break-resolution workbench experience.
+
+Current frontend capabilities:
+
+* Priority queue for reconciliation breaks
+* Clickable break selection
+* Bank-vs-ledger evidence comparison
+* Recommended action panel
+* Action log preview
+* Related candidate evidence
+* Clear decision boundary: system recommends, analyst decides
+
+The current frontend uses static demo data in:
+
+`frontend/lib/demoData.ts`
+
+This is intentional for the first frontend milestone. The next step is to connect the frontend to generated v3 outputs or a lightweight API layer.
+
+Run locally:
+
+`cd frontend && npm run dev`
+
+Then open:
+
+`http://localhost:3000`
+
+
 ## v3 Analyst Dashboard
 
 v3 includes a local Streamlit analyst dashboard:

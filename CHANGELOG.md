@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-05-25 — Next.js Break Resolution Workbench Milestone
+
+### Added
+
+- Added an interactive Next.js frontend prototype under `frontend/`.
+- Added `frontend/components/BreakResolutionWorkbench.tsx`.
+- Added `frontend/lib/demoData.ts`.
+- Added clickable priority queue interaction.
+- Added evidence comparison, action panel, action log preview, and related candidate evidence sections.
+
+### Design Notes
+
+- The Next.js frontend is the product-grade UI direction.
+- Streamlit remains a Python-side analyst workbench prototype, not the final polished frontend.
+- The current Next.js workbench uses static demo data.
+- The next frontend milestone should connect generated v3 outputs to the workbench.
+- The product direction is a break-resolution workbench, not a pipeline-output viewer.
+
 All notable project changes are documented here.
 
 This project is a control-aware cash reconciliation automation portfolio project using synthetic or anonymized demonstration data only.
