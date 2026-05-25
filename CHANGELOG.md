@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-25 — Frontend Workbench Data Exporter Milestone
+
+### Added
+
+- Added `versions/v3/src/publish/frontend_workbench_exporter.py`.
+- Added `tests/test_v3_frontend_workbench_exporter.py`.
+- Added `frontend/public/demo-data/workbench-data.json`.
+- Added an exporter that converts generated v3 reconciliation outputs into a frontend-ready workbench JSON payload.
+
+### Design Notes
+
+- The exporter separates frontend display needs from raw pipeline CSV outputs.
+- The Next.js workbench should consume a purpose-built JSON payload instead of reverse-engineering multiple CSV files.
+- The exported data remains synthetic/demo-only.
+- This prepares the frontend to move from static TypeScript mock data toward generated v3 output data.
+
 ## 2026-05-25 — Next.js Break Resolution Workbench Milestone
 
 ### Added
