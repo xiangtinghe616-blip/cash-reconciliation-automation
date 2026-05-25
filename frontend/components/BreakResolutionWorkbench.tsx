@@ -10,6 +10,55 @@ import {
   type EvidenceField,
 } from "@/lib/demoData";
 
+type QueueFilter =
+  | "All"
+  | "Breached SLA"
+  | "High Priority"
+  | "Amount Mismatch"
+  | "Candidate Available";
+
+const QUEUE_FILTERS: QueueFilter[] = [
+  "All",
+  "Breached SLA",
+  "High Priority",
+  "Amount Mismatch",
+  "Candidate Available",
+];
+
+function hasRelatedCandidate(
+  exceptionId: string,
+  candidatesByExceptionId: Record<string, Candidate[]>,
+) {
+  return (candidatesByExceptionId[exceptionId] ?? []).length > 0;
+}
+
+function filterPriorityQueue(
+  items: BreakItem[],
+  candidatesByExceptionId: Record<string, Candidate[]>,
+  filter: QueueFilter,
+) {
+  if (filter === "All") {
+    return items;
+  }
+
+  if (filter === "Breached SLA") {
+    return items.filter((item) => item.slaStatus === "BREACHED");
+  }
+
+  if (filter === "High Priority") {
+    return items.filter((item) => item.priority === "High");
+  }
+
+  if (filter === "Amount Mismatch") {
+    return items.filter((item) => item.breakType === "AMOUNT_MISMATCH");
+  }
+
+  return items.filter((item) =>
+    hasRelatedCandidate(item.exceptionId, candidatesByExceptionId),
+  );
+}
+
+
 type WorkbenchData = {
   priorityQueue: BreakItem[];
   evidenceByExceptionId: Record<string, EvidenceField[]>;
@@ -108,6 +157,78 @@ function QueueCard({
   );
 }
 
+function EvidenceInsightSummary({
+  selectedBreak,
+  fields,
+  candidates,
+}: {
+  selectedBreak: BreakItem;
+  fields: EvidenceField[];
+  candidates: Candidate[];
+}) {
+  const amountField = fields.find((field) => field.field === "Amount");
+  const dateField = fields.find((field) => field.field === "Transaction Date");
+  const referenceField = fields.find((field) => field.field === "Reference");
+
+  const differenceCount = fields.filter((field) => field.status === "difference").length;
+  const missingCount = fields.filter((field) => field.status === "missing").length;
+  const candidateSupport =
+    candidates.length > 0 ? `${candidates.length} candidate source(s)` : "No candidate support";
+
+  return (
+    <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+        Review snapshot
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-4">
+        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+          <div className="text-xs font-semibold text-slate-500">Primary break</div>
+          <div className="mt-1 text-sm font-bold text-slate-950">
+            {selectedBreak.breakType}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+          <div className="text-xs font-semibold text-slate-500">Differences</div>
+          <div className="mt-1 text-sm font-bold text-slate-950">
+            {differenceCount} difference(s), {missingCount} missing
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+          <div className="text-xs font-semibold text-slate-500">Candidate support</div>
+          <div className="mt-1 text-sm font-bold text-slate-950">
+            {candidateSupport}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+          <div className="text-xs font-semibold text-slate-500">Recommended action</div>
+          <div className="mt-1 text-sm font-bold text-slate-950">
+            {selectedBreak.recommendedAction}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-3 lg:grid-cols-3">
+        <div className="text-xs leading-5 text-slate-500">
+          <span className="font-bold text-slate-700">Amount:</span>{" "}
+          {amountField?.note ?? "No amount note available."}
+        </div>
+        <div className="text-xs leading-5 text-slate-500">
+          <span className="font-bold text-slate-700">Timing:</span>{" "}
+          {dateField?.note ?? "No timing note available."}
+        </div>
+        <div className="text-xs leading-5 text-slate-500">
+          <span className="font-bold text-slate-700">Reference:</span>{" "}
+          {referenceField?.note ?? "No reference note available."}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
   return (
     <div className="space-y-3">
@@ -178,6 +299,7 @@ export default function BreakResolutionWorkbench() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
   const [decisionTimestamp, setDecisionTimestamp] = useState<string | null>(null);
+  const [queueFilter, setQueueFilter] = useState<QueueFilter>("All");
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
 
@@ -218,19 +340,29 @@ export default function BreakResolutionWorkbench() {
     void loadWorkbenchData();
   }, []);
 
+  const filteredPriorityQueue = useMemo(
+    () =>
+      filterPriorityQueue(
+        workbenchData.priorityQueue,
+        workbenchData.candidatesByExceptionId,
+        queueFilter,
+      ),
+    [queueFilter, workbenchData.priorityQueue, workbenchData.candidatesByExceptionId],
+  );
+
   useEffect(() => {
-    if (workbenchData.priorityQueue.length === 0) {
+    if (filteredPriorityQueue.length === 0) {
       return;
     }
 
-    const selectedStillExists = workbenchData.priorityQueue.some(
+    const selectedStillExists = filteredPriorityQueue.some(
       (item) => item.exceptionId === selectedId,
     );
 
     if (!selectedId || !selectedStillExists) {
-      setSelectedId(workbenchData.priorityQueue[0].exceptionId);
+      setSelectedId(filteredPriorityQueue[0].exceptionId);
     }
-  }, [selectedId, workbenchData.priorityQueue]);
+  }, [selectedId, filteredPriorityQueue]);
 
   const selectedBreak = useMemo(
     () =>
@@ -298,19 +430,46 @@ export default function BreakResolutionWorkbench() {
               </p>
             </div>
 
-            <div className="space-y-3">
-              {workbenchData.priorityQueue.map((item) => (
-                <QueueCard
-                  key={item.exceptionId}
-                  item={item}
-                  active={item.exceptionId === selectedBreak.exceptionId}
-                  onSelect={() => {
-                    setSelectedId(item.exceptionId);
-                    setDecision(null);
-                    setDecisionTimestamp(null);
-                  }}
-                />
+            <div className="mb-4 flex flex-wrap gap-2">
+              {QUEUE_FILTERS.map((filter) => (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setQueueFilter(filter)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                    queueFilter === filter
+                      ? "bg-slate-950 text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  {filter}
+                </button>
               ))}
+            </div>
+
+            <div className="mb-3 text-xs font-semibold text-slate-500">
+              Showing {filteredPriorityQueue.length} of {workbenchData.priorityQueue.length} breaks
+            </div>
+
+            <div className="space-y-3">
+              {filteredPriorityQueue.length === 0 ? (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
+                  No breaks match this filter.
+                </div>
+              ) : (
+                filteredPriorityQueue.map((item) => (
+                  <QueueCard
+                    key={item.exceptionId}
+                    item={item}
+                    active={item.exceptionId === selectedBreak.exceptionId}
+                    onSelect={() => {
+                      setSelectedId(item.exceptionId);
+                      setDecision(null);
+                      setDecisionTimestamp(null);
+                    }}
+                  />
+                ))
+              )}
             </div>
           </aside>
 
@@ -331,6 +490,12 @@ export default function BreakResolutionWorkbench() {
                 <StatusBadge value={selectedBreak.slaStatus} />
               </div>
             </div>
+
+            <EvidenceInsightSummary
+              selectedBreak={selectedBreak}
+              fields={evidenceFields}
+              candidates={relatedCandidates}
+            />
 
             <EvidenceComparison fields={evidenceFields} />
           </section>

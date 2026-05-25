@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-25 — Next.js Workbench Workflow Depth Milestone
+
+### Changed
+
+- Added queue filters to the Next.js break resolution workbench.
+- Added filter options for breached SLA, high priority, amount mismatch, and candidate availability.
+- Added a review snapshot above the evidence comparison panel.
+- Added summary indicators for primary break type, differences, missing evidence, candidate support, and recommended action.
+
+### Design Notes
+
+- This milestone moves the frontend further from a static dashboard toward a task-oriented break-resolution workbench.
+- The workbench now helps analysts decide which break to review first and why.
+- Evidence is summarized before detailed field comparison to reduce review friction.
+- The frontend still uses generated synthetic demo data and does not submit real analyst actions.
+
 ## 2026-05-25 — Next.js Workbench Interaction Polish Milestone
 
 ### Changed
