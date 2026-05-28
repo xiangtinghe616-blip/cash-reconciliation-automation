@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-05-28 — Salt-Aligned Status Indicators Milestone
+
+### Changed
+
+- Refined workbench status badges with dot-based risk indicators.
+- Refined priority labels to read as explicit workbench priority states.
+- Refined queue filter chips for a more consistent enterprise workbench feel.
+- Preserved existing queue filtering, break selection, action preview, and candidate decision interactions.
+
+### Design Notes
+
+- This milestone improves visual consistency without changing reconciliation logic.
+- Status color continues to carry operational meaning:
+  - Red for breached / difference states
+  - Amber for due-today / missing states
+  - Green for within-SLA / matched states
+  - Slate for neutral states
+- The UI is moving toward a Salt-inspired institutional operations style while keeping reconciliation-specific workflow logic custom.
+
 ## 2026-05-28 — Salt Button Replacement Milestone
 
 ### Changed

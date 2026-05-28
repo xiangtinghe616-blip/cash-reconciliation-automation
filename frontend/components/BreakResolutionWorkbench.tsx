@@ -79,16 +79,42 @@ const fallbackWorkbenchData: WorkbenchData = {
   candidatesByExceptionId: fallbackCandidatesByExceptionId,
 };
 
+function statusPillClass(value: string) {
+  if (value === "BREACHED" || value === "difference") {
+    return {
+      chip: "bg-red-50 text-red-800 ring-red-200",
+      dot: "bg-red-600",
+    };
+  }
+
+  if (value === "DUE_TODAY" || value === "missing") {
+    return {
+      chip: "bg-amber-50 text-amber-800 ring-amber-200",
+      dot: "bg-amber-500",
+    };
+  }
+
+  if (value === "WITHIN_SLA" || value === "match") {
+    return {
+      chip: "bg-emerald-50 text-emerald-800 ring-emerald-200",
+      dot: "bg-emerald-600",
+    };
+  }
+
+  return {
+    chip: "bg-slate-100 text-slate-700 ring-slate-200",
+    dot: "bg-slate-500",
+  };
+}
+
 function StatusBadge({ value }: { value: string }) {
-  const style =
-    value === "BREACHED"
-      ? "bg-red-50 text-red-700 ring-red-200"
-      : value === "DUE_TODAY"
-        ? "bg-amber-50 text-amber-700 ring-amber-200"
-        : "bg-emerald-50 text-emerald-700 ring-emerald-200";
+  const style = statusPillClass(value);
 
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${style}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${style.chip}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
       {value}
     </span>
   );
@@ -97,32 +123,57 @@ function StatusBadge({ value }: { value: string }) {
 function PriorityPill({ value }: { value: string }) {
   const style =
     value === "High"
-      ? "bg-slate-950 text-white"
+      ? "bg-slate-950 text-white ring-slate-950"
       : value === "Medium"
-        ? "bg-slate-200 text-slate-900"
-        : "bg-slate-100 text-slate-600";
+        ? "bg-slate-100 text-slate-800 ring-slate-300"
+        : "bg-white text-slate-600 ring-slate-200";
 
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${style}`}>
-      {value}
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${style}`}
+    >
+      Priority: {value}
     </span>
   );
 }
 
 function EvidenceStatus({ value }: { value: string }) {
-  const style =
-    value === "difference"
-      ? "bg-red-50 text-red-700"
-      : value === "missing"
-        ? "bg-amber-50 text-amber-700"
-        : "bg-emerald-50 text-emerald-700";
+  const style = statusPillClass(value);
 
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${style}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${style.chip}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
       {value}
     </span>
   );
 }
+
+function QueueFilterChip({
+  filter,
+  active,
+  onClick,
+}: {
+  filter: QueueFilter;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-3 py-1.5 text-xs font-bold ring-1 transition ${
+        active
+          ? "bg-slate-950 text-white ring-slate-950"
+          : "bg-white text-slate-600 ring-slate-200 hover:bg-slate-50 hover:text-slate-950"
+      }`}
+    >
+      {filter}
+    </button>
+  );
+}
+
 
 function QueueCard({
   item,
@@ -479,18 +530,12 @@ export default function BreakResolutionWorkbench() {
 
             <div className="mb-4 flex flex-wrap gap-2">
               {QUEUE_FILTERS.map((filter) => (
-                <button
+                <QueueFilterChip
                   key={filter}
-                  type="button"
+                  filter={filter}
+                  active={queueFilter === filter}
                   onClick={() => setQueueFilter(filter)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                    queueFilter === filter
-                      ? "bg-slate-950 text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {filter}
-                </button>
+                />
               ))}
             </div>
 
