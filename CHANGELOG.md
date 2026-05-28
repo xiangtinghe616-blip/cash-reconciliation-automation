@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-25 — Salt-First Frontend Design Direction Milestone
+
+### Changed
+
+- Replaced huashu-design as the main frontend design direction.
+- Added `frontend/design/DESIGN_REFERENCE_STACK.md`.
+- Established Salt Design System as the primary frontend design reference.
+- Clarified that huashu-style prototype tools may be useful for critique, but not as the product's design-system foundation.
+
+### Design Notes
+
+- Salt is a better fit for the intended institutional finance operations workbench style.
+- The product UI direction is a cash break resolution workbench, not a generic dashboard.
+- Future frontend polish should follow Salt-inspired density, accessibility, spacing, and enterprise workflow discipline.
+- The reconciliation-specific workflow remains defined by this project: priority queue, evidence comparison, candidate review, action panel, and audit trail.
+
 ## 2026-05-25 — Next.js Candidate Decision Workflow Milestone
 
 ### Changed
