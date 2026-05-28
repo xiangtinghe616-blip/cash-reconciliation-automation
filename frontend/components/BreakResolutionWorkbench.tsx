@@ -711,6 +711,33 @@ function DrillDownPanels({ packet }: { packet?: BreakPacket }) {
   );
 }
 
+function candidateDecisionGuardrail(action: CandidateDecision["action"]) {
+  if (action === "Accept") {
+    return {
+      title: "Accept staged — control review required",
+      message:
+        "Accepting a candidate stages analyst approval. It does not automatically confirm reconciliation.",
+      tone: "border-blue-200 bg-blue-50 text-blue-800",
+    };
+  }
+
+  if (action === "Reject") {
+    return {
+      title: "Reject staged — review continues",
+      message:
+        "Rejecting a candidate keeps the exception open and records why this hypothesis was not accepted.",
+      tone: "border-amber-200 bg-amber-50 text-amber-800",
+    };
+  }
+
+  return {
+    title: "Candidate under review",
+    message:
+      "Review mode keeps the candidate visible while the analyst checks supporting evidence.",
+    tone: "border-slate-200 bg-white text-slate-600",
+  };
+}
+
 function CandidateCard({
   candidate,
   selectedDecision,
@@ -779,15 +806,26 @@ function CandidateCard({
       </div>
 
       {selectedDecision ? (
-        <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-5 text-blue-700">
-          <div className="font-bold">Candidate decision staged</div>
-          <div>Action: {selectedDecision.action}</div>
-          <div>Confidence: {selectedDecision.confidence}</div>
-          <div className="mt-1 text-blue-600">
-            This candidate context is now reflected in the Action Panel.
+        <div
+          className={`mt-3 rounded-xl border p-3 text-xs leading-5 ${
+            candidateDecisionGuardrail(selectedDecision.action).tone
+          }`}
+        >
+          <div className="font-bold">
+            {candidateDecisionGuardrail(selectedDecision.action).title}
+          </div>
+          <div className="mt-1">
+            {candidateDecisionGuardrail(selectedDecision.action).message}
+          </div>
+          <div className="mt-2 font-semibold">
+            Candidate decision staged: {selectedDecision.action}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
+          Accept or reject requires analyst rationale before it can be staged.
+        </div>
+      )}
     </div>
   );
 }
@@ -815,6 +853,8 @@ function buildActionPreview({
   let proposedStatus = "Open";
   let dispositionCode = "NO_DISPOSITION";
   let noteRequired = false;
+  let guardrailMessage =
+    "Choose an action to preview how the decision would be recorded.";
 
   if (candidateDecision) {
     actionType = `${candidateDecision.action.toUpperCase()}_${normalizeForCode(
@@ -825,31 +865,45 @@ function buildActionPreview({
     if (candidateDecision.action === "Accept") {
       proposedStatus = "Candidate accepted - pending control review";
       noteRequired = true;
+      guardrailMessage =
+        "Accepting a candidate requires analyst rationale and remains pending control review.";
     } else if (candidateDecision.action === "Reject") {
       proposedStatus = "Candidate rejected - continue exception review";
       noteRequired = true;
+      guardrailMessage =
+        "Rejecting a candidate requires analyst rationale so the review trail explains why the hypothesis was not accepted.";
     } else {
       proposedStatus = "Candidate under review";
+      guardrailMessage =
+        "Review mode keeps the candidate staged for analyst attention without changing exception status.";
     }
   } else if (decision?.includes("Staged recommendation")) {
     actionType = "STAGE_RECOMMENDATION";
     proposedStatus = "Recommendation staged";
     dispositionCode = "RECOMMENDATION_STAGED";
+    guardrailMessage =
+      "Staging a recommendation records analyst intent but does not close the break.";
   } else if (decision?.includes("Rejected recommendation")) {
     actionType = "REJECT_RECOMMENDATION";
     proposedStatus = "Recommendation rejected";
     dispositionCode = "RECOMMENDATION_REJECTED";
     noteRequired = true;
+    guardrailMessage =
+      "Rejecting a system recommendation requires analyst rationale.";
   } else if (decision?.includes("Requested more information")) {
     actionType = "REQUEST_INFORMATION";
     proposedStatus = "Information requested";
     dispositionCode = "INFO_REQUESTED";
     noteRequired = true;
+    guardrailMessage =
+      "Information requests require a note describing what is missing.";
   } else if (decision?.includes("Added analyst note")) {
     actionType = "ADD_ANALYST_NOTE";
     proposedStatus = "Analyst note added";
     dispositionCode = "NOTE_ADDED";
     noteRequired = true;
+    guardrailMessage =
+      "Analyst-note actions require note content before staging.";
   }
 
   const canStageAction = Boolean(decision) && (!noteRequired || analystNote.trim().length > 0);
@@ -867,8 +921,10 @@ function buildActionPreview({
     analystNote,
     evidenceSnapshotIncluded: Boolean(decision),
     canStageAction,
+    guardrailMessage,
   };
 }
+
 
 export default function BreakResolutionWorkbench() {
   const [workbenchData, setWorkbenchData] = useState<WorkbenchData>(fallbackWorkbenchData);
@@ -1374,6 +1430,11 @@ export default function BreakResolutionWorkbench() {
                         {actionPreview.timestamp}
                       </span>
                     </div>
+                  </div>
+
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-800">
+                    <div className="font-bold">Workflow guardrail</div>
+                    <div className="mt-1">{actionPreview.guardrailMessage}</div>
                   </div>
 
                   {candidateDecision ? (

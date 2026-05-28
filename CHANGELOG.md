@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-28 — Candidate Decision Guardrails Milestone
+
+### Changed
+
+- Added guardrail messaging for candidate Review, Accept, and Reject actions.
+- Required analyst notes for candidate Accept and Reject decisions.
+- Kept Review candidate as a non-final review state that does not require a note.
+- Added workflow guardrail copy to the structured action log preview.
+- Clarified that accepting a candidate stages analyst approval and does not automatically confirm reconciliation.
+
+### Design Notes
+
+- This milestone strengthens the control boundary around candidate decisions.
+- Candidate actions are staged analyst workflow events, not final reconciliation outcomes.
+- The workbench now better separates candidate evidence, analyst decision, and action log preview.
+
 ## 2026-05-28 — Next.js Candidate Decision Workflow Polish
 
 ### Changed
