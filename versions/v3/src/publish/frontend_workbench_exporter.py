@@ -307,6 +307,150 @@ def build_candidates_by_exception(
     return candidates_by_exception
 
 
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+
+    if isinstance(value, tuple):
+        return [_json_safe(item) for item in value]
+
+    try:
+        if pd.isna(value):
+            return None
+    except (TypeError, ValueError):
+        pass
+
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+
+    return value
+
+
+def _first_matched_row(
+    df: pd.DataFrame,
+    exception_id: str,
+) -> dict[str, Any]:
+    matched = _match_by_exception_id(df, exception_id)
+
+    if matched.empty:
+        return {}
+
+    return matched.iloc[0].to_dict()
+
+
+def _amount_gap_for_exception(exception: dict[str, Any]) -> str:
+    currency = _safe_value(exception.get("currency"), "CAD")
+    amount_bank = exception.get("amount_bank")
+    amount_internal = exception.get("amount_internal")
+
+    if not pd.isna(amount_bank) and not pd.isna(amount_internal):
+        return _money_value(float(amount_bank) - float(amount_internal), currency)
+
+    if not pd.isna(amount_bank):
+        return _money_value(amount_bank, currency)
+
+    if not pd.isna(amount_internal):
+        return _money_value(amount_internal, currency)
+
+    return "Not available"
+
+
+def _bank_side_for_exception(exception: dict[str, Any]) -> dict[str, Any]:
+    currency = _string_value(exception.get("currency"), "CAD")
+
+    return {
+        "sourceRowId": _string_value(exception.get("bank_source_row_id")),
+        "amount": _money_value(exception.get("amount_bank"), currency),
+        "transactionDate": _string_value(exception.get("transaction_date_bank")),
+        "accountId": _string_value(exception.get("account_id")),
+        "currency": currency,
+    }
+
+
+def _ledger_side_for_exception(exception: dict[str, Any]) -> dict[str, Any]:
+    currency = _string_value(exception.get("currency"), "CAD")
+
+    return {
+        "sourceRowId": _string_value(exception.get("ledger_source_row_id")),
+        "amount": _money_value(exception.get("amount_internal"), currency),
+        "transactionDate": _string_value(exception.get("transaction_date_internal")),
+        "accountId": _string_value(exception.get("account_id")),
+        "currency": currency,
+    }
+
+
+def build_break_packets_by_exception(
+    exception_queue: pd.DataFrame,
+    exception_lifecycle: pd.DataFrame,
+    exception_actions: pd.DataFrame,
+    candidate_links: pd.DataFrame,
+    splink_candidate_links: pd.DataFrame,
+    split_payment_candidates: pd.DataFrame,
+) -> dict[str, dict[str, Any]]:
+    candidates_by_exception = build_candidates_by_exception(
+        exception_queue=exception_queue,
+        candidate_links=candidate_links,
+        splink_candidate_links=splink_candidate_links,
+        split_payment_candidates=split_payment_candidates,
+    )
+
+    packets: dict[str, dict[str, Any]] = {}
+
+    for _, exception_row in exception_queue.iterrows():
+        exception = exception_row.to_dict()
+        exception_id = str(exception.get("exception_id"))
+
+        lifecycle = _first_matched_row(exception_lifecycle, exception_id)
+        action = _first_matched_row(exception_actions, exception_id)
+
+        recommended_action = _string_value(
+            action.get("action_type")
+            or lifecycle.get("recommended_next_action")
+            or exception.get("recommended_review_action"),
+            "Review",
+        )
+        reason = _string_value(
+            action.get("review_note")
+            or lifecycle.get("recommended_next_action")
+            or exception.get("rationale"),
+            "Review supporting evidence before taking action.",
+        )
+
+        packet = {
+            "exceptionId": exception_id,
+            "summary": {
+                "exceptionId": exception_id,
+                "breakType": _string_value(exception.get("break_type"), "UNKNOWN"),
+                "priority": _string_value(exception.get("priority"), "Medium"),
+                "slaStatus": _string_value(lifecycle.get("sla_status"), "UNKNOWN"),
+                "ageDays": int(_safe_value(lifecycle.get("age_days"), 0)),
+                "amountGap": _amount_gap_for_exception(exception),
+                "recommendedAction": recommended_action,
+                "reason": reason,
+                "decisionBoundary": (
+                    "System recommendations and candidates support review. "
+                    "The analyst remains responsible for final disposition."
+                ),
+            },
+            "bankSide": _bank_side_for_exception(exception),
+            "ledgerSide": _ledger_side_for_exception(exception),
+            "lifecycle": _json_safe(lifecycle),
+            "actionRecommendation": _json_safe(action),
+            "evidence": build_evidence_for_exception(exception),
+            "relatedCandidates": candidates_by_exception.get(exception_id, []),
+            "rawException": _json_safe(exception),
+        }
+
+        packets[exception_id] = packet
+
+    return packets
+
+
 def build_frontend_workbench_payload(
     exception_queue: pd.DataFrame,
     exception_lifecycle: pd.DataFrame,
@@ -335,10 +479,20 @@ def build_frontend_workbench_payload(
         split_payment_candidates=split_payment_candidates,
     )
 
+    break_packets_by_exception_id = build_break_packets_by_exception(
+        exception_queue=exception_queue,
+        exception_lifecycle=exception_lifecycle,
+        exception_actions=exception_actions,
+        candidate_links=candidate_links,
+        splink_candidate_links=splink_candidate_links,
+        split_payment_candidates=split_payment_candidates,
+    )
+
     return {
         "priorityQueue": priority_queue,
         "evidenceByExceptionId": evidence_by_exception_id,
         "candidatesByExceptionId": candidates_by_exception_id,
+        "breakPacketsByExceptionId": break_packets_by_exception_id,
     }
 
 

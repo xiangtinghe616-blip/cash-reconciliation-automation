@@ -8,6 +8,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
 from versions.v3.src.publish.frontend_workbench_exporter import (  # noqa: E402
+    build_break_packets_by_exception,
     build_frontend_workbench_payload,
     build_priority_queue,
     export_frontend_workbench_data,
@@ -166,3 +167,74 @@ def test_export_frontend_workbench_data_writes_json(tmp_path):
     assert written_path == destination_path
     assert destination_path.exists()
     assert "priorityQueue" in destination_path.read_text(encoding="utf-8")
+
+
+def test_build_break_packets_by_exception_contains_review_context():
+    exception_queue = pd.DataFrame(
+        [
+            {
+                "exception_id": "EXC-1",
+                "break_type": "AMOUNT_MISMATCH",
+                "priority": "High",
+                "currency": "CAD",
+                "amount_bank": 500.0,
+                "amount_internal": 450.0,
+                "transaction_date_bank": "2026-05-20",
+                "transaction_date_internal": "2026-05-21",
+                "bank_source_row_id": 10,
+                "ledger_source_row_id": 20,
+                "account_id": "ACC-1",
+                "rationale": "Amount mismatch requires review.",
+            }
+        ]
+    )
+    lifecycle = pd.DataFrame(
+        [
+            {
+                "exception_id": "EXC-1",
+                "sla_status": "BREACHED",
+                "age_days": 12,
+                "recommended_next_action": "ESCALATE",
+            }
+        ]
+    )
+    actions = pd.DataFrame(
+        [
+            {
+                "exception_id": "EXC-1",
+                "action_type": "ESCALATE",
+                "review_note": "Escalate breached high priority exception.",
+            }
+        ]
+    )
+    candidate_links = pd.DataFrame(
+        [
+            {
+                "bank_source_row_id": 10,
+                "ledger_source_row_id": 20,
+                "confidence_score": 0.84,
+                "rationale": "Rule candidate rationale.",
+            }
+        ]
+    )
+
+    packets = build_break_packets_by_exception(
+        exception_queue=exception_queue,
+        exception_lifecycle=lifecycle,
+        exception_actions=actions,
+        candidate_links=candidate_links,
+        splink_candidate_links=pd.DataFrame(),
+        split_payment_candidates=pd.DataFrame(),
+    )
+
+    packet = packets["EXC-1"]
+
+    assert packet["summary"]["breakType"] == "AMOUNT_MISMATCH"
+    assert packet["summary"]["slaStatus"] == "BREACHED"
+    assert packet["summary"]["recommendedAction"] == "ESCALATE"
+    assert packet["bankSide"]["amount"] == "CAD 500.00"
+    assert packet["ledgerSide"]["amount"] == "CAD 450.00"
+    assert packet["lifecycle"]["sla_status"] == "BREACHED"
+    assert len(packet["evidence"]) >= 4
+    assert len(packet["relatedCandidates"]) == 1
+    assert "decisionBoundary" in packet["summary"]

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-28 — Frontend Workbench Data Model v2 Milestone
+
+### Changed
+
+- Extended `frontend_workbench_exporter.py` to produce richer break packets for the Next.js workbench.
+- Added `breakPacketsByExceptionId` to `frontend/public/demo-data/workbench-data.json`.
+- Added packet-level context including summary, bank side, ledger side, lifecycle, action recommendation, evidence, related candidates, and raw exception data.
+- Added test coverage for frontend workbench break packet export.
+
+### Design Notes
+
+- The frontend data model now supports deeper workbench interactions.
+- The Next.js workbench no longer needs to infer all context from shallow queue, evidence, and candidate maps.
+- This prepares the UI for drill-down panels, richer action workflow, and more complete candidate review.
+- The exported data remains synthetic/demo-only.
+
 ## 2026-05-28 — Salt-Aligned Status Indicators Milestone
 
 ### Changed
