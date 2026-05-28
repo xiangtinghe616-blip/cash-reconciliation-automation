@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-28 — Salt Runtime Foundation Milestone
+
+### Added
+
+- Added Salt Design System packages to the Next.js frontend.
+- Added `frontend/components/SaltAppProvider.tsx`.
+- Wired Salt theme CSS into the Next.js layout.
+- Wrapped the frontend app with `SaltProvider`.
+- Added an initial Salt component usage point in the workbench action panel.
+
+### Design Notes
+
+- Salt is now the primary frontend design-system foundation.
+- This milestone only wires the Salt runtime foundation.
+- The workbench visual language still needs progressive component replacement and layout polish.
+- Future frontend work should replace custom UI pieces with Salt-aligned buttons, badges, status indicators, and workbench controls.
+
 ## 2026-05-25 — Salt-First Frontend Design Direction Milestone
 
 ### Changed
