@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@salt-ds/core";
 import { useEffect, useMemo, useState } from "react";
 import {
   candidatesByExceptionId as fallbackCandidatesByExceptionId,

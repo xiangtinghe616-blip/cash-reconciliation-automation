@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-28 — Salt Button Replacement Milestone
+
+### Changed
+
+- Replaced selected custom action buttons in the Next.js workbench with Salt Design System buttons.
+- Updated the action panel recommendation controls to use Salt button components.
+- Updated candidate review controls to use Salt button components.
+- Preserved existing workbench interaction behavior, including action log preview updates.
+
+### Design Notes
+
+- This is the first visible Salt component replacement milestone.
+- The workbench is moving from custom Tailwind-only controls toward a Salt-aligned enterprise UI foundation.
+- Future Salt work should focus on badges, status indicators, queue filters, and panel density.
+
 ## 2026-05-28 — Salt Runtime Foundation Milestone
 
 ### Added
