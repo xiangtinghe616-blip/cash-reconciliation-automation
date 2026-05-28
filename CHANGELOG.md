@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-28 — Next.js Action Workflow v2 Milestone
+
+### Changed
+
+- Upgraded the Next.js workbench action panel from a simple preview to a structured action workflow.
+- Added action preview fields for action type, previous status, proposed status, disposition code, actor, timestamp, and evidence snapshot inclusion.
+- Added analyst note handling with required-note validation for candidate accept/reject, recommendation rejection, information requests, and analyst notes.
+- Added disabled staged-submission behavior when required analyst notes are missing.
+- Preserved existing priority queue, evidence comparison, break packet consumption, candidate decision, and drill-down interactions.
+
+### Design Notes
+
+- This milestone moves the workbench closer to a real audit-aware exception resolution tool.
+- The UI now better separates system recommendation, analyst decision, and action log recording.
+- No real action submission is performed yet; this remains a frontend staged-submission preview.
+
 ## 2026-05-28 — Next.js Workbench Drill-Down Panels Milestone
 
 ### Changed

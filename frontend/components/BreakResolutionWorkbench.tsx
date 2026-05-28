@@ -628,12 +628,91 @@ function CandidateCard({
   );
 }
 
+function normalizeForCode(value: string) {
+  return value.toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
+
+function buildActionPreview({
+  decision,
+  candidateDecision,
+  selectedBreak,
+  decisionTimestamp,
+  analystNote,
+}: {
+  decision: string | null;
+  candidateDecision: CandidateDecision | null;
+  selectedBreak: BreakItem;
+  decisionTimestamp: string | null;
+  analystNote: string;
+}) {
+  const decisionType = candidateDecision ? "Candidate decision" : "Action recommendation";
+
+  let actionType = "NO_ACTION_SELECTED";
+  let proposedStatus = "Open";
+  let dispositionCode = "NO_DISPOSITION";
+  let noteRequired = false;
+
+  if (candidateDecision) {
+    actionType = `${candidateDecision.action.toUpperCase()}_${normalizeForCode(
+      candidateDecision.source,
+    )}_CANDIDATE`;
+    dispositionCode = `CANDIDATE_${candidateDecision.action.toUpperCase()}`;
+
+    if (candidateDecision.action === "Accept") {
+      proposedStatus = "Candidate accepted - pending control review";
+      noteRequired = true;
+    } else if (candidateDecision.action === "Reject") {
+      proposedStatus = "Candidate rejected - continue exception review";
+      noteRequired = true;
+    } else {
+      proposedStatus = "Candidate under review";
+    }
+  } else if (decision?.includes("Staged recommendation")) {
+    actionType = "STAGE_RECOMMENDATION";
+    proposedStatus = "Recommendation staged";
+    dispositionCode = "RECOMMENDATION_STAGED";
+  } else if (decision?.includes("Rejected recommendation")) {
+    actionType = "REJECT_RECOMMENDATION";
+    proposedStatus = "Recommendation rejected";
+    dispositionCode = "RECOMMENDATION_REJECTED";
+    noteRequired = true;
+  } else if (decision?.includes("Requested more information")) {
+    actionType = "REQUEST_INFORMATION";
+    proposedStatus = "Information requested";
+    dispositionCode = "INFO_REQUESTED";
+    noteRequired = true;
+  } else if (decision?.includes("Added analyst note")) {
+    actionType = "ADD_ANALYST_NOTE";
+    proposedStatus = "Analyst note added";
+    dispositionCode = "NOTE_ADDED";
+    noteRequired = true;
+  }
+
+  const canStageAction = Boolean(decision) && (!noteRequired || analystNote.trim().length > 0);
+
+  return {
+    exceptionId: selectedBreak.exceptionId,
+    decisionType,
+    actionType,
+    previousStatus: "Open",
+    proposedStatus,
+    dispositionCode,
+    actor: "demo_analyst",
+    timestamp: decisionTimestamp ?? "Pending",
+    noteRequired,
+    analystNote,
+    evidenceSnapshotIncluded: Boolean(decision),
+    canStageAction,
+  };
+}
+
 export default function BreakResolutionWorkbench() {
   const [workbenchData, setWorkbenchData] = useState<WorkbenchData>(fallbackWorkbenchData);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
   const [decisionTimestamp, setDecisionTimestamp] = useState<string | null>(null);
   const [candidateDecision, setCandidateDecision] = useState<CandidateDecision | null>(null);
+  const [analystNote, setAnalystNote] = useState("");
   const [queueFilter, setQueueFilter] = useState<QueueFilter>("All");
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -761,6 +840,14 @@ export default function BreakResolutionWorkbench() {
     selectedPacket?.summary?.decisionBoundary ??
     "System recommendations and candidates support review. The analyst remains responsible for final disposition.";
 
+  const actionPreview = buildActionPreview({
+    decision,
+    candidateDecision,
+    selectedBreak,
+    decisionTimestamp,
+    analystNote,
+  });
+
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
       <section className="mx-auto flex max-w-[1500px] flex-col gap-6 px-6 py-6">
@@ -844,6 +931,7 @@ export default function BreakResolutionWorkbench() {
                       setDecision(null);
                       setDecisionTimestamp(null);
                       setCandidateDecision(null);
+                      setAnalystNote("");
                     }}
                   />
                 ))
@@ -914,6 +1002,7 @@ export default function BreakResolutionWorkbench() {
                 onClick={() => {
                   setDecision("Staged recommendation");
                   setCandidateDecision(null);
+                  setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 style={{ width: "100%" }}
@@ -926,6 +1015,7 @@ export default function BreakResolutionWorkbench() {
                 onClick={() => {
                   setDecision("Rejected recommendation");
                   setCandidateDecision(null);
+                  setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 style={{ width: "100%" }}
@@ -938,6 +1028,7 @@ export default function BreakResolutionWorkbench() {
                 onClick={() => {
                   setDecision("Requested more information");
                   setCandidateDecision(null);
+                  setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 style={{ width: "100%" }}
@@ -950,6 +1041,7 @@ export default function BreakResolutionWorkbench() {
                 onClick={() => {
                   setDecision("Added analyst note");
                   setCandidateDecision(null);
+                  setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 style={{ width: "100%" }}
@@ -962,26 +1054,50 @@ export default function BreakResolutionWorkbench() {
               <div className="font-bold text-slate-900">Action log preview</div>
 
               {decision ? (
-                <div className="mt-3 space-y-2">
-                  <div className="flex justify-between gap-3">
-                    <span className="text-slate-500">Exception</span>
-                    <span className="font-semibold text-slate-900">{selectedBreak.exceptionId}</span>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <span className="text-slate-500">Decision type</span>
-                    <span className="font-semibold text-slate-900">
-                      {candidateDecision ? "Candidate decision" : "Action recommendation"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <span className="text-slate-500">Decision</span>
-                    <span className="font-semibold text-slate-900">{decision}</span>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <span className="text-slate-500">Timestamp</span>
-                    <span className="text-right font-semibold text-slate-900">
-                      {decisionTimestamp ?? "Pending"}
-                    </span>
+                <div className="mt-3 space-y-3">
+                  <div className="grid gap-2 rounded-xl border border-slate-200 bg-white p-3 text-xs">
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Exception</span>
+                      <span className="font-semibold text-slate-900">
+                        {actionPreview.exceptionId}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Decision type</span>
+                      <span className="font-semibold text-slate-900">
+                        {actionPreview.decisionType}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Action type</span>
+                      <span className="text-right font-semibold text-slate-900">
+                        {actionPreview.actionType}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Previous status</span>
+                      <span className="font-semibold text-slate-900">
+                        {actionPreview.previousStatus}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Proposed status</span>
+                      <span className="text-right font-semibold text-slate-900">
+                        {actionPreview.proposedStatus}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Disposition code</span>
+                      <span className="text-right font-semibold text-slate-900">
+                        {actionPreview.dispositionCode}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Timestamp</span>
+                      <span className="text-right font-semibold text-slate-900">
+                        {actionPreview.timestamp}
+                      </span>
+                    </div>
                   </div>
 
                   {candidateDecision ? (
@@ -993,10 +1109,45 @@ export default function BreakResolutionWorkbench() {
                     </div>
                   ) : null}
 
+                  <label className="block">
+                    <div className="mb-1 flex items-center justify-between text-xs font-bold text-slate-700">
+                      <span>Analyst note</span>
+                      <span className={actionPreview.noteRequired ? "text-red-700" : "text-slate-400"}>
+                        {actionPreview.noteRequired ? "Required" : "Optional"}
+                      </span>
+                    </div>
+                    <textarea
+                      value={analystNote}
+                      onChange={(event) => setAnalystNote(event.target.value)}
+                      placeholder="Add rationale, follow-up request, or review note..."
+                      className="min-h-24 w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none ring-slate-300 placeholder:text-slate-400 focus:ring-2"
+                    />
+                  </label>
+
                   <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
-                    This preview would become a manual action log entry with analyst identity,
-                    recommendation source, selected evidence, and disposition.
+                    Evidence snapshot included:{" "}
+                    <span className="font-bold text-slate-900">
+                      {actionPreview.evidenceSnapshotIncluded ? "Yes" : "No"}
+                    </span>
                   </div>
+
+                  <button
+                    type="button"
+                    disabled={!actionPreview.canStageAction}
+                    className={`w-full rounded-2xl px-4 py-3 text-sm font-bold ${
+                      actionPreview.canStageAction
+                        ? "bg-slate-950 text-white"
+                        : "cursor-not-allowed bg-slate-200 text-slate-400"
+                    }`}
+                  >
+                    Preview staged submission
+                  </button>
+
+                  {!actionPreview.canStageAction ? (
+                    <div className="text-xs leading-5 text-red-700">
+                      Analyst note is required before this action can be staged.
+                    </div>
+                  ) : null}
                 </div>
               ) : (
                 <p className="mt-2">
@@ -1004,6 +1155,7 @@ export default function BreakResolutionWorkbench() {
                 </p>
               )}
             </div>
+
           </aside>
         </section>
 
@@ -1045,6 +1197,7 @@ export default function BreakResolutionWorkbench() {
                     };
 
                     setCandidateDecision(nextCandidateDecision);
+                    setAnalystNote("");
                     setDecision(`${action} ${candidate.source} candidate`);
                     setDecisionTimestamp(new Date().toISOString());
                   }}
