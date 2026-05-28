@@ -98,16 +98,30 @@ const candidateButtonStyle = {
   fontFamily: "inherit",
 } as const;
 
+function candidateCountForException(
+  exceptionId: string,
+  candidatesByExceptionId: Record<string, Candidate[]>,
+  breakPacketsByExceptionId: Record<string, BreakPacket>,
+) {
+  const directCandidateCount = (candidatesByExceptionId[exceptionId] ?? []).length;
+  const packetCandidateCount =
+    breakPacketsByExceptionId[exceptionId]?.relatedCandidates?.length ?? 0;
+
+  return Math.max(directCandidateCount, packetCandidateCount);
+}
+
 function hasRelatedCandidate(
   exceptionId: string,
   candidatesByExceptionId: Record<string, Candidate[]>,
   breakPacketsByExceptionId: Record<string, BreakPacket>,
 ) {
-  const candidateCount = (candidatesByExceptionId[exceptionId] ?? []).length;
-  const packetCandidateCount =
-    breakPacketsByExceptionId[exceptionId]?.relatedCandidates?.length ?? 0;
-
-  return candidateCount + packetCandidateCount > 0;
+  return (
+    candidateCountForException(
+      exceptionId,
+      candidatesByExceptionId,
+      breakPacketsByExceptionId,
+    ) > 0
+  );
 }
 
 function filterPriorityQueue(
@@ -262,11 +276,13 @@ function QueueCard({
   item,
   active,
   staged,
+  candidateCount,
   onSelect,
 }: {
   item: BreakItem;
   active: boolean;
   staged: boolean;
+  candidateCount: number;
   onSelect: () => void;
 }) {
   return (
@@ -300,6 +316,11 @@ function QueueCard({
         <span className={`text-xs ${active ? "text-slate-300" : "text-slate-500"}`}>
           Age {item.ageDays}d
         </span>
+        {candidateCount > 0 ? (
+          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-200">
+            Candidates {candidateCount}
+          </span>
+        ) : null}
       </div>
 
       <div className={`mt-4 text-sm ${active ? "text-slate-200" : "text-slate-600"}`}>
@@ -1082,6 +1103,12 @@ export default function BreakResolutionWorkbench() {
     workbenchData.candidatesByExceptionId[selectedBreak.exceptionId] ??
     [];
 
+  function scrollToCandidateEvidence() {
+    document
+      .getElementById("related-candidate-evidence")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const displayedRecommendedAction =
     selectedPacket?.summary?.recommendedAction ?? selectedBreak.recommendedAction;
   const displayedReason = selectedPacket?.summary?.reason ?? selectedBreak.reason;
@@ -1221,6 +1248,11 @@ export default function BreakResolutionWorkbench() {
                     item={item}
                     active={item.exceptionId === selectedBreak.exceptionId}
                     staged={stagedExceptionIds.includes(item.exceptionId)}
+                    candidateCount={candidateCountForException(
+                      item.exceptionId,
+                      workbenchData.candidatesByExceptionId,
+                      workbenchData.breakPacketsByExceptionId,
+                    )}
                     onSelect={() => {
                       setSelectedId(item.exceptionId);
                       setDecision(null);
@@ -1319,6 +1351,23 @@ export default function BreakResolutionWorkbench() {
                   Candidate decisions are staged as analyst actions. They do not automatically
                   confirm reconciliation.
                 </p>
+              </div>
+            ) : null}
+
+            {relatedCandidates.length > 0 ? (
+              <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-800">
+                <div className="font-bold">Candidate evidence available</div>
+                <p className="mt-1 text-xs leading-5 text-blue-700">
+                  This break has related candidate evidence. Review it before staging a
+                  candidate decision.
+                </p>
+                <button
+                  type="button"
+                  onClick={scrollToCandidateEvidence}
+                  className="mt-3 rounded-full bg-blue-700 px-3 py-1.5 text-xs font-bold text-white"
+                >
+                  View candidate evidence
+                </button>
               </div>
             ) : null}
 
@@ -1507,7 +1556,7 @@ export default function BreakResolutionWorkbench() {
           </aside>
         </section>
 
-        <section className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
+        <section id="related-candidate-evidence" className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
