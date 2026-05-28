@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-05-28 — Next.js Queue Productivity Milestone
+
+### Changed
+
+- Added search to the Next.js priority queue.
+- Added queue progress copy showing visible, filtered, total, and staged break counts.
+- Added local staged state for selected breaks.
+- Added a hide-staged toggle.
+- Added a next-break control for faster queue navigation.
+- Preserved existing break packet rendering, evidence comparison, action workflow, candidate decision, and drill-down behavior.
+
+### Design Notes
+
+- This milestone moves the workbench closer to a high-throughput break resolution tool.
+- The queue now supports analyst productivity instead of acting as a static list.
+- Local staged state remains frontend-only and does not write real action records.
+- Future work should connect staged actions to a real action-log data model or API.
+
 ## 2026-05-28 — Next.js Action Workflow v2 Milestone
 
 ### Changed

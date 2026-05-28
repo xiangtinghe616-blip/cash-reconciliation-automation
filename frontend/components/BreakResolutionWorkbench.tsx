@@ -240,10 +240,12 @@ function QueueFilterChip({
 function QueueCard({
   item,
   active,
+  staged,
   onSelect,
 }: {
   item: BreakItem;
   active: boolean;
+  staged: boolean;
   onSelect: () => void;
 }) {
   return (
@@ -258,7 +260,14 @@ function QueueCard({
     >
       <div className="flex items-center justify-between gap-3">
         <div className="font-bold">{item.exceptionId}</div>
-        <StatusBadge value={item.slaStatus} />
+        <div className="flex items-center gap-2">
+          {staged ? (
+            <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-200">
+              Staged
+            </span>
+          ) : null}
+          <StatusBadge value={item.slaStatus} />
+        </div>
       </div>
 
       <div className={`mt-2 text-sm ${active ? "text-slate-300" : "text-slate-500"}`}>
@@ -713,6 +722,9 @@ export default function BreakResolutionWorkbench() {
   const [decisionTimestamp, setDecisionTimestamp] = useState<string | null>(null);
   const [candidateDecision, setCandidateDecision] = useState<CandidateDecision | null>(null);
   const [analystNote, setAnalystNote] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [hideStaged, setHideStaged] = useState(false);
+  const [stagedExceptionIds, setStagedExceptionIds] = useState<string[]>([]);
   const [queueFilter, setQueueFilter] = useState<QueueFilter>("All");
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -771,6 +783,22 @@ export default function BreakResolutionWorkbench() {
     ],
   );
 
+  const visiblePriorityQueue = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    return filteredPriorityQueue.filter((item) => {
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        item.exceptionId.toLowerCase().includes(normalizedSearch) ||
+        item.breakType.toLowerCase().includes(normalizedSearch);
+
+      const matchesStaged =
+        !hideStaged || !stagedExceptionIds.includes(item.exceptionId);
+
+      return matchesSearch && matchesStaged;
+    });
+  }, [filteredPriorityQueue, hideStaged, searchTerm, stagedExceptionIds]);
+
   const queueFilterCounts = useMemo(
     () =>
       Object.fromEntries(
@@ -792,26 +820,36 @@ export default function BreakResolutionWorkbench() {
   );
 
   useEffect(() => {
-    if (filteredPriorityQueue.length === 0) {
+    if (visiblePriorityQueue.length === 0) {
       return;
     }
 
-    const selectedStillExists = filteredPriorityQueue.some(
+    const selectedStillExists = visiblePriorityQueue.some(
       (item) => item.exceptionId === selectedId,
     );
 
     if (!selectedId || !selectedStillExists) {
-      setSelectedId(filteredPriorityQueue[0].exceptionId);
+      setSelectedId(visiblePriorityQueue[0].exceptionId);
     }
-  }, [selectedId, filteredPriorityQueue]);
+  }, [selectedId, visiblePriorityQueue]);
 
   const selectedBreak = useMemo(
     () =>
-      filteredPriorityQueue.find((item) => item.exceptionId === selectedId) ??
-      filteredPriorityQueue[0] ??
+      visiblePriorityQueue.find((item) => item.exceptionId === selectedId) ??
+      visiblePriorityQueue[0] ??
       workbenchData.priorityQueue[0],
-    [selectedId, filteredPriorityQueue, workbenchData.priorityQueue],
+    [selectedId, visiblePriorityQueue, workbenchData.priorityQueue],
   );
+
+  const currentVisibleIndex = visiblePriorityQueue.findIndex(
+    (item) => item.exceptionId === selectedBreak?.exceptionId,
+  );
+  const safeVisibleIndex = currentVisibleIndex >= 0 ? currentVisibleIndex : 0;
+  const nextVisibleBreak =
+    visiblePriorityQueue.length > 1
+      ? visiblePriorityQueue[(safeVisibleIndex + 1) % visiblePriorityQueue.length]
+      : null;
+  const stagedCount = stagedExceptionIds.length;
 
   if (!selectedBreak) {
     return (
@@ -911,21 +949,67 @@ export default function BreakResolutionWorkbench() {
               })}
             </div>
 
+            <div className="mb-4 space-y-3">
+              <input
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search exception id or break type..."
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none ring-slate-300 placeholder:text-slate-400 focus:ring-2"
+              />
+
+              <div className="flex items-center justify-between gap-3">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={hideStaged}
+                    onChange={(event) => setHideStaged(event.target.checked)}
+                  />
+                  Hide staged
+                </label>
+
+                <button
+                  type="button"
+                  disabled={!nextVisibleBreak}
+                  onClick={() => {
+                    if (!nextVisibleBreak) {
+                      return;
+                    }
+
+                    setSelectedId(nextVisibleBreak.exceptionId);
+                    setDecision(null);
+                    setDecisionTimestamp(null);
+                    setCandidateDecision(null);
+                    setAnalystNote("");
+                  }}
+                  className={`rounded-full px-3 py-1.5 text-xs font-bold ring-1 ${
+                    nextVisibleBreak
+                      ? "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50"
+                      : "cursor-not-allowed bg-slate-50 text-slate-300 ring-slate-100"
+                  }`}
+                >
+                  Next break
+                </button>
+              </div>
+            </div>
+
             <div className="mb-3 text-xs font-semibold text-slate-500">
-              Showing {filteredPriorityQueue.length} of {workbenchData.priorityQueue.length} breaks
+              Showing {visiblePriorityQueue.length} of {filteredPriorityQueue.length} filtered breaks
+              {" "}· total {workbenchData.priorityQueue.length}
+              {" "}· staged {stagedCount}
             </div>
 
             <div className="space-y-3">
-              {filteredPriorityQueue.length === 0 ? (
+              {visiblePriorityQueue.length === 0 ? (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
                   No breaks match this filter.
                 </div>
               ) : (
-                filteredPriorityQueue.map((item) => (
+                visiblePriorityQueue.map((item) => (
                   <QueueCard
                     key={item.exceptionId}
                     item={item}
                     active={item.exceptionId === selectedBreak.exceptionId}
+                    staged={stagedExceptionIds.includes(item.exceptionId)}
                     onSelect={() => {
                       setSelectedId(item.exceptionId);
                       setDecision(null);
@@ -1134,13 +1218,24 @@ export default function BreakResolutionWorkbench() {
                   <button
                     type="button"
                     disabled={!actionPreview.canStageAction}
+                    onClick={() => {
+                      if (!actionPreview.canStageAction) {
+                        return;
+                      }
+
+                      setStagedExceptionIds((current) =>
+                        current.includes(selectedBreak.exceptionId)
+                          ? current
+                          : [...current, selectedBreak.exceptionId],
+                      );
+                    }}
                     className={`w-full rounded-2xl px-4 py-3 text-sm font-bold ${
                       actionPreview.canStageAction
                         ? "bg-slate-950 text-white"
                         : "cursor-not-allowed bg-slate-200 text-slate-400"
                     }`}
                   >
-                    Preview staged submission
+                    Mark action as staged locally
                   </button>
 
                   {!actionPreview.canStageAction ? (
