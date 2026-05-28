@@ -79,18 +79,23 @@ const fallbackWorkbenchData: WorkbenchData = {
 
 const actionButtonStyle = {
   width: "100%",
-  minHeight: "44px",
-  borderRadius: "14px",
-  fontWeight: 800,
-  letterSpacing: "0.01em",
+  minHeight: "40px",
+  borderRadius: "12px",
+  fontSize: "13px",
+  fontWeight: 700,
+  letterSpacing: "0",
+  textTransform: "none",
+  fontFamily: "inherit",
 } as const;
 
 const candidateButtonStyle = {
   width: "100%",
-  minHeight: "36px",
-  borderRadius: "12px",
+  minHeight: "34px",
+  borderRadius: "10px",
   fontSize: "12px",
-  fontWeight: 800,
+  fontWeight: 700,
+  textTransform: "none",
+  fontFamily: "inherit",
 } as const;
 
 function hasRelatedCandidate(
@@ -456,7 +461,7 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
       {fields.map((field) => (
         <div
           key={field.field}
-          className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 lg:grid-cols-[160px_1fr_1fr_120px]"
+          className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[145px_1fr_1fr_110px]"
         >
           <div>
             <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
@@ -907,25 +912,25 @@ export default function BreakResolutionWorkbench() {
 
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
-      <section className="mx-auto flex max-w-[1500px] flex-col gap-6 px-6 py-6">
-        <header className="rounded-[28px] bg-slate-950 px-8 py-7 text-white shadow-2xl shadow-slate-300">
+      <section className="mx-auto flex max-w-[1500px] flex-col gap-5 px-4 py-4 xl:px-6">
+        <header className="rounded-[24px] bg-slate-950 px-6 py-5 text-white shadow-xl shadow-slate-300">
           <div className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
             Cash Break Resolution Workbench
           </div>
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="max-w-4xl text-4xl font-black tracking-tight">
+              <h1 className="max-w-4xl text-3xl font-black tracking-tight lg:text-[34px]">
                 Resolve reconciliation breaks faster without giving automation the final word.
               </h1>
-              <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
                 Deterministic matches are handled automatically. This workbench focuses
                 analyst attention on unresolved breaks, candidate evidence, and controlled
                 action logging.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-5 py-4 text-sm text-amber-100">
+            <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-xs text-amber-100">
               <div className="font-bold text-amber-200">Decision boundary</div>
               <div className="mt-1 leading-6">{displayedDecisionBoundary}</div>
               <div className="mt-3 text-xs text-amber-200/80">
@@ -935,8 +940,8 @@ export default function BreakResolutionWorkbench() {
           </div>
         </header>
 
-        <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)_360px]">
-          <aside className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="grid gap-5 xl:grid-cols-[340px_minmax(0,1fr)_340px]">
+          <aside className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm xl:sticky xl:top-4 xl:self-start">
             <div className="mb-4">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Priority Queue
@@ -1017,7 +1022,7 @@ export default function BreakResolutionWorkbench() {
               {" "}· staged {stagedCount}
             </div>
 
-            <div className="space-y-3">
+            <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
               {visiblePriorityQueue.length === 0 ? (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
                   No breaks match this filter.
@@ -1042,7 +1047,7 @@ export default function BreakResolutionWorkbench() {
             </div>
           </aside>
 
-          <section className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+          <section className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -1080,7 +1085,7 @@ export default function BreakResolutionWorkbench() {
             <DrillDownPanels packet={selectedPacket} />
           </section>
 
-          <aside className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+          <aside className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm xl:sticky xl:top-4 xl:self-start">
             <div className="mb-5">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Action Panel
@@ -1278,7 +1283,7 @@ export default function BreakResolutionWorkbench() {
           </aside>
         </section>
 
-        <section className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">

@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-28 — Next.js Workbench Layout Density Pass 1
+
+### Changed
+
+- Reduced the visual weight of the workbench header.
+- Tightened the three-column workbench layout.
+- Added sticky side panels for a more desk-like review experience.
+- Added internal scrolling to the priority queue.
+- Reduced evidence row spacing for a denser operations workflow.
+- Refined shared action and candidate button sizing.
+
+### Design Notes
+
+- This milestone improves the workbench's operations-desk feel without changing reconciliation logic.
+- The layout is moving away from a landing-page style and toward a finance operations review tool.
+- Further visual polish is still needed for panel hierarchy, typography, and Salt-aligned component consistency.
+
 ## 2026-05-28 — Next.js Workbench Visual Polish Pass 1
 
 ### Changed
