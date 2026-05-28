@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-28 — Next.js Candidate Decision Workflow Polish
+
+### Changed
+
+- Improved selected candidate feedback in the Next.js workbench.
+- Highlighted selected candidate cards after Review, Accept, or Reject actions.
+- Added selected candidate context to the Action Panel.
+- Synced candidate source, action, and confidence into the structured action log preview.
+- Clarified that candidate decisions are staged analyst actions and do not automatically confirm reconciliation.
+
+### Design Notes
+
+- This milestone improves the connection between candidate evidence and action workflow.
+- Candidate review now feels more actionable and less like passive supporting text.
+- The workbench continues to preserve the decision boundary that candidate evidence is review support, not final match authority.
+
 ## 2026-05-28 — Candidate Evidence Association Fix Milestone
 
 ### Changed

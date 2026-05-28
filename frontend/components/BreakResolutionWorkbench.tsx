@@ -728,7 +728,13 @@ function CandidateCard({
         : "bg-slate-100 text-slate-700 ring-slate-200";
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+    <div
+      className={`rounded-2xl border p-4 transition ${
+        selectedDecision
+          ? "border-blue-300 bg-blue-50/60 ring-2 ring-blue-100"
+          : "border-slate-200 bg-slate-50"
+      }`}
+    >
       <div className="flex items-center justify-between gap-3">
         <span className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${sourceStyle}`}>
           {candidate.source}
@@ -773,8 +779,13 @@ function CandidateCard({
       </div>
 
       {selectedDecision ? (
-        <div className="mt-3 rounded-xl bg-blue-50 p-3 text-xs font-semibold text-blue-700 ring-1 ring-blue-200">
-          Candidate decision staged: {selectedDecision.action}
+        <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-5 text-blue-700">
+          <div className="font-bold">Candidate decision staged</div>
+          <div>Action: {selectedDecision.action}</div>
+          <div>Confidence: {selectedDecision.confidence}</div>
+          <div className="mt-1 text-blue-600">
+            This candidate context is now reflected in the Action Panel.
+          </div>
         </div>
       ) : null}
     </div>
@@ -1229,6 +1240,32 @@ export default function BreakResolutionWorkbench() {
               <p className="mt-2 text-sm leading-6 text-red-700">{displayedReason}</p>
             </div>
 
+            {candidateDecision ? (
+              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-800">
+                <div className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
+                  Selected candidate
+                </div>
+                <div className="mt-2 grid gap-1">
+                  <div className="flex justify-between gap-3">
+                    <span>Source</span>
+                    <span className="font-bold">{candidateDecision.source}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Action</span>
+                    <span className="font-bold">{candidateDecision.action}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Confidence</span>
+                    <span className="font-bold">{candidateDecision.confidence}</span>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs leading-5 text-blue-700">
+                  Candidate decisions are staged as analyst actions. They do not automatically
+                  confirm reconciliation.
+                </p>
+              </div>
+            ) : null}
+
             <div className="mt-5">
               <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
                 Stage analyst action
@@ -1420,7 +1457,8 @@ export default function BreakResolutionWorkbench() {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-slate-500">
-              Candidates are not final matches. They help the analyst decide whether a break can be resolved.
+              Candidates are not final matches. Choose Review, Accept, or Reject to stage
+              candidate context in the Action Panel and action log preview.
             </p>
           </div>
 
