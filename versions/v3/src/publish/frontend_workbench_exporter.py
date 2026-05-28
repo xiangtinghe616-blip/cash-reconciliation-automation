@@ -269,6 +269,49 @@ def _candidate_rows(
     return rows
 
 
+
+
+def _supports_exception_derived_candidate(exception: pd.Series) -> bool:
+    break_type = str(exception.get("break_type", "")).upper()
+
+    candidate_like_patterns = [
+        "AMOUNT_MISMATCH",
+        "REFERENCE",
+        "POSSIBLE",
+        "SPLIT",
+        "TIMING",
+    ]
+
+    return any(pattern in break_type for pattern in candidate_like_patterns)
+
+
+def _exception_derived_candidate(exception: pd.Series) -> list[dict[str, str]]:
+    if not _supports_exception_derived_candidate(exception):
+        return []
+
+    break_type = _string_value(exception.get("break_type"), "UNKNOWN")
+    confidence = _string_value(exception.get("confidence_score"), "Review")
+
+    rationale = _string_value(
+        exception.get("rationale"),
+        (
+            f"{break_type} was surfaced by reconciliation rules. "
+            "Review bank-side and ledger-side evidence before taking action."
+        ),
+    )
+
+    return [
+        {
+            "source": "Rule-based",
+            "confidence": confidence,
+            "rationale": (
+                f"{rationale} This is exception-derived review evidence, "
+                "not a final reconciliation decision."
+            ),
+        }
+    ]
+
+
 def build_candidates_by_exception(
     exception_queue: pd.DataFrame,
     candidate_links: pd.DataFrame,
@@ -298,11 +341,16 @@ def build_candidates_by_exception(
             ledger_source_row_id,
         )
 
-        candidates_by_exception[exception_id] = (
+        candidate_rows = (
             _candidate_rows("Rule-based", rule_candidates)
             + _candidate_rows("Splink", splink_candidates)
             + _candidate_rows("Split-payment", split_candidates)
         )
+
+        if not candidate_rows:
+            candidate_rows = _exception_derived_candidate(exception)
+
+        candidates_by_exception[exception_id] = candidate_rows
 
     return candidates_by_exception
 

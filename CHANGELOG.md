@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-28 — Candidate Evidence Association Fix Milestone
+
+### Changed
+
+- Improved frontend workbench candidate association logic in the v3 exporter.
+- Added exception-derived candidate evidence for candidate-like breaks such as amount mismatches.
+- Updated generated `workbench-data.json` so Candidate Available filters can surface relevant breaks.
+- Added test coverage for exception-derived candidate evidence.
+- Related Candidate Evidence now appears for relevant break packets instead of remaining empty.
+
+### Design Notes
+
+- Candidate evidence remains review support, not a final reconciliation decision.
+- Exception-derived candidates help the frontend show useful review context even when no direct candidate-link row exists.
+- This improves the workbench's usefulness as a break-resolution tool by connecting unresolved breaks to candidate explanations.
+
 ## 2026-05-28 — Next.js Evidence Review Usability Pass
 
 ### Changed

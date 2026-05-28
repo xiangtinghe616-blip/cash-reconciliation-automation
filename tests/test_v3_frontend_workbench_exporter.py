@@ -238,3 +238,43 @@ def test_build_break_packets_by_exception_contains_review_context():
     assert len(packet["evidence"]) >= 4
     assert len(packet["relatedCandidates"]) == 1
     assert "decisionBoundary" in packet["summary"]
+
+
+def test_amount_mismatch_without_direct_candidate_gets_exception_derived_candidate():
+    exception_queue = pd.DataFrame(
+        [
+            {
+                "exception_id": "EXC-1",
+                "break_type": "AMOUNT_MISMATCH",
+                "priority": "High",
+                "currency": "CAD",
+                "amount_bank": 500.0,
+                "amount_internal": 450.0,
+                "bank_source_row_id": 10,
+                "ledger_source_row_id": 20,
+                "confidence_score": 0.88,
+                "rationale": "Same reference but amount differs.",
+            }
+        ]
+    )
+
+    payload = build_frontend_workbench_payload(
+        exception_queue=exception_queue,
+        exception_lifecycle=pd.DataFrame(
+            [
+                {"exception_id": "EXC-1", "sla_status": "BREACHED", "age_days": 12}
+            ]
+        ),
+        exception_actions=pd.DataFrame(),
+        candidate_links=pd.DataFrame(),
+        splink_candidate_links=pd.DataFrame(),
+        split_payment_candidates=pd.DataFrame(),
+    )
+
+    candidates = payload["candidatesByExceptionId"]["EXC-1"]
+
+    assert len(candidates) == 1
+    assert candidates[0]["source"] == "Rule-based"
+    assert candidates[0]["confidence"] == "0.88"
+    assert "exception-derived review evidence" in candidates[0]["rationale"]
+    assert len(payload["breakPacketsByExceptionId"]["EXC-1"]["relatedCandidates"]) == 1
