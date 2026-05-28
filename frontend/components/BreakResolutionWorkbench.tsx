@@ -120,6 +120,20 @@ function filterPriorityQueue(
   );
 }
 
+function queueFilterCount(
+  items: BreakItem[],
+  candidatesByExceptionId: Record<string, Candidate[]>,
+  breakPacketsByExceptionId: Record<string, BreakPacket>,
+  filter: QueueFilter,
+) {
+  return filterPriorityQueue(
+    items,
+    candidatesByExceptionId,
+    breakPacketsByExceptionId,
+    filter,
+  ).length;
+}
+
 function statusPillClass(value: string) {
   if (value === "BREACHED" || value === "difference") {
     return {
@@ -193,27 +207,35 @@ function EvidenceStatus({ value }: { value: string }) {
 
 function QueueFilterChip({
   filter,
+  count,
   active,
+  disabled,
   onClick,
 }: {
   filter: QueueFilter;
+  count: number;
   active: boolean;
+  disabled: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={onClick}
       className={`rounded-full px-3 py-1.5 text-xs font-bold ring-1 transition ${
         active
           ? "bg-slate-950 text-white ring-slate-950"
-          : "bg-white text-slate-600 ring-slate-200 hover:bg-slate-50 hover:text-slate-950"
+          : disabled
+            ? "cursor-not-allowed bg-slate-50 text-slate-300 ring-slate-100"
+            : "bg-white text-slate-600 ring-slate-200 hover:bg-slate-50 hover:text-slate-950"
       }`}
     >
-      {filter}
+      {filter} <span className="ml-1 opacity-70">{count}</span>
     </button>
   );
 }
+
 
 function QueueCard({
   item,
@@ -439,6 +461,106 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
   );
 }
 
+function formatRecordValue(value: unknown): string {
+  if (value === null || value === undefined || value === "") {
+    return "Not available";
+  }
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function DrillDownRecord({
+  title,
+  record,
+  emptyMessage,
+}: {
+  title: string;
+  record?: Record<string, unknown>;
+  emptyMessage: string;
+}) {
+  const entries = Object.entries(record ?? {}).filter(
+    ([, value]) => value !== null && value !== undefined && value !== "",
+  );
+
+  return (
+    <details className="rounded-2xl border border-slate-200 bg-white p-4">
+      <summary className="cursor-pointer text-sm font-bold text-slate-950">
+        {title}
+      </summary>
+
+      {entries.length === 0 ? (
+        <div className="mt-3 text-sm leading-6 text-slate-500">{emptyMessage}</div>
+      ) : (
+        <div className="mt-4 grid gap-2">
+          {entries.map(([key, value]) => (
+            <div
+              key={key}
+              className="grid gap-2 rounded-xl bg-slate-50 p-3 text-xs lg:grid-cols-[190px_1fr]"
+            >
+              <div className="font-bold uppercase tracking-[0.08em] text-slate-400">
+                {key}
+              </div>
+              <div className="break-words font-semibold text-slate-700">
+                {formatRecordValue(value)}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </details>
+  );
+}
+
+function DrillDownPanels({ packet }: { packet?: BreakPacket }) {
+  if (!packet) {
+    return (
+      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
+        No drill-down packet is available for this break.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-5 space-y-3">
+      <div>
+        <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+          Drill-down context
+        </div>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          Open these panels when you need to investigate the source row, lifecycle state,
+          recommendation context, or raw exception record.
+        </p>
+      </div>
+
+      <DrillDownRecord
+        title="Lifecycle context"
+        record={packet.lifecycle}
+        emptyMessage="No lifecycle context is available."
+      />
+
+      <DrillDownRecord
+        title="Action recommendation detail"
+        record={packet.actionRecommendation}
+        emptyMessage="No action recommendation detail is available."
+      />
+
+      <DrillDownRecord
+        title="Raw exception detail"
+        record={packet.rawException}
+        emptyMessage="No raw exception detail is available."
+      />
+    </div>
+  );
+}
+
 function CandidateCard({
   candidate,
   selectedDecision,
@@ -570,6 +692,26 @@ export default function BreakResolutionWorkbench() {
     ],
   );
 
+  const queueFilterCounts = useMemo(
+    () =>
+      Object.fromEntries(
+        QUEUE_FILTERS.map((filter) => [
+          filter,
+          queueFilterCount(
+            workbenchData.priorityQueue,
+            workbenchData.candidatesByExceptionId,
+            workbenchData.breakPacketsByExceptionId,
+            filter,
+          ),
+        ]),
+      ) as Record<QueueFilter, number>,
+    [
+      workbenchData.priorityQueue,
+      workbenchData.candidatesByExceptionId,
+      workbenchData.breakPacketsByExceptionId,
+    ],
+  );
+
   useEffect(() => {
     if (filteredPriorityQueue.length === 0) {
       return;
@@ -662,14 +804,24 @@ export default function BreakResolutionWorkbench() {
             </div>
 
             <div className="mb-4 flex flex-wrap gap-2">
-              {QUEUE_FILTERS.map((filter) => (
-                <QueueFilterChip
-                  key={filter}
-                  filter={filter}
-                  active={queueFilter === filter}
-                  onClick={() => setQueueFilter(filter)}
-                />
-              ))}
+              {QUEUE_FILTERS.map((filter) => {
+                const count = queueFilterCounts[filter];
+
+                return (
+                  <QueueFilterChip
+                    key={filter}
+                    filter={filter}
+                    count={count}
+                    active={queueFilter === filter}
+                    disabled={filter !== "All" && count === 0}
+                    onClick={() => {
+                      if (filter === "All" || count > 0) {
+                        setQueueFilter(filter);
+                      }
+                    }}
+                  />
+                );
+              })}
             </div>
 
             <div className="mb-3 text-xs font-semibold text-slate-500">
@@ -733,6 +885,8 @@ export default function BreakResolutionWorkbench() {
             />
 
             <EvidenceComparison fields={evidenceFields} />
+
+            <DrillDownPanels packet={selectedPacket} />
           </section>
 
           <aside className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">

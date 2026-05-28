@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-28 — Next.js Workbench Drill-Down Panels Milestone
+
+### Changed
+
+- Added drill-down panels to the Next.js break resolution workbench.
+- Added expandable lifecycle context, action recommendation detail, and raw exception detail.
+- Added queue filter counts for all workbench filters.
+- Disabled empty non-default filters to prevent inconsistent queue and selected-break states.
+- Preserved existing break selection, evidence comparison, action preview, and candidate decision workflows.
+
+### Design Notes
+
+- This milestone improves investigation depth for a selected reconciliation break.
+- Analysts can now start from a prioritized break, inspect summarized evidence, and drill into supporting context when needed.
+- Queue filters now communicate available workload before selection.
+- Empty filters no longer create a mismatch between the queue and the active evidence panel.
+
 ## 2026-05-28 — Next.js Break Packet Consumption Milestone
 
 ### Changed
