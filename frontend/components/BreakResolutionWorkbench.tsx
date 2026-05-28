@@ -18,6 +18,50 @@ type QueueFilter =
   | "Amount Mismatch"
   | "Candidate Available";
 
+type CandidateDecision = {
+  source: Candidate["source"];
+  action: "Review" | "Accept" | "Reject";
+  confidence: string;
+  rationale: string;
+};
+
+type BreakSide = {
+  sourceRowId?: string;
+  amount?: string;
+  transactionDate?: string;
+  accountId?: string;
+  currency?: string;
+};
+
+type BreakPacket = {
+  exceptionId: string;
+  summary?: {
+    exceptionId?: string;
+    breakType?: string;
+    priority?: string;
+    slaStatus?: string;
+    ageDays?: number;
+    amountGap?: string;
+    recommendedAction?: string;
+    reason?: string;
+    decisionBoundary?: string;
+  };
+  bankSide?: BreakSide;
+  ledgerSide?: BreakSide;
+  lifecycle?: Record<string, unknown>;
+  actionRecommendation?: Record<string, unknown>;
+  evidence?: EvidenceField[];
+  relatedCandidates?: Candidate[];
+  rawException?: Record<string, unknown>;
+};
+
+type WorkbenchData = {
+  priorityQueue: BreakItem[];
+  evidenceByExceptionId: Record<string, EvidenceField[]>;
+  candidatesByExceptionId: Record<string, Candidate[]>;
+  breakPacketsByExceptionId: Record<string, BreakPacket>;
+};
+
 const QUEUE_FILTERS: QueueFilter[] = [
   "All",
   "Breached SLA",
@@ -26,16 +70,29 @@ const QUEUE_FILTERS: QueueFilter[] = [
   "Candidate Available",
 ];
 
+const fallbackWorkbenchData: WorkbenchData = {
+  priorityQueue: fallbackPriorityQueue,
+  evidenceByExceptionId: fallbackEvidenceByExceptionId,
+  candidatesByExceptionId: fallbackCandidatesByExceptionId,
+  breakPacketsByExceptionId: {},
+};
+
 function hasRelatedCandidate(
   exceptionId: string,
   candidatesByExceptionId: Record<string, Candidate[]>,
+  breakPacketsByExceptionId: Record<string, BreakPacket>,
 ) {
-  return (candidatesByExceptionId[exceptionId] ?? []).length > 0;
+  const candidateCount = (candidatesByExceptionId[exceptionId] ?? []).length;
+  const packetCandidateCount =
+    breakPacketsByExceptionId[exceptionId]?.relatedCandidates?.length ?? 0;
+
+  return candidateCount + packetCandidateCount > 0;
 }
 
 function filterPriorityQueue(
   items: BreakItem[],
   candidatesByExceptionId: Record<string, Candidate[]>,
+  breakPacketsByExceptionId: Record<string, BreakPacket>,
   filter: QueueFilter,
 ) {
   if (filter === "All") {
@@ -55,29 +112,13 @@ function filterPriorityQueue(
   }
 
   return items.filter((item) =>
-    hasRelatedCandidate(item.exceptionId, candidatesByExceptionId),
+    hasRelatedCandidate(
+      item.exceptionId,
+      candidatesByExceptionId,
+      breakPacketsByExceptionId,
+    ),
   );
 }
-
-type CandidateDecision = {
-  source: Candidate["source"];
-  action: "Review" | "Accept" | "Reject";
-  confidence: string;
-  rationale: string;
-};
-
-
-type WorkbenchData = {
-  priorityQueue: BreakItem[];
-  evidenceByExceptionId: Record<string, EvidenceField[]>;
-  candidatesByExceptionId: Record<string, Candidate[]>;
-};
-
-const fallbackWorkbenchData: WorkbenchData = {
-  priorityQueue: fallbackPriorityQueue,
-  evidenceByExceptionId: fallbackEvidenceByExceptionId,
-  candidatesByExceptionId: fallbackCandidatesByExceptionId,
-};
 
 function statusPillClass(value: string) {
   if (value === "BREACHED" || value === "difference") {
@@ -174,7 +215,6 @@ function QueueFilterChip({
   );
 }
 
-
 function QueueCard({
   item,
   active,
@@ -186,6 +226,7 @@ function QueueCard({
 }) {
   return (
     <button
+      type="button"
       onClick={onSelect}
       className={`w-full rounded-2xl border p-4 text-left transition ${
         active
@@ -220,10 +261,12 @@ function EvidenceInsightSummary({
   selectedBreak,
   fields,
   candidates,
+  selectedPacket,
 }: {
   selectedBreak: BreakItem;
   fields: EvidenceField[];
   candidates: Candidate[];
+  selectedPacket?: BreakPacket;
 }) {
   const amountField = fields.find((field) => field.field === "Amount");
   const dateField = fields.find((field) => field.field === "Transaction Date");
@@ -244,7 +287,7 @@ function EvidenceInsightSummary({
         <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
           <div className="text-xs font-semibold text-slate-500">Primary break</div>
           <div className="mt-1 text-sm font-bold text-slate-950">
-            {selectedBreak.breakType}
+            {selectedPacket?.summary?.breakType ?? selectedBreak.breakType}
           </div>
         </div>
 
@@ -265,7 +308,7 @@ function EvidenceInsightSummary({
         <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
           <div className="text-xs font-semibold text-slate-500">Recommended action</div>
           <div className="mt-1 text-sm font-bold text-slate-950">
-            {selectedBreak.recommendedAction}
+            {selectedPacket?.summary?.recommendedAction ?? selectedBreak.recommendedAction}
           </div>
         </div>
       </div>
@@ -282,6 +325,78 @@ function EvidenceInsightSummary({
         <div className="text-xs leading-5 text-slate-500">
           <span className="font-bold text-slate-700">Reference:</span>{" "}
           {referenceField?.note ?? "No reference note available."}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BreakSideContext({
+  bankSide,
+  ledgerSide,
+}: {
+  bankSide?: BreakSide;
+  ledgerSide?: BreakSide;
+}) {
+  if (!bankSide && !ledgerSide) {
+    return null;
+  }
+
+  return (
+    <div className="mb-5 grid gap-3 lg:grid-cols-2">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+          Bank side
+        </div>
+        <div className="mt-3 space-y-2 text-sm text-slate-600">
+          <div className="flex justify-between gap-3">
+            <span>Source row</span>
+            <span className="font-semibold text-slate-950">{bankSide?.sourceRowId ?? "N/A"}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Amount</span>
+            <span className="font-semibold text-slate-950">{bankSide?.amount ?? "N/A"}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Date</span>
+            <span className="font-semibold text-slate-950">
+              {bankSide?.transactionDate ?? "N/A"}
+            </span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Account</span>
+            <span className="font-semibold text-slate-950">{bankSide?.accountId ?? "N/A"}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+          Ledger side
+        </div>
+        <div className="mt-3 space-y-2 text-sm text-slate-600">
+          <div className="flex justify-between gap-3">
+            <span>Source row</span>
+            <span className="font-semibold text-slate-950">
+              {ledgerSide?.sourceRowId ?? "N/A"}
+            </span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Amount</span>
+            <span className="font-semibold text-slate-950">{ledgerSide?.amount ?? "N/A"}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Date</span>
+            <span className="font-semibold text-slate-950">
+              {ledgerSide?.transactionDate ?? "N/A"}
+            </span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Account</span>
+            <span className="font-semibold text-slate-950">
+              {ledgerSide?.accountId ?? "N/A"}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -359,27 +474,27 @@ function CandidateCard({
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <button
-          type="button"
+        <Button
+          sentiment="neutral"
+          appearance="bordered"
           onClick={() => onDecision("Review")}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-white"
         >
           Review
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          sentiment="accented"
+          appearance="solid"
           onClick={() => onDecision("Accept")}
-          className="rounded-xl bg-slate-950 px-3 py-2 text-xs font-bold text-white"
         >
           Accept
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          sentiment="neutral"
+          appearance="bordered"
           onClick={() => onDecision("Reject")}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-white"
         >
           Reject
-        </button>
+        </Button>
       </div>
 
       {selectedDecision ? (
@@ -424,6 +539,7 @@ export default function BreakResolutionWorkbench() {
             priorityQueue: payload.priorityQueue,
             evidenceByExceptionId: payload.evidenceByExceptionId,
             candidatesByExceptionId: payload.candidatesByExceptionId,
+            breakPacketsByExceptionId: payload.breakPacketsByExceptionId ?? {},
           });
           setDataSource("generated v3 output");
         }
@@ -443,9 +559,15 @@ export default function BreakResolutionWorkbench() {
       filterPriorityQueue(
         workbenchData.priorityQueue,
         workbenchData.candidatesByExceptionId,
+        workbenchData.breakPacketsByExceptionId,
         queueFilter,
       ),
-    [queueFilter, workbenchData.priorityQueue, workbenchData.candidatesByExceptionId],
+    [
+      queueFilter,
+      workbenchData.priorityQueue,
+      workbenchData.candidatesByExceptionId,
+      workbenchData.breakPacketsByExceptionId,
+    ],
   );
 
   useEffect(() => {
@@ -464,9 +586,10 @@ export default function BreakResolutionWorkbench() {
 
   const selectedBreak = useMemo(
     () =>
-      workbenchData.priorityQueue.find((item) => item.exceptionId === selectedId) ??
+      filteredPriorityQueue.find((item) => item.exceptionId === selectedId) ??
+      filteredPriorityQueue[0] ??
       workbenchData.priorityQueue[0],
-    [selectedId, workbenchData.priorityQueue],
+    [selectedId, filteredPriorityQueue, workbenchData.priorityQueue],
   );
 
   if (!selectedBreak) {
@@ -479,10 +602,22 @@ export default function BreakResolutionWorkbench() {
     );
   }
 
+  const selectedPacket = workbenchData.breakPacketsByExceptionId[selectedBreak.exceptionId];
   const evidenceFields =
-    workbenchData.evidenceByExceptionId[selectedBreak.exceptionId] ?? [];
+    selectedPacket?.evidence ??
+    workbenchData.evidenceByExceptionId[selectedBreak.exceptionId] ??
+    [];
   const relatedCandidates =
-    workbenchData.candidatesByExceptionId[selectedBreak.exceptionId] ?? [];
+    selectedPacket?.relatedCandidates ??
+    workbenchData.candidatesByExceptionId[selectedBreak.exceptionId] ??
+    [];
+
+  const displayedRecommendedAction =
+    selectedPacket?.summary?.recommendedAction ?? selectedBreak.recommendedAction;
+  const displayedReason = selectedPacket?.summary?.reason ?? selectedBreak.reason;
+  const displayedDecisionBoundary =
+    selectedPacket?.summary?.decisionBoundary ??
+    "System recommendations and candidates support review. The analyst remains responsible for final disposition.";
 
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
@@ -506,9 +641,7 @@ export default function BreakResolutionWorkbench() {
 
             <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-5 py-4 text-sm text-amber-100">
               <div className="font-bold text-amber-200">Decision boundary</div>
-              <div className="mt-1 leading-6">
-                System recommends. Analyst decides. Action log records.
-              </div>
+              <div className="mt-1 leading-6">{displayedDecisionBoundary}</div>
               <div className="mt-3 text-xs text-amber-200/80">
                 Data source: {isLoadingData ? "loading..." : dataSource}
               </div>
@@ -558,6 +691,7 @@ export default function BreakResolutionWorkbench() {
                       setSelectedId(item.exceptionId);
                       setDecision(null);
                       setDecisionTimestamp(null);
+                      setCandidateDecision(null);
                     }}
                   />
                 ))
@@ -572,21 +706,30 @@ export default function BreakResolutionWorkbench() {
                   Evidence Comparison
                 </div>
                 <h2 className="mt-2 text-3xl font-black">{selectedBreak.exceptionId}</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
+                <div className="mt-2 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-200">
+                  Packet: {selectedPacket ? "break packet v2" : "fallback evidence"}
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-500">
                   Bank-side and ledger-side evidence are aligned by judgment dimension,
                   so the analyst can review differences without scanning raw CSV rows.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <PriorityPill value={selectedBreak.priority} />
-                <StatusBadge value={selectedBreak.slaStatus} />
+                <PriorityPill value={selectedPacket?.summary?.priority ?? selectedBreak.priority} />
+                <StatusBadge value={selectedPacket?.summary?.slaStatus ?? selectedBreak.slaStatus} />
               </div>
             </div>
+
+            <BreakSideContext
+              bankSide={selectedPacket?.bankSide}
+              ledgerSide={selectedPacket?.ledgerSide}
+            />
 
             <EvidenceInsightSummary
               selectedBreak={selectedBreak}
               fields={evidenceFields}
               candidates={relatedCandidates}
+              selectedPacket={selectedPacket}
             />
 
             <EvidenceComparison fields={evidenceFields} />
@@ -605,52 +748,60 @@ export default function BreakResolutionWorkbench() {
 
             <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
               <div className="text-sm font-bold text-red-700">
-                {selectedBreak.recommendedAction}
+                {displayedRecommendedAction}
               </div>
-              <p className="mt-2 text-sm leading-6 text-red-700">{selectedBreak.reason}</p>
+              <p className="mt-2 text-sm leading-6 text-red-700">{displayedReason}</p>
             </div>
 
             <div className="mt-5 space-y-3">
-              <button
+              <Button
+                sentiment="accented"
+                appearance="solid"
                 onClick={() => {
                   setDecision("Staged recommendation");
                   setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white"
+                style={{ width: "100%" }}
               >
-                Accept recommendation
-              </button>
-              <button
+                Stage recommendation
+              </Button>
+              <Button
+                sentiment="neutral"
+                appearance="bordered"
                 onClick={() => {
                   setDecision("Rejected recommendation");
                   setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
+                style={{ width: "100%" }}
               >
                 Reject recommendation
-              </button>
-              <button
+              </Button>
+              <Button
+                sentiment="neutral"
+                appearance="bordered"
                 onClick={() => {
                   setDecision("Requested more information");
                   setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
+                style={{ width: "100%" }}
               >
-                Request info
-              </button>
-              <button
+                Request information
+              </Button>
+              <Button
+                sentiment="neutral"
+                appearance="bordered"
                 onClick={() => {
                   setDecision("Added analyst note");
                   setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
+                style={{ width: "100%" }}
               >
                 Add analyst note
-              </button>
+              </Button>
             </div>
 
             <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
@@ -678,6 +829,7 @@ export default function BreakResolutionWorkbench() {
                       {decisionTimestamp ?? "Pending"}
                     </span>
                   </div>
+
                   {candidateDecision ? (
                     <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-5 text-blue-700">
                       <div className="font-bold">Candidate decision context</div>

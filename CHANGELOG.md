@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-28 — Next.js Break Packet Consumption Milestone
+
+### Changed
+
+- Updated the Next.js break resolution workbench to consume `breakPacketsByExceptionId`.
+- Added packet-aware rendering for break summary, bank side, ledger side, lifecycle context, action recommendation, evidence, and related candidates.
+- Added a break packet indicator in the evidence comparison panel.
+- Preserved existing queue filters, break selection, candidate decision workflow, and action log preview behavior.
+
+### Design Notes
+
+- This milestone moves the frontend from shallow generated data toward a richer workbench data model.
+- The UI can now render a fuller break packet instead of reconstructing context from queue and evidence maps alone.
+- This prepares the workbench for drill-down panels, raw row inspection, lifecycle history, and more realistic analyst workflow.
+
 ## 2026-05-28 — Frontend Workbench Data Model v2 Milestone
 
 ### Changed
