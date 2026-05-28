@@ -77,6 +77,22 @@ const fallbackWorkbenchData: WorkbenchData = {
   breakPacketsByExceptionId: {},
 };
 
+const actionButtonStyle = {
+  width: "100%",
+  minHeight: "44px",
+  borderRadius: "14px",
+  fontWeight: 800,
+  letterSpacing: "0.01em",
+} as const;
+
+const candidateButtonStyle = {
+  width: "100%",
+  minHeight: "36px",
+  borderRadius: "12px",
+  fontSize: "12px",
+  fontWeight: 800,
+} as const;
+
 function hasRelatedCandidate(
   exceptionId: string,
   candidatesByExceptionId: Record<string, Candidate[]>,
@@ -609,6 +625,7 @@ function CandidateCard({
           sentiment="neutral"
           appearance="bordered"
           onClick={() => onDecision("Review")}
+          style={candidateButtonStyle}
         >
           Review
         </Button>
@@ -616,6 +633,7 @@ function CandidateCard({
           sentiment="accented"
           appearance="solid"
           onClick={() => onDecision("Accept")}
+          style={candidateButtonStyle}
         >
           Accept
         </Button>
@@ -623,6 +641,7 @@ function CandidateCard({
           sentiment="neutral"
           appearance="bordered"
           onClick={() => onDecision("Reject")}
+          style={candidateButtonStyle}
         >
           Reject
         </Button>
@@ -1079,7 +1098,11 @@ export default function BreakResolutionWorkbench() {
               <p className="mt-2 text-sm leading-6 text-red-700">{displayedReason}</p>
             </div>
 
-            <div className="mt-5 space-y-3">
+            <div className="mt-5">
+              <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                Stage analyst action
+              </div>
+              <div className="space-y-3">
               <Button
                 sentiment="accented"
                 appearance="solid"
@@ -1089,7 +1112,7 @@ export default function BreakResolutionWorkbench() {
                   setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                style={{ width: "100%" }}
+                style={actionButtonStyle}
               >
                 Stage recommendation
               </Button>
@@ -1102,7 +1125,7 @@ export default function BreakResolutionWorkbench() {
                   setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                style={{ width: "100%" }}
+                style={actionButtonStyle}
               >
                 Reject recommendation
               </Button>
@@ -1115,7 +1138,7 @@ export default function BreakResolutionWorkbench() {
                   setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                style={{ width: "100%" }}
+                style={actionButtonStyle}
               >
                 Request information
               </Button>
@@ -1128,10 +1151,11 @@ export default function BreakResolutionWorkbench() {
                   setAnalystNote("");
                   setDecisionTimestamp(new Date().toISOString());
                 }}
-                style={{ width: "100%" }}
+                style={actionButtonStyle}
               >
                 Add analyst note
               </Button>
+              </div>
             </div>
 
             <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">

@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-28 — Next.js Workbench Visual Polish Pass 1
+
+### Changed
+
+- Refined workbench action controls with shared button sizing and styling.
+- Added a clearer action workflow label above the action controls.
+- Applied more consistent styling to candidate decision buttons.
+- Preserved existing queue filters, break selection, evidence comparison, drill-down panels, and structured action workflow behavior.
+
+### Design Notes
+
+- This milestone improves visual consistency without changing reconciliation logic.
+- The Action Panel is moving toward a more controlled financial operations workflow style.
+- Further visual polish is still needed for panel density, header hierarchy, and Salt-aligned components.
+
 ## 2026-05-28 — Next.js Queue Productivity Milestone
 
 ### Changed
