@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-28 — Next.js Evidence Review Usability Pass
+
+### Changed
+
+- Added an evidence triage panel to the Next.js workbench.
+- Added review-first indicators for amount gap, missing fields, differences, and matched evidence.
+- Added a review focus message to guide analysts toward the highest-friction evidence.
+- Sorted evidence rows by review priority: missing, difference, then matched evidence.
+- Added subtle evidence row highlighting based on status.
+
+### Design Notes
+
+- This milestone improves the evidence review experience without changing reconciliation logic.
+- The center panel now behaves more like a reconciliation evidence packet.
+- Analysts can see the primary evidence state before scanning field-level details.
+- Future work should improve candidate association so related candidate evidence appears for relevant breaks.
+
 ## 2026-05-28 — Next.js Workbench Layout Density Pass 1
 
 ### Changed

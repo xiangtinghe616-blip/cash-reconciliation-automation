@@ -309,6 +309,121 @@ function QueueCard({
   );
 }
 
+function evidenceStatusOrder(status: EvidenceField["status"]) {
+  if (status === "missing") {
+    return 0;
+  }
+
+  if (status === "difference") {
+    return 1;
+  }
+
+  return 2;
+}
+
+function evidenceRowTone(status: EvidenceField["status"]) {
+  if (status === "missing") {
+    return "border-amber-200 bg-amber-50/60";
+  }
+
+  if (status === "difference") {
+    return "border-red-200 bg-red-50/50";
+  }
+
+  return "border-slate-200 bg-slate-50";
+}
+
+function EvidenceTriagePanel({
+  selectedBreak,
+  fields,
+  selectedPacket,
+}: {
+  selectedBreak: BreakItem;
+  fields: EvidenceField[];
+  selectedPacket?: BreakPacket;
+}) {
+  const missingFields = fields.filter((field) => field.status === "missing");
+  const differenceFields = fields.filter((field) => field.status === "difference");
+  const matchedFields = fields.filter((field) => field.status === "match");
+
+  const primaryState =
+    missingFields.length > 0
+      ? "Incomplete evidence"
+      : differenceFields.length > 0
+        ? "Difference review"
+        : "Evidence aligned";
+
+  const primaryTone =
+    missingFields.length > 0
+      ? "border-amber-200 bg-amber-50 text-amber-800"
+      : differenceFields.length > 0
+        ? "border-red-200 bg-red-50 text-red-800"
+        : "border-emerald-200 bg-emerald-50 text-emerald-800";
+
+  const firstMissing = missingFields[0]?.field;
+  const firstDifference = differenceFields[0]?.field;
+
+  const reviewFocus =
+    firstMissing
+      ? `Start with missing ${firstMissing.toLowerCase()} evidence.`
+      : firstDifference
+        ? `Start with ${firstDifference.toLowerCase()} difference.`
+        : "Evidence is aligned; review candidate and action context.";
+
+  return (
+    <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+            Evidence triage
+          </div>
+          <div className="mt-1 text-sm font-semibold text-slate-600">
+            Review the highest-friction evidence before opening raw details.
+          </div>
+        </div>
+
+        <span className={`rounded-full border px-3 py-1.5 text-xs font-bold ${primaryTone}`}>
+          {primaryState}
+        </span>
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-4">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-semibold text-slate-500">Amount gap</div>
+          <div className="mt-1 text-sm font-black text-slate-950">
+            {selectedPacket?.summary?.amountGap ?? selectedBreak.amountGap}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-semibold text-slate-500">Missing fields</div>
+          <div className="mt-1 text-sm font-black text-slate-950">
+            {missingFields.length}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-semibold text-slate-500">Differences</div>
+          <div className="mt-1 text-sm font-black text-slate-950">
+            {differenceFields.length}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-semibold text-slate-500">Matched evidence</div>
+          <div className="mt-1 text-sm font-black text-slate-950">
+            {matchedFields.length}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-5 text-slate-600">
+        <span className="font-bold text-slate-800">Review focus:</span> {reviewFocus}
+      </div>
+    </div>
+  );
+}
+
 function EvidenceInsightSummary({
   selectedBreak,
   fields,
@@ -456,12 +571,17 @@ function BreakSideContext({
 }
 
 function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
+  const sortedFields = [...fields].sort(
+    (first, second) =>
+      evidenceStatusOrder(first.status) - evidenceStatusOrder(second.status),
+  );
+
   return (
     <div className="space-y-3">
-      {fields.map((field) => (
+      {sortedFields.map((field) => (
         <div
           key={field.field}
-          className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[145px_1fr_1fr_110px]"
+          className={`grid gap-3 rounded-2xl border p-3 lg:grid-cols-[145px_1fr_1fr_110px] ${evidenceRowTone(field.status)}`}
         >
           <div>
             <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
@@ -1071,6 +1191,12 @@ export default function BreakResolutionWorkbench() {
             <BreakSideContext
               bankSide={selectedPacket?.bankSide}
               ledgerSide={selectedPacket?.ledgerSide}
+            />
+
+            <EvidenceTriagePanel
+              selectedBreak={selectedBreak}
+              fields={evidenceFields}
+              selectedPacket={selectedPacket}
             />
 
             <EvidenceInsightSummary
