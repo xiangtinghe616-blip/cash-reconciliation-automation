@@ -58,6 +58,13 @@ function filterPriorityQueue(
   );
 }
 
+type CandidateDecision = {
+  source: Candidate["source"];
+  action: "Review" | "Accept" | "Reject";
+  confidence: string;
+  rationale: string;
+};
+
 
 type WorkbenchData = {
   priorityQueue: BreakItem[];
@@ -265,7 +272,15 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
   );
 }
 
-function CandidateCard({ candidate }: { candidate: Candidate }) {
+function CandidateCard({
+  candidate,
+  selectedDecision,
+  onDecision,
+}: {
+  candidate: Candidate;
+  selectedDecision: CandidateDecision | null;
+  onDecision: (action: CandidateDecision["action"]) => void;
+}) {
   const sourceStyle =
     candidate.source === "Splink"
       ? "bg-blue-50 text-blue-700 ring-blue-200"
@@ -290,6 +305,36 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
       <div className="mt-4 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
         Candidate evidence supports review prioritization. It does not confirm a match.
       </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <button
+          type="button"
+          onClick={() => onDecision("Review")}
+          className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-white"
+        >
+          Review
+        </button>
+        <button
+          type="button"
+          onClick={() => onDecision("Accept")}
+          className="rounded-xl bg-slate-950 px-3 py-2 text-xs font-bold text-white"
+        >
+          Accept
+        </button>
+        <button
+          type="button"
+          onClick={() => onDecision("Reject")}
+          className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-white"
+        >
+          Reject
+        </button>
+      </div>
+
+      {selectedDecision ? (
+        <div className="mt-3 rounded-xl bg-blue-50 p-3 text-xs font-semibold text-blue-700 ring-1 ring-blue-200">
+          Candidate decision staged: {selectedDecision.action}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -299,6 +344,7 @@ export default function BreakResolutionWorkbench() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
   const [decisionTimestamp, setDecisionTimestamp] = useState<string | null>(null);
+  const [candidateDecision, setCandidateDecision] = useState<CandidateDecision | null>(null);
   const [queueFilter, setQueueFilter] = useState<QueueFilter>("All");
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -521,7 +567,8 @@ export default function BreakResolutionWorkbench() {
             <div className="mt-5 space-y-3">
               <button
                 onClick={() => {
-                  setDecision("Accepted recommendation");
+                  setDecision("Staged recommendation");
+                  setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white"
@@ -531,6 +578,7 @@ export default function BreakResolutionWorkbench() {
               <button
                 onClick={() => {
                   setDecision("Rejected recommendation");
+                  setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
@@ -540,6 +588,7 @@ export default function BreakResolutionWorkbench() {
               <button
                 onClick={() => {
                   setDecision("Requested more information");
+                  setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
@@ -549,6 +598,7 @@ export default function BreakResolutionWorkbench() {
               <button
                 onClick={() => {
                   setDecision("Added analyst note");
+                  setCandidateDecision(null);
                   setDecisionTimestamp(new Date().toISOString());
                 }}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-800"
@@ -567,6 +617,12 @@ export default function BreakResolutionWorkbench() {
                     <span className="font-semibold text-slate-900">{selectedBreak.exceptionId}</span>
                   </div>
                   <div className="flex justify-between gap-3">
+                    <span className="text-slate-500">Decision type</span>
+                    <span className="font-semibold text-slate-900">
+                      {candidateDecision ? "Candidate decision" : "Action recommendation"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-3">
                     <span className="text-slate-500">Decision</span>
                     <span className="font-semibold text-slate-900">{decision}</span>
                   </div>
@@ -576,6 +632,15 @@ export default function BreakResolutionWorkbench() {
                       {decisionTimestamp ?? "Pending"}
                     </span>
                   </div>
+                  {candidateDecision ? (
+                    <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-5 text-blue-700">
+                      <div className="font-bold">Candidate decision context</div>
+                      <div>Source: {candidateDecision.source}</div>
+                      <div>Action: {candidateDecision.action}</div>
+                      <div>Confidence: {candidateDecision.confidence}</div>
+                    </div>
+                  ) : null}
+
                   <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
                     This preview would become a manual action log entry with analyst identity,
                     recommendation source, selected evidence, and disposition.
@@ -605,11 +670,36 @@ export default function BreakResolutionWorkbench() {
             </p>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
-            {relatedCandidates.map((candidate) => (
-              <CandidateCard key={candidate.source} candidate={candidate} />
-            ))}
-          </div>
+          {relatedCandidates.length === 0 ? (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-500">
+              No related candidate evidence is available for this break. Continue with
+              exception evidence and action review.
+            </div>
+          ) : (
+            <div className="grid gap-4 lg:grid-cols-3">
+              {relatedCandidates.map((candidate) => (
+                <CandidateCard
+                  key={candidate.source}
+                  candidate={candidate}
+                  selectedDecision={
+                    candidateDecision?.source === candidate.source ? candidateDecision : null
+                  }
+                  onDecision={(action) => {
+                    const nextCandidateDecision = {
+                      source: candidate.source,
+                      action,
+                      confidence: candidate.confidence,
+                      rationale: candidate.rationale,
+                    };
+
+                    setCandidateDecision(nextCandidateDecision);
+                    setDecision(`${action} ${candidate.source} candidate`);
+                    setDecisionTimestamp(new Date().toISOString());
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </section>
     </main>

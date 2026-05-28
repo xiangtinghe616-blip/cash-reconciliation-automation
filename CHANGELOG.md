@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-05-25 — Next.js Candidate Decision Workflow Milestone
+
+### Changed
+
+- Clarified the distinction between action recommendations and candidate decisions in the Next.js workbench.
+- Updated recommendation action copy so staging a recommendation is separate from accepting a candidate.
+- Added candidate decision context to the action log preview when a candidate is reviewed, accepted, or rejected.
+- Added clearer review-only language around candidate evidence.
+
+### Design Notes
+
+- Candidate evidence remains a review hypothesis, not a confirmed reconciliation decision.
+- Action recommendations and candidate decisions are separate workflow concepts.
+- The workbench continues to preserve the boundary that the system suggests and the analyst decides.
+
 ## 2026-05-25 — Next.js Workbench Workflow Depth Milestone
 
 ### Changed
