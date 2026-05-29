@@ -1,5 +1,8 @@
 # Cash Reconciliation Automation
 
+**Live Demo:** https://cash-reconciliation-automation.vercel.app  
+**Focus:** Control-aware cash reconciliation automation with a Next.js break resolution workbench.
+
 A Python-based reconciliation workflow for matching bank statement activity against internal ledger records, classifying exceptions, and producing analyst-ready review outputs.
 
 This project started as a small rule-based reconciliation prototype and has since been expanded into a scenario-driven workflow with richer synthetic data, staged matching logic, data quality checks, and an optional local LLM support layer for exception explanation and note drafting.
