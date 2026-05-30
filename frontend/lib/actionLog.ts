@@ -1,3 +1,5 @@
+export const ACTION_TRAIL_STORAGE_KEY = "cash-reconciliation-workbench.action-trail.v1";
+
 export type DecisionType = "Action recommendation" | "Candidate decision";
 
 export type CandidateSource = "Rule-based" | "Splink" | "Split-payment";
@@ -63,3 +65,29 @@ export function toActionLogPayloadV1(
       : undefined,
   };
 }
+
+export function isLocalActionRecordArray(
+  value: unknown,
+): value is LocalActionRecord[] {
+  return (
+    Array.isArray(value) &&
+    value.every((item) => {
+      if (!item || typeof item !== "object") {
+        return false;
+      }
+
+      const record = item as Partial<LocalActionRecord>;
+
+      return (
+        typeof record.id === "string" &&
+        typeof record.exceptionId === "string" &&
+        typeof record.actionType === "string" &&
+        typeof record.proposedStatus === "string" &&
+        typeof record.dispositionCode === "string" &&
+        typeof record.actor === "string" &&
+        typeof record.timestamp === "string"
+      );
+    })
+  );
+}
+

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-30 — Local Action Persistence v1
+
+### Changed
+
+- Persisted frontend-only staged action trail records in browser localStorage.
+- Restored local staged action history after page refresh.
+- Restored staged break state from persisted action trail records.
+- Added a clear control for the current break's staged action history.
+- Preserved action preview, candidate decision guardrails, hide-staged queue behavior, and evidence review workflow.
+
+### Design Notes
+
+- This milestone makes the alpha workbench feel more like a persistent review tool.
+- Staged actions remain browser-local and are not written to a backend.
+- This prepares the project for a future real action-log API or file-backed persistence layer.
+
 ## 2026-05-30 — Action Log Payload Contract v1
 
 ### Added

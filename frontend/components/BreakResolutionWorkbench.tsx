@@ -1,7 +1,11 @@
 "use client";
 
 import { Button } from "@salt-ds/core";
-import { type LocalActionRecord } from "@/lib/actionLog";
+import {
+  ACTION_TRAIL_STORAGE_KEY,
+  isLocalActionRecordArray,
+  type LocalActionRecord,
+} from "@/lib/actionLog";
 import { useEffect, useMemo, useState } from "react";
 import {
   candidatesByExceptionId as fallbackCandidatesByExceptionId,
@@ -874,15 +878,32 @@ function buildActionPreview({
 }
 
 
-function LocalActionTrail({ records }: { records: LocalActionRecord[] }) {
+function LocalActionTrail({
+  records,
+  onClear,
+}: {
+  records: LocalActionRecord[];
+  onClear: () => void;
+}) {
   return (
     <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
           Staged action history
         </div>
-        <div className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
-          {records.length} staged
+        <div className="flex items-center gap-2">
+          <div className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
+            {records.length} staged
+          </div>
+          {records.length > 0 ? (
+            <button
+              type="button"
+              onClick={onClear}
+              className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-600 hover:bg-slate-50"
+            >
+              Clear
+            </button>
+          ) : null}
         </div>
       </div>
 
@@ -935,6 +956,7 @@ export default function BreakResolutionWorkbench() {
   const [hideStaged, setHideStaged] = useState(false);
   const [stagedExceptionIds, setStagedExceptionIds] = useState<string[]>([]);
   const [actionTrail, setActionTrail] = useState<LocalActionRecord[]>([]);
+  const [hasLoadedActionTrail, setHasLoadedActionTrail] = useState(false);
   const [queueFilter, setQueueFilter] = useState<QueueFilter>("All");
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -976,6 +998,41 @@ export default function BreakResolutionWorkbench() {
 
     void loadWorkbenchData();
   }, []);
+
+  useEffect(() => {
+    try {
+      const storedActionTrail = window.localStorage.getItem(ACTION_TRAIL_STORAGE_KEY);
+
+      if (!storedActionTrail) {
+        return;
+      }
+
+      const parsedActionTrail = JSON.parse(storedActionTrail) as unknown;
+
+      if (isLocalActionRecordArray(parsedActionTrail)) {
+        setActionTrail(parsedActionTrail);
+        setStagedExceptionIds(
+          Array.from(new Set(parsedActionTrail.map((record) => record.exceptionId))),
+        );
+      }
+    } catch {
+      setActionTrail([]);
+      setStagedExceptionIds([]);
+    } finally {
+      setHasLoadedActionTrail(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedActionTrail) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      ACTION_TRAIL_STORAGE_KEY,
+      JSON.stringify(actionTrail),
+    );
+  }, [actionTrail, hasLoadedActionTrail]);
 
   const filteredPriorityQueue = useMemo(
     () =>
@@ -1596,7 +1653,17 @@ export default function BreakResolutionWorkbench() {
             </div>
 
 
-            <LocalActionTrail records={currentBreakActionTrail} />
+            <LocalActionTrail
+              records={currentBreakActionTrail}
+              onClear={() => {
+                setActionTrail((current) =>
+                  current.filter((record) => record.exceptionId !== selectedBreak.exceptionId),
+                );
+                setStagedExceptionIds((current) =>
+                  current.filter((exceptionId) => exceptionId !== selectedBreak.exceptionId),
+                );
+              }}
+            />
           </aside>
         </section>
 
