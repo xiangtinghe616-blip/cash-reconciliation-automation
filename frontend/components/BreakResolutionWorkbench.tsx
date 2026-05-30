@@ -25,6 +25,21 @@ type CandidateDecision = {
   rationale: string;
 };
 
+type LocalActionRecord = {
+  id: string;
+  exceptionId: string;
+  decisionType: string;
+  actionType: string;
+  proposedStatus: string;
+  dispositionCode: string;
+  actor: string;
+  timestamp: string;
+  analystNote: string;
+  candidateSource?: Candidate["source"];
+  candidateAction?: CandidateDecision["action"];
+  candidateConfidence?: string;
+};
+
 type BreakSide = {
   sourceRowId?: string;
   amount?: string;
@@ -873,6 +888,57 @@ function buildActionPreview({
 }
 
 
+function LocalActionTrail({ records }: { records: LocalActionRecord[] }) {
+  return (
+    <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+          Local action trail
+        </div>
+        <div className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
+          {records.length} staged
+        </div>
+      </div>
+
+      {records.length === 0 ? (
+        <p className="mt-3 text-xs leading-5 text-slate-500">
+          No staged actions for this break yet. Stage an action to create a local
+          review trail entry.
+        </p>
+      ) : (
+        <div className="mt-3 space-y-2">
+          {records.slice(0, 4).map((record) => (
+            <div
+              key={record.id}
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-5"
+            >
+              <div className="flex justify-between gap-3">
+                <span className="font-bold text-slate-900">{record.actionType}</span>
+                <span className="text-slate-500">{record.timestamp}</span>
+              </div>
+              <div className="mt-1 text-slate-600">{record.proposedStatus}</div>
+              <div className="mt-1 text-slate-500">
+                Disposition: <span className="font-semibold">{record.dispositionCode}</span>
+              </div>
+              {record.candidateSource ? (
+                <div className="mt-1 text-blue-700">
+                  Candidate: {record.candidateSource} / {record.candidateAction} /{" "}
+                  {record.candidateConfidence}
+                </div>
+              ) : null}
+              {record.analystNote ? (
+                <div className="mt-2 rounded-lg bg-white p-2 text-slate-600">
+                  {record.analystNote}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function BreakResolutionWorkbench() {
   const [workbenchData, setWorkbenchData] = useState<WorkbenchData>(fallbackWorkbenchData);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -883,6 +949,7 @@ export default function BreakResolutionWorkbench() {
   const [searchTerm, setSearchTerm] = useState("");
   const [hideStaged, setHideStaged] = useState(false);
   const [stagedExceptionIds, setStagedExceptionIds] = useState<string[]>([]);
+  const [actionTrail, setActionTrail] = useState<LocalActionRecord[]>([]);
   const [queueFilter, setQueueFilter] = useState<QueueFilter>("All");
   const [dataSource, setDataSource] = useState("static fallback");
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -1049,6 +1116,10 @@ export default function BreakResolutionWorkbench() {
     decisionTimestamp,
     analystNote,
   });
+
+  const currentBreakActionTrail = actionTrail.filter(
+    (record) => record.exceptionId === selectedBreak.exceptionId,
+  );
 
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
@@ -1496,6 +1567,26 @@ export default function BreakResolutionWorkbench() {
                           ? current
                           : [...current, selectedBreak.exceptionId],
                       );
+
+                      const stagedAt = new Date().toISOString();
+
+                      setActionTrail((current) => [
+                        {
+                          id: `${selectedBreak.exceptionId}-${actionPreview.actionType}-${stagedAt}`,
+                          exceptionId: selectedBreak.exceptionId,
+                          decisionType: actionPreview.decisionType,
+                          actionType: actionPreview.actionType,
+                          proposedStatus: actionPreview.proposedStatus,
+                          dispositionCode: actionPreview.dispositionCode,
+                          actor: actionPreview.actor,
+                          timestamp: stagedAt,
+                          analystNote,
+                          candidateSource: candidateDecision?.source,
+                          candidateAction: candidateDecision?.action,
+                          candidateConfidence: candidateDecision?.confidence,
+                        },
+                        ...current,
+                      ]);
                     }}
                     className={`w-full rounded-2xl px-4 py-3 text-sm font-bold ${
                       actionPreview.canStageAction
@@ -1511,6 +1602,8 @@ export default function BreakResolutionWorkbench() {
                       Analyst note is required before this action can be staged.
                     </div>
                   ) : null}
+
+                  <LocalActionTrail records={currentBreakActionTrail} />
                 </div>
               ) : (
                 <p className="mt-2">
