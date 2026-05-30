@@ -14,6 +14,22 @@
 - The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
 - The workbench is suitable for portfolio demonstration but remains non-production software.
 
+## 2026-05-30 — Action Panel Density and Hierarchy Polish
+
+### Changed
+
+- Refined the Action Panel header and control hierarchy.
+- Reduced visual weight in the recommendation card.
+- Tightened candidate evidence and selected-candidate panels.
+- Reduced spacing in action controls, action log preview, staged action history, and browser storage panels.
+- Preserved existing action workflow, candidate guardrails, local action persistence, export, reset, queue, and evidence behavior.
+
+### Design Notes
+
+- This milestone improves the right-side control area without changing workflow logic.
+- The Action Panel now reads more like a finance operations control surface and less like stacked demo cards.
+- Further visual polish should continue aligning the workbench with a Salt-inspired institutional UI style.
+
 ## 2026-05-30 — High-Density Queue and Evidence Polish
 
 ### Changed

@@ -964,7 +964,7 @@ function LocalActionTrail({
   onClear: () => void;
 }) {
   return (
-    <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
+    <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
           Staged action history
@@ -1060,7 +1060,7 @@ function ActionTrailPersistencePanel({
   const hasRecords = totalRecords > 0;
 
   return (
-    <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
+    <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
@@ -1590,25 +1590,25 @@ export default function BreakResolutionWorkbench() {
           </section>
 
           <aside className="rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
-            <div className="mb-5">
+            <div className="mb-4 border-b border-slate-200 pb-4">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Resolution Controls
               </div>
-              <h2 className="mt-2 text-xl font-black">Action workflow</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500">
+              <h2 className="mt-2 text-lg font-black">Action workflow</h2>
+              <p className="mt-2 text-xs leading-5 text-slate-500">
                 Stage analyst actions with note requirements, guardrails, and audit-style preview.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-red-200 bg-red-50/60 p-4">
+            <div className="rounded-xl border border-red-200 bg-red-50/60 p-3">
               <div className="text-sm font-bold text-red-700">
                 {displayedRecommendedAction}
               </div>
-              <p className="mt-2 text-sm leading-6 text-red-700">{displayedReason}</p>
+              <p className="mt-2 text-xs leading-5 text-red-700">{displayedReason}</p>
             </div>
 
             {candidateDecision ? (
-              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-800">
+              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm leading-5 text-blue-800">
                 <div className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
                   Selected candidate
                 </div>
@@ -1634,11 +1634,10 @@ export default function BreakResolutionWorkbench() {
             ) : null}
 
             {relatedCandidates.length > 0 ? (
-              <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-800">
+              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm leading-5 text-blue-800">
                 <div className="font-bold">Candidate evidence available</div>
                 <p className="mt-1 text-xs leading-5 text-blue-700">
-                  This break has related candidate evidence. Review it before staging a
-                  candidate decision.
+                  Candidate evidence is available for this break. Review it before staging a candidate decision.
                 </p>
                 <button
                   type="button"
@@ -1650,11 +1649,11 @@ export default function BreakResolutionWorkbench() {
               </div>
             ) : null}
 
-            <div className="mt-5">
+            <div className="mt-4">
               <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
                 Stage analyst action
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
               <Button
                 sentiment="accented"
                 appearance="solid"
@@ -1710,7 +1709,7 @@ export default function BreakResolutionWorkbench() {
               </div>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600">
               <div className="font-bold text-slate-900">Action log preview</div>
 
               {decision ? (
