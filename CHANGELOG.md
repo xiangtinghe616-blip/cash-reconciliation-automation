@@ -14,6 +14,22 @@
 - The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
 - The workbench is suitable for portfolio demonstration but remains non-production software.
 
+## 2026-05-30 — Candidate and Action Section Visual Polish
+
+### Changed
+
+- Added a shared candidate source badge component.
+- Unified source badge styling across compact candidate preview, full candidate cards, and selected candidate context.
+- Refined candidate card visual hierarchy.
+- Refined selected-candidate context in the Action Panel.
+- Preserved candidate decision workflow, action log preview, local action trail, queue controls, evidence triage, and persistence behavior.
+
+### Design Notes
+
+- This milestone improves visual consistency across candidate-related workflow areas.
+- Candidate evidence remains review support, not final reconciliation authority.
+- The workbench continues to move toward a Salt-inspired institutional finance UI.
+
 ## 2026-05-30 — Candidate Evidence Layout Cleanup
 
 ### Changed

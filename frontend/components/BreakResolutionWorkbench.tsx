@@ -768,6 +768,30 @@ function candidateDecisionGuardrail(action: CandidateDecision["action"]) {
   };
 }
 
+function candidateSourceClass(source: Candidate["source"]) {
+  if (source === "Splink") {
+    return "bg-blue-50 text-blue-700 ring-blue-200";
+  }
+
+  if (source === "Split-payment") {
+    return "bg-amber-50 text-amber-700 ring-amber-200";
+  }
+
+  return "bg-slate-100 text-slate-700 ring-slate-200";
+}
+
+function CandidateSourceBadge({ source }: { source: Candidate["source"] }) {
+  return (
+    <span
+      className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${candidateSourceClass(
+        source,
+      )}`}
+    >
+      {source}
+    </span>
+  );
+}
+
 function CompactCandidatePreview({
   candidates,
   onViewFullReview,
@@ -786,7 +810,7 @@ function CompactCandidatePreview({
             Candidate evidence
           </div>
           <div className="mt-1 text-sm font-semibold text-blue-900">
-            Candidate hypotheses are available for this break.
+            Candidate hypotheses are available for review.
           </div>
         </div>
         <div className="text-xs font-bold text-blue-700">
@@ -801,9 +825,7 @@ function CompactCandidatePreview({
             className="rounded-xl border border-blue-100 bg-white p-3"
           >
             <div className="flex items-center justify-between gap-3">
-              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-200">
-                {candidate.source}
-              </span>
+              <CandidateSourceBadge source={candidate.source} />
               <span className="text-xs font-bold text-slate-500">
                 Confidence {candidate.confidence}
               </span>
@@ -817,8 +839,7 @@ function CompactCandidatePreview({
 
       <div className="mt-3 flex flex-col gap-2 rounded-xl border border-blue-100 bg-white p-3 text-xs leading-5 text-slate-600">
         <div>
-          Candidate evidence is shown here as a preview. Use the full candidate review section
-          to stage Review, Accept, or Reject actions.
+          This preview surfaces candidate evidence early. Use the full candidate review section to stage Review, Accept, or Reject actions.
         </div>
         <button
           type="button"
@@ -841,31 +862,29 @@ function CandidateCard({
   selectedDecision: CandidateDecision | null;
   onDecision: (action: CandidateDecision["action"]) => void;
 }) {
-  const sourceStyle =
-    candidate.source === "Splink"
-      ? "bg-blue-50 text-blue-700 ring-blue-200"
-      : candidate.source === "Split-payment"
-        ? "bg-amber-50 text-amber-700 ring-amber-200"
-        : "bg-slate-100 text-slate-700 ring-slate-200";
-
   return (
     <div
       className={`rounded-2xl border p-4 transition ${
         selectedDecision
           ? "border-blue-300 bg-blue-50/60 ring-2 ring-blue-100"
-          : "border-slate-200 bg-slate-50"
+          : "border-slate-200 bg-white"
       }`}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${sourceStyle}`}>
-          {candidate.source}
-        </span>
+        <CandidateSourceBadge source={candidate.source} />
         <span className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
           Review only
         </span>
       </div>
 
-      <div className="mt-4 text-2xl font-black">{candidate.confidence}</div>
+      <div className="mt-4 flex items-end justify-between gap-3">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+            Confidence
+          </div>
+          <div className="mt-1 text-2xl font-black">{candidate.confidence}</div>
+        </div>
+      </div>
       <p className="mt-3 text-sm leading-6 text-slate-600">{candidate.rationale}</p>
 
       <div className="mt-4 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
@@ -1637,26 +1656,27 @@ export default function BreakResolutionWorkbench() {
             </div>
 
             {candidateDecision ? (
-              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm leading-5 text-blue-800">
-                <div className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
-                  Selected candidate
-                </div>
-                <div className="mt-2 grid gap-1">
-                  <div className="flex justify-between gap-3">
-                    <span>Source</span>
-                    <span className="font-bold">{candidateDecision.source}</span>
+              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50/70 p-3 text-sm leading-5 text-blue-800">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
+                    Selected candidate
                   </div>
+                  <CandidateSourceBadge source={candidateDecision.source} />
+                </div>
+
+                <div className="mt-3 grid gap-2 text-xs">
                   <div className="flex justify-between gap-3">
-                    <span>Action</span>
+                    <span className="text-blue-700">Action</span>
                     <span className="font-bold">{candidateDecision.action}</span>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <span>Confidence</span>
+                    <span className="text-blue-700">Confidence</span>
                     <span className="font-bold">{candidateDecision.confidence}</span>
                   </div>
                 </div>
+
                 <p className="mt-3 text-xs leading-5 text-blue-700">
-                  Candidate decisions are staged as analyst actions. They do not automatically
+                  Candidate decisions are staged as analyst actions and do not automatically
                   confirm reconciliation.
                 </p>
               </div>
