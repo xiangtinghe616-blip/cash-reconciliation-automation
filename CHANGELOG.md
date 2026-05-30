@@ -14,6 +14,23 @@
 - The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
 - The workbench is suitable for portfolio demonstration but remains non-production software.
 
+## 2026-05-30 — Salt Finance UI Polish Pass 1
+
+### Changed
+
+- Refined the Next.js workbench visual system toward a more institutional finance operations style.
+- Reduced excessive shadow and landing-page visual weight.
+- Tightened panel borders and surface hierarchy.
+- Refined queue card active and inactive states.
+- Refined the Action Panel label toward resolution controls.
+- Preserved existing queue, evidence, candidate, action trail, local persistence, export, and reset behavior.
+
+### Design Notes
+
+- This milestone focuses on visual discipline rather than new workflow functionality.
+- The workbench continues moving toward a Salt-inspired finance operations interface.
+- Further visual polish should continue to reduce generic SaaS card feel and improve high-density analyst workflow.
+
 ## 2026-05-30 — Action Trail Export and Reset Controls
 
 ### Changed

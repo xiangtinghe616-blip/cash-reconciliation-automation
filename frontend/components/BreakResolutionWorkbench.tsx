@@ -297,8 +297,8 @@ function QueueCard({
       onClick={onSelect}
       className={`w-full rounded-2xl border p-4 text-left transition ${
         active
-          ? "border-slate-950 bg-slate-950 text-white shadow-lg shadow-slate-200"
-          : "border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50"
+          ? "border-slate-900 bg-slate-900 text-white shadow-md shadow-slate-200"
+          : "border-slate-200 bg-white hover:border-slate-500 hover:bg-slate-50"
       }`}
     >
       <div className="flex items-center justify-between gap-3">
@@ -398,7 +398,7 @@ function EvidenceTriagePanel({
         : "Evidence is aligned; review candidate and action context.";
 
   return (
-    <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="mb-5 rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
       <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -464,7 +464,7 @@ function BreakSideContext({
 
   return (
     <div className="mb-5 grid gap-3 lg:grid-cols-2">
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="rounded-2xl border border-slate-300/70 bg-white p-4">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
           Bank side
         </div>
@@ -490,7 +490,7 @@ function BreakSideContext({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="rounded-2xl border border-slate-300/70 bg-white p-4">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
           Ledger side
         </div>
@@ -594,7 +594,7 @@ function DrillDownRecord({
   );
 
   return (
-    <details className="rounded-2xl border border-slate-200 bg-white p-4">
+    <details className="rounded-2xl border border-slate-300/70 bg-white p-4">
       <summary className="cursor-pointer text-sm font-bold text-slate-950">
         {title}
       </summary>
@@ -1273,9 +1273,9 @@ export default function BreakResolutionWorkbench() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
+    <main className="min-h-screen bg-[#f6f7f9] text-slate-950">
       <section className="mx-auto flex max-w-[1500px] flex-col gap-5 px-4 py-4 xl:px-6">
-        <header className="rounded-[20px] border border-slate-800 bg-slate-950 px-5 py-4 text-white shadow-lg shadow-slate-300">
+        <header className="rounded-2xl border border-slate-800 bg-slate-950 px-5 py-4 text-white shadow-md shadow-slate-300">
           <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">
             Cash Break Resolution Workbench
           </div>
@@ -1303,7 +1303,7 @@ export default function BreakResolutionWorkbench() {
         </header>
 
         <section className="grid gap-5 xl:grid-cols-[340px_minmax(0,1fr)_340px]">
-          <aside className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm xl:sticky xl:top-4 xl:self-start">
+          <aside className="rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
             <div className="mb-4">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Priority Queue
@@ -1414,7 +1414,7 @@ export default function BreakResolutionWorkbench() {
             </div>
           </aside>
 
-          <section className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-slate-300/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
             <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -1498,18 +1498,18 @@ export default function BreakResolutionWorkbench() {
             <DrillDownPanels packet={selectedPacket} />
           </section>
 
-          <aside className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm xl:sticky xl:top-4 xl:self-start">
+          <aside className="rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
             <div className="mb-5">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                Action Panel
+                Resolution Controls
               </div>
               <h2 className="mt-2 text-xl font-black">Action workflow</h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Stage analyst actions with note requirements and audit-style preview.
+                Stage analyst actions with note requirements, guardrails, and audit-style preview.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-red-200 bg-red-50/70 p-4">
+            <div className="rounded-2xl border border-red-200 bg-red-50/60 p-4">
               <div className="text-sm font-bold text-red-700">
                 {displayedRecommendedAction}
               </div>
@@ -1619,7 +1619,7 @@ export default function BreakResolutionWorkbench() {
               </div>
             </div>
 
-            <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
               <div className="font-bold text-slate-900">Action log preview</div>
 
               {decision ? (
@@ -1791,7 +1791,7 @@ export default function BreakResolutionWorkbench() {
           </aside>
         </section>
 
-        <section id="related-candidate-evidence" className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
+        <section id="related-candidate-evidence" className="rounded-2xl border border-slate-300/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
           <div className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
