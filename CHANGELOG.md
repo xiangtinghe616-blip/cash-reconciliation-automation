@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-05-30 — Workbench Alpha Release Cut
+
+### Added
+
+- Added `frontend/design/WORKBENCH_ALPHA_RELEASE_NOTES.md`.
+- Added `frontend/design/MANUAL_UI_QA_CHECKLIST.md`.
+- Updated `versions/v3/README.md` to point to the alpha release notes and UI QA checklist.
+
+### Design Notes
+
+- This milestone marks the frontend as an interactive alpha workbench.
+- The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
+- The workbench is suitable for portfolio demonstration but remains non-production software.
+
 ## 2026-05-30 — Action Trail Export and Reset Controls
 
 ### Changed

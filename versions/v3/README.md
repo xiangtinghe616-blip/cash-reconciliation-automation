@@ -714,3 +714,18 @@ Possible next v3 enhancements include:
 v3 is intended to demonstrate the evolution from a portfolio-grade reconciliation prototype into a more structured, control-aware reconciliation workflow.
 
 The project is not designed to replace human review. It is designed to reduce manual matching work, surface explainable exceptions, and give analysts a clearer review queue.
+
+## Workbench Alpha Release Notes
+
+The current Next.js frontend is an interactive alpha workbench.
+
+It demonstrates a control-aware reconciliation review workflow, including priority queue, evidence triage, candidate evidence, candidate decision guardrails, local action trail, and browser-local action persistence.
+
+Detailed alpha release notes:
+
+`frontend/design/WORKBENCH_ALPHA_RELEASE_NOTES.md`
+
+Manual UI QA checklist:
+
+`frontend/design/MANUAL_UI_QA_CHECKLIST.md`
+
