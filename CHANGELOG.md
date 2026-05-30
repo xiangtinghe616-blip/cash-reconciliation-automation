@@ -14,6 +14,24 @@
 - The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
 - The workbench is suitable for portfolio demonstration but remains non-production software.
 
+## 2026-05-30 — High-Density Queue and Evidence Polish
+
+### Changed
+
+- Added a queue workload strip to the Next.js workbench.
+- Added visible, filtered, high-attention, candidate-backed, total, and staged break counts.
+- Added amount gap visibility to priority queue cards.
+- Added field-level evidence summary before detailed evidence rows.
+- Added review-priority row count for non-matching evidence.
+- Preserved queue filters, search, next-break navigation, local staged actions, action trail persistence, candidate guardrails, and evidence drill-down behavior.
+
+### Design Notes
+
+- This milestone improves high-frequency review usability.
+- The priority queue now communicates workload and review pressure more clearly.
+- The evidence panel now makes review-priority rows explicit before the analyst scans detailed fields.
+- The workbench continues moving toward a high-density finance operations review tool.
+
 ## 2026-05-30 — Salt Finance UI Polish Pass 1
 
 ### Changed

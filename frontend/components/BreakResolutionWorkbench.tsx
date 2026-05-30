@@ -278,6 +278,64 @@ function QueueFilterChip({
 }
 
 
+function QueueOperationsStrip({
+  visibleCount,
+  filteredCount,
+  totalCount,
+  stagedCount,
+  highAttentionCount,
+  candidateVisibleCount,
+}: {
+  visibleCount: number;
+  filteredCount: number;
+  totalCount: number;
+  stagedCount: number;
+  highAttentionCount: number;
+  candidateVisibleCount: number;
+}) {
+  return (
+    <div className="mb-3 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+      <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+        Queue workload
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+          <div className="font-semibold text-slate-500">Visible</div>
+          <div className="mt-1 text-base font-black text-slate-950">
+            {visibleCount}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+          <div className="font-semibold text-slate-500">Filtered</div>
+          <div className="mt-1 text-base font-black text-slate-950">
+            {filteredCount}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+          <div className="font-semibold text-slate-500">High attention</div>
+          <div className="mt-1 text-base font-black text-slate-950">
+            {highAttentionCount}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+          <div className="font-semibold text-slate-500">Candidates</div>
+          <div className="mt-1 text-base font-black text-slate-950">
+            {candidateVisibleCount}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 text-xs leading-5 text-slate-500">
+        Total {totalCount} · staged locally {stagedCount}
+      </div>
+    </div>
+  );
+}
+
 function QueueCard({
   item,
   active,
@@ -329,7 +387,11 @@ function QueueCard({
         ) : null}
       </div>
 
-      <div className={`mt-4 text-sm ${active ? "text-slate-200" : "text-slate-600"}`}>
+      <div className={`mt-4 text-xs ${active ? "text-slate-300" : "text-slate-500"}`}>
+        Amount gap: <span className="font-semibold">{item.amountGap}</span>
+      </div>
+
+      <div className={`mt-2 text-sm ${active ? "text-slate-200" : "text-slate-600"}`}>
         Recommended: <span className="font-semibold">{item.recommendedAction}</span>
       </div>
     </button>
@@ -528,9 +590,24 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
     (first, second) =>
       evidenceStatusOrder(first.status) - evidenceStatusOrder(second.status),
   );
+  const nonMatchedCount = sortedFields.filter((field) => field.status !== "match").length;
 
   return (
     <div className="space-y-3">
+      <div className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-3 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+            Field-level evidence
+          </div>
+          <div className="mt-1 text-xs leading-5 text-slate-500">
+            Missing and difference rows are shown first to reduce review search cost.
+          </div>
+        </div>
+        <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-200">
+          {nonMatchedCount} review-priority row(s)
+        </div>
+      </div>
+
       {sortedFields.map((field) => (
         <div
           key={field.field}
@@ -1226,6 +1303,17 @@ export default function BreakResolutionWorkbench() {
       ? visiblePriorityQueue[(safeVisibleIndex + 1) % visiblePriorityQueue.length]
       : null;
   const stagedCount = stagedExceptionIds.length;
+  const highAttentionCount = visiblePriorityQueue.filter(
+    (item) => item.priority === "High" || item.slaStatus === "BREACHED",
+  ).length;
+  const candidateVisibleCount = visiblePriorityQueue.filter(
+    (item) =>
+      candidateCountForException(
+        item.exceptionId,
+        workbenchData.candidatesByExceptionId,
+        workbenchData.breakPacketsByExceptionId,
+      ) > 0,
+  ).length;
 
   if (!selectedBreak) {
     return (
@@ -1378,11 +1466,14 @@ export default function BreakResolutionWorkbench() {
               </div>
             </div>
 
-            <div className="mb-3 text-xs font-semibold text-slate-500">
-              Showing {visiblePriorityQueue.length} of {filteredPriorityQueue.length} filtered breaks
-              {" "}· total {workbenchData.priorityQueue.length}
-              {" "}· staged {stagedCount}
-            </div>
+            <QueueOperationsStrip
+              visibleCount={visiblePriorityQueue.length}
+              filteredCount={filteredPriorityQueue.length}
+              totalCount={workbenchData.priorityQueue.length}
+              stagedCount={stagedCount}
+              highAttentionCount={highAttentionCount}
+              candidateVisibleCount={candidateVisibleCount}
+            />
 
             <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
               {visiblePriorityQueue.length === 0 ? (
