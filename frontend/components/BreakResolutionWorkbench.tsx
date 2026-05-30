@@ -1031,7 +1031,7 @@ export default function BreakResolutionWorkbench() {
 
   function scrollToCandidateEvidence() {
     document
-      .getElementById("related-candidate-evidence")
+      .getElementById("candidate-evidence-preview")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -1222,6 +1222,54 @@ export default function BreakResolutionWorkbench() {
               fields={evidenceFields}
               selectedPacket={selectedPacket}
             />
+
+            {relatedCandidates.length > 0 ? (
+              <div
+                id="candidate-evidence-preview"
+                className="mb-5 rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
+              >
+                <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">
+                      Candidate evidence
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-blue-900">
+                      Review candidate hypotheses before staging a candidate decision.
+                    </div>
+                  </div>
+                  <div className="text-xs font-bold text-blue-700">
+                    {relatedCandidates.length} candidate source(s)
+                  </div>
+                </div>
+
+                <div className="grid gap-3 lg:grid-cols-2">
+                  {relatedCandidates.slice(0, 2).map((candidate) => (
+                    <CandidateCard
+                      key={`preview-${candidate.source}`}
+                      candidate={candidate}
+                      selectedDecision={
+                        candidateDecision?.source === candidate.source
+                          ? candidateDecision
+                          : null
+                      }
+                      onDecision={(action) => {
+                        const nextCandidateDecision = {
+                          source: candidate.source,
+                          action,
+                          confidence: candidate.confidence,
+                          rationale: candidate.rationale,
+                        };
+
+                        setCandidateDecision(nextCandidateDecision);
+                        setAnalystNote("");
+                        setDecision(`${action} ${candidate.source} candidate`);
+                        setDecisionTimestamp(new Date().toISOString());
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             <EvidenceComparison fields={evidenceFields} />
 
