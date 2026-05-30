@@ -768,6 +768,70 @@ function candidateDecisionGuardrail(action: CandidateDecision["action"]) {
   };
 }
 
+function CompactCandidatePreview({
+  candidates,
+  onViewFullReview,
+}: {
+  candidates: Candidate[];
+  onViewFullReview: () => void;
+}) {
+  return (
+    <div
+      id="candidate-evidence-preview"
+      className="mb-5 rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
+    >
+      <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">
+            Candidate evidence
+          </div>
+          <div className="mt-1 text-sm font-semibold text-blue-900">
+            Candidate hypotheses are available for this break.
+          </div>
+        </div>
+        <div className="text-xs font-bold text-blue-700">
+          {candidates.length} candidate source(s)
+        </div>
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-2">
+        {candidates.slice(0, 2).map((candidate) => (
+          <div
+            key={`compact-${candidate.source}`}
+            className="rounded-xl border border-blue-100 bg-white p-3"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-200">
+                {candidate.source}
+              </span>
+              <span className="text-xs font-bold text-slate-500">
+                Confidence {candidate.confidence}
+              </span>
+            </div>
+            <p className="mt-3 text-xs leading-5 text-slate-600">
+              {candidate.rationale}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-3 flex flex-col gap-2 rounded-xl border border-blue-100 bg-white p-3 text-xs leading-5 text-slate-600">
+        <div>
+          Candidate evidence is shown here as a preview. Use the full candidate review section
+          to stage Review, Accept, or Reject actions.
+        </div>
+        <button
+          type="button"
+          onClick={onViewFullReview}
+          className="w-fit rounded-full bg-blue-700 px-3 py-1.5 text-xs font-bold text-white"
+        >
+          Open full candidate review
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function CandidateCard({
   candidate,
   selectedDecision,
@@ -1341,6 +1405,12 @@ export default function BreakResolutionWorkbench() {
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function scrollToFullCandidateReview() {
+    document
+      .getElementById("related-candidate-evidence")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const displayedRecommendedAction =
     selectedPacket?.summary?.recommendedAction ?? selectedBreak.recommendedAction;
   const displayedReason = selectedPacket?.summary?.reason ?? selectedBreak.reason;
@@ -1537,51 +1607,10 @@ export default function BreakResolutionWorkbench() {
             />
 
             {relatedCandidates.length > 0 ? (
-              <div
-                id="candidate-evidence-preview"
-                className="mb-5 rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
-              >
-                <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">
-                      Candidate evidence
-                    </div>
-                    <div className="mt-1 text-sm font-semibold text-blue-900">
-                      Review candidate hypotheses before staging a candidate decision.
-                    </div>
-                  </div>
-                  <div className="text-xs font-bold text-blue-700">
-                    {relatedCandidates.length} candidate source(s)
-                  </div>
-                </div>
-
-                <div className="grid gap-3 lg:grid-cols-2">
-                  {relatedCandidates.slice(0, 2).map((candidate) => (
-                    <CandidateCard
-                      key={`preview-${candidate.source}`}
-                      candidate={candidate}
-                      selectedDecision={
-                        candidateDecision?.source === candidate.source
-                          ? candidateDecision
-                          : null
-                      }
-                      onDecision={(action) => {
-                        const nextCandidateDecision = {
-                          source: candidate.source,
-                          action,
-                          confidence: candidate.confidence,
-                          rationale: candidate.rationale,
-                        };
-
-                        setCandidateDecision(nextCandidateDecision);
-                        setAnalystNote("");
-                        setDecision(`${action} ${candidate.source} candidate`);
-                        setDecisionTimestamp(new Date().toISOString());
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
+              <CompactCandidatePreview
+                candidates={relatedCandidates}
+                onViewFullReview={scrollToFullCandidateReview}
+              />
             ) : null}
 
             <EvidenceComparison fields={evidenceFields} />

@@ -14,6 +14,21 @@
 - The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
 - The workbench is suitable for portfolio demonstration but remains non-production software.
 
+## 2026-05-30 — Candidate Evidence Layout Cleanup
+
+### Changed
+
+- Reworked the active break candidate preview into a compact candidate evidence summary.
+- Kept full candidate Review / Accept / Reject actions in the Related Candidate Evidence section.
+- Added an "Open full candidate review" control from the compact preview to the full candidate section.
+- Preserved the Action Panel "View candidate evidence" shortcut, candidate decision guardrails, action log preview, local action trail, queue controls, and evidence review workflow.
+
+### Design Notes
+
+- This milestone reduces duplicate candidate decision controls in the center and bottom sections.
+- The center panel now surfaces candidate evidence as a preview, while the bottom section remains the full candidate decision area.
+- This improves information hierarchy without changing reconciliation logic.
+
 ## 2026-05-30 — Action Panel Density and Hierarchy Polish
 
 ### Changed
