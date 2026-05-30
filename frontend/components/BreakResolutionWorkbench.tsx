@@ -445,80 +445,6 @@ function EvidenceTriagePanel({
   );
 }
 
-function EvidenceInsightSummary({
-  selectedBreak,
-  fields,
-  candidates,
-  selectedPacket,
-}: {
-  selectedBreak: BreakItem;
-  fields: EvidenceField[];
-  candidates: Candidate[];
-  selectedPacket?: BreakPacket;
-}) {
-  const amountField = fields.find((field) => field.field === "Amount");
-  const dateField = fields.find((field) => field.field === "Transaction Date");
-  const referenceField = fields.find((field) => field.field === "Reference");
-
-  const differenceCount = fields.filter((field) => field.status === "difference").length;
-  const missingCount = fields.filter((field) => field.status === "missing").length;
-  const candidateSupport =
-    candidates.length > 0 ? `${candidates.length} candidate source(s)` : "No candidate support";
-
-  return (
-    <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <div className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-        Review snapshot
-      </div>
-
-      <div className="grid gap-3 lg:grid-cols-4">
-        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
-          <div className="text-xs font-semibold text-slate-500">Primary break</div>
-          <div className="mt-1 text-sm font-bold text-slate-950">
-            {selectedPacket?.summary?.breakType ?? selectedBreak.breakType}
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
-          <div className="text-xs font-semibold text-slate-500">Differences</div>
-          <div className="mt-1 text-sm font-bold text-slate-950">
-            {differenceCount} difference(s), {missingCount} missing
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
-          <div className="text-xs font-semibold text-slate-500">Candidate support</div>
-          <div className="mt-1 text-sm font-bold text-slate-950">
-            {candidateSupport}
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
-          <div className="text-xs font-semibold text-slate-500">Recommended action</div>
-          <div className="mt-1 text-sm font-bold text-slate-950">
-            {selectedPacket?.summary?.recommendedAction ?? selectedBreak.recommendedAction}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 grid gap-3 lg:grid-cols-3">
-        <div className="text-xs leading-5 text-slate-500">
-          <span className="font-bold text-slate-700">Amount:</span>{" "}
-          {amountField?.note ?? "No amount note available."}
-        </div>
-        <div className="text-xs leading-5 text-slate-500">
-          <span className="font-bold text-slate-700">Timing:</span>{" "}
-          {dateField?.note ?? "No timing note available."}
-        </div>
-        <div className="text-xs leading-5 text-slate-500">
-          <span className="font-bold text-slate-700">Reference:</span>{" "}
-          {referenceField?.note ?? "No reference note available."}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function BreakSideContext({
   bankSide,
   ledgerSide,
@@ -1294,13 +1220,6 @@ export default function BreakResolutionWorkbench() {
             <EvidenceTriagePanel
               selectedBreak={selectedBreak}
               fields={evidenceFields}
-              selectedPacket={selectedPacket}
-            />
-
-            <EvidenceInsightSummary
-              selectedBreak={selectedBreak}
-              fields={evidenceFields}
-              candidates={relatedCandidates}
               selectedPacket={selectedPacket}
             />
 
