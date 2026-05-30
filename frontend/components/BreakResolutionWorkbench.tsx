@@ -4,6 +4,7 @@ import { Button } from "@salt-ds/core";
 import {
   ACTION_TRAIL_STORAGE_KEY,
   isLocalActionRecordArray,
+  toActionLogPayloadV1,
   type LocalActionRecord,
 } from "@/lib/actionLog";
 import { useEffect, useMemo, useState } from "react";
@@ -945,6 +946,114 @@ function LocalActionTrail({
   );
 }
 
+function exportActionTrailJson(records: LocalActionRecord[]) {
+  const exportPayload = {
+    schemaVersion: "workbench-action-trail-export-v1",
+    exportedAt: new Date().toISOString(),
+    recordCount: records.length,
+    actions: records.map((record) => toActionLogPayloadV1(record)),
+  };
+
+  const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `workbench-action-trail-${new Date()
+    .toISOString()
+    .replace(/[:.]/g, "-")}.json`;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function ActionTrailPersistencePanel({
+  totalRecords,
+  currentBreakRecords,
+  onExport,
+  onClearAll,
+}: {
+  totalRecords: number;
+  currentBreakRecords: number;
+  onExport: () => void;
+  onClearAll: () => void;
+}) {
+  const hasRecords = totalRecords > 0;
+
+  return (
+    <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+            Browser action storage
+          </div>
+          <div className="mt-1 text-xs leading-5 text-slate-500">
+            Frontend-only persistence for staged demo actions.
+          </div>
+        </div>
+
+        <span
+          className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${
+            hasRecords
+              ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+              : "bg-slate-50 text-slate-500 ring-slate-200"
+          }`}
+        >
+          {hasRecords ? "Saved locally" : "No local actions"}
+        </span>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-xl bg-slate-50 p-3">
+          <div className="font-semibold text-slate-500">Current break</div>
+          <div className="mt-1 text-lg font-black text-slate-950">
+            {currentBreakRecords}
+          </div>
+        </div>
+        <div className="rounded-xl bg-slate-50 p-3">
+          <div className="font-semibold text-slate-500">All staged</div>
+          <div className="mt-1 text-lg font-black text-slate-950">
+            {totalRecords}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          disabled={!hasRecords}
+          onClick={onExport}
+          className={`rounded-xl px-3 py-2 text-xs font-bold ring-1 ${
+            hasRecords
+              ? "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50"
+              : "cursor-not-allowed bg-slate-50 text-slate-300 ring-slate-100"
+          }`}
+        >
+          Export JSON
+        </button>
+        <button
+          type="button"
+          disabled={!hasRecords}
+          onClick={onClearAll}
+          className={`rounded-xl px-3 py-2 text-xs font-bold ring-1 ${
+            hasRecords
+              ? "bg-white text-red-700 ring-red-200 hover:bg-red-50"
+              : "cursor-not-allowed bg-slate-50 text-slate-300 ring-slate-100"
+          }`}
+        >
+          Clear all
+        </button>
+      </div>
+
+      <p className="mt-3 text-xs leading-5 text-slate-500">
+        These records are stored only in this browser. They are not submitted to a backend.
+      </p>
+    </div>
+  );
+}
+
 export default function BreakResolutionWorkbench() {
   const [workbenchData, setWorkbenchData] = useState<WorkbenchData>(fallbackWorkbenchData);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -1662,6 +1771,21 @@ export default function BreakResolutionWorkbench() {
                 setStagedExceptionIds((current) =>
                   current.filter((exceptionId) => exceptionId !== selectedBreak.exceptionId),
                 );
+              }}
+            />
+
+            <ActionTrailPersistencePanel
+              totalRecords={actionTrail.length}
+              currentBreakRecords={currentBreakActionTrail.length}
+              onExport={() => exportActionTrailJson(actionTrail)}
+              onClearAll={() => {
+                setActionTrail([]);
+                setStagedExceptionIds([]);
+                setDecision(null);
+                setDecisionTimestamp(null);
+                setCandidateDecision(null);
+                setAnalystNote("");
+                window.localStorage.removeItem(ACTION_TRAIL_STORAGE_KEY);
               }}
             />
           </aside>

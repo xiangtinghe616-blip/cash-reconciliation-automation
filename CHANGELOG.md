@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-05-30 — Action Trail Export and Reset Controls
+
+### Changed
+
+- Added a browser action storage panel to the Next.js workbench.
+- Added local staged action counts for the current break and all staged actions.
+- Added export-to-JSON support for browser-local staged action trail records.
+- Added a clear-all control for browser-local staged actions.
+- Preserved current-break staged history, localStorage persistence, candidate guardrails, and action workflow preview behavior.
+
+### Design Notes
+
+- This milestone makes the local action trail more inspectable and portable.
+- Exported action records use the shared action log payload contract.
+- The workbench still does not submit actions to a backend; all staged actions remain browser-local.
+
 ## 2026-05-30 — Local Action Persistence v1
 
 ### Changed
