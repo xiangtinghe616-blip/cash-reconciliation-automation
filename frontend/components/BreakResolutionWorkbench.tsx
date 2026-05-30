@@ -1127,24 +1127,24 @@ export default function BreakResolutionWorkbench() {
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-slate-950">
       <section className="mx-auto flex max-w-[1500px] flex-col gap-5 px-4 py-4 xl:px-6">
-        <header className="rounded-[24px] bg-slate-950 px-6 py-5 text-white shadow-xl shadow-slate-300">
-          <div className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-amber-300">
+        <header className="rounded-[20px] border border-slate-800 bg-slate-950 px-5 py-4 text-white shadow-lg shadow-slate-300">
+          <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">
             Cash Break Resolution Workbench
           </div>
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="max-w-4xl text-3xl font-black tracking-tight lg:text-[34px]">
+              <h1 className="max-w-4xl text-2xl font-black tracking-tight lg:text-[28px]">
                 Resolve reconciliation breaks faster without giving automation the final word.
               </h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+              <p className="mt-2 max-w-3xl text-xs leading-5 text-slate-300">
                 Deterministic matches are handled automatically. This workbench focuses
                 analyst attention on unresolved breaks, candidate evidence, and controlled
                 action logging.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-xs text-amber-100">
+            <div className="max-w-[560px] rounded-2xl border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-xs text-amber-100">
               <div className="font-bold text-amber-200">Decision boundary</div>
               <div className="mt-1 leading-6">{displayedDecisionBoundary}</div>
               <div className="mt-3 text-xs text-amber-200/80">
@@ -1270,15 +1270,14 @@ export default function BreakResolutionWorkbench() {
             <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                  Evidence Comparison
+                  Active Break Review
                 </div>
-                <h2 className="mt-2 text-3xl font-black">{selectedBreak.exceptionId}</h2>
+                <h2 className="mt-2 text-2xl font-black">{selectedBreak.exceptionId}</h2>
                 <div className="mt-2 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-200">
                   Packet: {selectedPacket ? "break packet v2" : "fallback evidence"}
                 </div>
                 <p className="mt-3 text-sm leading-6 text-slate-500">
-                  Bank-side and ledger-side evidence are aligned by judgment dimension,
-                  so the analyst can review differences without scanning raw CSV rows.
+                  Bank-side and ledger-side evidence are organized by review dimension so the analyst can move from signal to decision without scanning raw CSV rows.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -1315,13 +1314,13 @@ export default function BreakResolutionWorkbench() {
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Action Panel
               </div>
-              <h2 className="mt-2 text-2xl font-black">Recommended next step</h2>
+              <h2 className="mt-2 text-xl font-black">Action workflow</h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Recommendations support the analyst. They do not close breaks automatically.
+                Stage analyst actions with note requirements and audit-style preview.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
+            <div className="rounded-2xl border border-red-200 bg-red-50/70 p-4">
               <div className="text-sm font-bold text-red-700">
                 {displayedRecommendedAction}
               </div>
