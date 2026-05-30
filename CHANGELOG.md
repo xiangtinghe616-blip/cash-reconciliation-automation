@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-05-30 — Action Log Payload Contract v1
+
+### Added
+
+- Added `frontend/lib/actionLog.ts`.
+- Added shared frontend action log types for local staged action records.
+- Added `ActionLogPayloadV1` and a conversion helper for future persistence.
+- Added `frontend/design/ACTION_LOG_SCHEMA.md`.
+
+### Changed
+
+- Updated the Next.js workbench to import `LocalActionRecord` from the shared action log contract.
+
+### Design Notes
+
+- This milestone prepares the workbench for a future action-log API or persistence layer.
+- The current UI still stages actions locally only.
+- The schema preserves the control boundary that system recommendations and candidate evidence do not become final decisions without analyst action.
+
 ## 2026-05-28 — Candidate Decision Guardrails Milestone
 
 ### Changed

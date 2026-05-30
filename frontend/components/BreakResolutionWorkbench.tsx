@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@salt-ds/core";
+import { type LocalActionRecord } from "@/lib/actionLog";
 import { useEffect, useMemo, useState } from "react";
 import {
   candidatesByExceptionId as fallbackCandidatesByExceptionId,
@@ -23,21 +24,6 @@ type CandidateDecision = {
   action: "Review" | "Accept" | "Reject";
   confidence: string;
   rationale: string;
-};
-
-type LocalActionRecord = {
-  id: string;
-  exceptionId: string;
-  decisionType: string;
-  actionType: string;
-  proposedStatus: string;
-  dispositionCode: string;
-  actor: string;
-  timestamp: string;
-  analystNote: string;
-  candidateSource?: Candidate["source"];
-  candidateAction?: CandidateDecision["action"];
-  candidateConfidence?: string;
 };
 
 type BreakSide = {
