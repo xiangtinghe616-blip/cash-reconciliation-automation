@@ -893,7 +893,7 @@ function LocalActionTrail({ records }: { records: LocalActionRecord[] }) {
     <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
-          Local action trail
+          Staged action history
         </div>
         <div className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
           {records.length} staged
@@ -902,8 +902,7 @@ function LocalActionTrail({ records }: { records: LocalActionRecord[] }) {
 
       {records.length === 0 ? (
         <p className="mt-3 text-xs leading-5 text-slate-500">
-          No staged actions for this break yet. Stage an action to create a local
-          review trail entry.
+          No staged actions for this break yet. Stage an analyst action to create a local review trail entry.
         </p>
       ) : (
         <div className="mt-3 space-y-2">
@@ -1602,8 +1601,6 @@ export default function BreakResolutionWorkbench() {
                       Analyst note is required before this action can be staged.
                     </div>
                   ) : null}
-
-                  <LocalActionTrail records={currentBreakActionTrail} />
                 </div>
               ) : (
                 <p className="mt-2">
@@ -1612,6 +1609,8 @@ export default function BreakResolutionWorkbench() {
               )}
             </div>
 
+
+            <LocalActionTrail records={currentBreakActionTrail} />
           </aside>
         </section>
 
