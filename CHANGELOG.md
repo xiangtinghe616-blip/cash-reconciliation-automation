@@ -14,6 +14,19 @@
 - The alpha now demonstrates priority queue, evidence triage, candidate review, action guardrails, local action trail, browser-local persistence, export, and reset controls.
 - The workbench is suitable for portfolio demonstration but remains non-production software.
 
+## 2026-05-30 — Workbench Visual QA Baseline
+
+### Added
+
+- Added `frontend/design/VISUAL_QA_NOTES.md`.
+- Added `frontend/design/screenshots/workbench-alpha-current.png` as the current alpha workbench visual baseline.
+
+### Design Notes
+
+- This milestone captures the current interactive alpha workbench state before further visual polish.
+- The QA notes summarize current strengths, weaknesses, non-goals, and next priorities.
+- This provides a stable reference point for future UI refinement.
+
 ## 2026-05-30 — Candidate and Action Section Visual Polish
 
 ### Changed
