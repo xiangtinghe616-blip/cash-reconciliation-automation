@@ -132,15 +132,50 @@ Important areas:
 
 ## How to run locally
 
-Run the Python checks from the repository root with `python -m pytest -q`.
+The easiest way to view the project is the hosted Vercel demo:
 
-Generate v3 pipeline outputs with `python versions/v3/src/reconciliation/run_v3_pipeline.py`.
+https://cash-reconciliation-automation.vercel.app
 
-Generate frontend workbench data with `python versions/v3/src/publish/frontend_workbench_exporter.py`.
+To run the full project locally, clone the repository and run the commands below.
 
-Run the frontend with `cd frontend`, then `npm install`, then `npm run dev`.
+### 1. Clone the repository
 
-Open `http://localhost:3000`.
+    git clone https://github.com/xiangtinghe616-blip/cash-reconciliation-automation.git
+    cd cash-reconciliation-automation
+
+### 2. Set up Python dependencies
+
+    python -m venv .venv
+    source .venv/bin/activate
+    python -m pip install --upgrade pip
+    pip install -r requirements-v3.txt
+
+### 3. Run tests and generate v3 outputs
+
+    python -m pytest -q
+    python versions/v3/src/reconciliation/run_v3_pipeline.py
+    python versions/v3/src/publish/frontend_workbench_exporter.py
+
+### 4. Run the Next.js workbench
+
+    cd frontend
+    npm install
+    npm run dev
+
+Then open:
+
+    http://localhost:3000
+
+### What this local setup runs
+
+This does not install a packaged commercial product.
+
+It runs the repository locally:
+
+- Python generates synthetic reconciliation outputs.
+- The frontend exporter creates `frontend/public/demo-data/workbench-data.json`.
+- Next.js serves the analyst workbench.
+- Staged actions are stored only in the browser through localStorage.
 
 ## Version history
 
