@@ -1,326 +1,182 @@
 # Cash Reconciliation Automation
 
-A versioned, control-aware cash reconciliation automation project that evolves from deterministic matching scripts into a v3 alpha break-resolution workbench.
+This project explores how cash reconciliation can move from manual spreadsheet review to a structured, analyst-facing workflow.
 
-The project demonstrates how bank and ledger reconciliation outputs can be turned into an analyst-facing workflow:
+It started as a rule-based matching prototype. It has now grown into a v3 alpha system that generates synthetic bank and ledger data, validates it, reconciles deterministic matches, surfaces unresolved breaks, attaches candidate evidence, and presents everything in an interactive Next.js workbench.
 
-    generated transactions
-    -> validation contracts
-    -> deterministic reconciliation spine
-    -> candidate evidence
-    -> exception queue
-    -> analyst workbench
-    -> staged action trail
+Live demo: https://cash-reconciliation-automation.vercel.app
 
-Core principle:
+Current stage: v3 alpha. Synthetic data only. Not production software.
 
-    System recommends.
-    Analyst decides.
-    Action log records.
+## Why this project exists
 
-## Live Demo
+Cash reconciliation sounds simple: compare bank activity against internal ledger records and find what does not match.
 
-Public Next.js workbench demo:
+In practice, the work is repetitive and messy. Breaks can come from timing differences, missing ledger entries, missing bank activity, amount mismatches, duplicate records, reference formatting issues, split payments, or data quality problems. Some items can be matched automatically. Others need a human analyst to review evidence, decide what to do, and leave a clear action trail.
 
-https://cash-reconciliation-automation.vercel.app
+The goal of this project is to show how that work can be organized.
 
-The demo is an interactive alpha workbench. It is not production software and does not use real bank data.
+The project is not trying to let AI make final reconciliation decisions. The core matching logic stays deterministic and auditable. Candidate evidence and recommendations are used to support analyst review, not replace it.
 
-## What This Project Solves
+## What the current v3 alpha does
 
-Cash reconciliation is often repetitive, high-volume, and operationally important. A large share of breaks are not conceptually hard; they are time-consuming because analysts must search across bank records, ledger records, references, amounts, dates, statuses, and review notes.
+The current v3 alpha has two main parts.
 
-This project shows how a reconciliation workflow can be structured so that:
+The first part is the reconciliation pipeline. It creates synthetic reconciliation scenarios, standardizes bank and ledger records, validates schemas and data quality, applies deterministic matching rules, generates candidate evidence, builds an exception queue, tracks lifecycle context, and exports frontend-ready workbench data.
 
-- deterministic matches are handled transparently
-- unresolved breaks are prioritized
-- evidence is organized by review dimension
-- candidate matches are treated as hypotheses
-- analysts remain responsible for final decisions
-- action history is captured in an audit-style trail
+The second part is the analyst workbench. It turns the pipeline outputs into an interactive review experience where an analyst can select a break, review evidence, inspect candidates, stage actions, and export a local action trail.
 
-## Current Status
+## What you can see in the live demo
 
-Current version:
+The Vercel demo shows a break-resolution workbench, not a dashboard.
 
-    v3 alpha
+You can try:
 
-v3 is a contract-aware, candidate-aware, analyst-facing reconciliation workflow.
+- filtering the priority queue by SLA, priority, amount mismatch, or candidate availability
+- selecting a reconciliation break
+- reviewing bank-side versus ledger-side evidence
+- using evidence triage to see missing fields, differences, and matched evidence
+- opening lifecycle, recommendation, and raw exception details
+- reviewing candidate evidence as a hypothesis, not a final match
+- staging Review, Accept, or Reject candidate decisions
+- seeing analyst note requirements for higher-control actions
+- creating a browser-local staged action trail
+- exporting staged actions as JSON
 
-It includes:
+## How v3 works
+
+The v3 flow is:
+
+1. Generate synthetic bank and ledger scenarios.
+2. Convert records into canonical bank and ledger outputs.
+3. Validate schema and data quality.
+4. Apply deterministic reconciliation rules first.
+5. Generate candidate evidence for unresolved or uncertain cases.
+6. Build an exception queue and lifecycle context.
+7. Export a workbench data package for the frontend.
+8. Let the analyst review breaks, candidates, and staged actions in the workbench.
+
+This keeps the reconciliation spine transparent while still making room for candidate evidence and analyst workflow.
+
+## What is already implemented
+
+Pipeline and data layer:
 
 - synthetic v3 data generation
 - scenario manifest
-- schema validation
+- canonical bank transaction output
+- canonical internal ledger output
+- validation issue outputs
 - Frictionless-style validation
 - Great Expectations-style validation
-- canonical bank and ledger outputs
 - deterministic reconciliation links
-- candidate link generation
+- rule-based candidate links
 - Splink-related candidate layer
+- split-payment candidates
 - exception queue
 - exception lifecycle
 - exception action recommendations
+- pipeline run summary
 - frontend workbench data exporter
-- interactive Next.js break-resolution workbench
-- Salt-inspired frontend design direction
-- local staged action trail
-- browser localStorage persistence
-- JSON export for local staged actions
 
-## Why v3 Matters
+Frontend workbench:
 
-The goal of v3 is not to replace reconciliation judgment with AI.
-
-The goal is to preserve a deterministic, auditable reconciliation spine and add the workflow layers needed for analyst review:
-
-    deterministic rules
-    + validation contracts
-    + candidate evidence
-    + lifecycle context
-    + analyst action workflow
-    + audit-style trail
-
-Candidate evidence is not a final match. It is review support.
-
-## Workbench Overview
-
-The v3 Next.js workbench is designed around break resolution, not dashboard viewing.
-
-### Priority Queue
-
-The analyst starts from an ordered queue of unresolved breaks.
-
-Capabilities:
-
-- SLA and priority filters
-- Candidate Available filter
-- Search by exception ID or break type
-- Next break navigation
-- Hide staged toggle
-- Candidate badges
-- Amount gap visibility
-- Queue workload summary
-
-### Active Break Review
-
-Each selected break becomes an evidence packet.
-
-Capabilities:
-
+- Next.js frontend
+- public Vercel deployment
+- priority queue
+- queue filters
+- search
+- next-break navigation
+- hide-staged toggle
+- evidence triage
 - bank-side versus ledger-side comparison
-- amount gap
-- missing field count
-- difference count
-- matched evidence count
-- review-focus guidance
-- field-level evidence sorted by review priority
-- lifecycle drill-down
-- action recommendation drill-down
-- raw exception drill-down
-
-### Candidate Evidence
-
-Candidate evidence is shown as a review hypothesis.
-
-Capabilities:
-
-- compact candidate preview in the active break review
-- full Related Candidate Evidence section
-- Review / Accept / Reject candidate actions
+- field-level evidence review
+- drill-down panels
+- candidate evidence preview
+- full candidate review section
 - candidate decision guardrails
-- required analyst notes for Accept / Reject
-- selected candidate context in the Action Panel
+- structured action log preview
+- browser-local staged action trail
+- localStorage persistence
+- JSON export for staged actions
+- clear current and clear all controls
 
-### Action Workflow
+## What is not finished yet
 
-The right-side Action Panel stages analyst decisions.
+This is still an alpha project.
 
-Capabilities:
+The current version does not have:
 
-- structured action preview
-- action type
-- previous status
-- proposed status
-- disposition code
-- note requirement validation
-- evidence snapshot flag
-- local staged action history
-- browser-local persistence
-- export local action trail as JSON
-- clear current / clear all staged actions
+- real bank or ERP connectors
+- real customer data
+- authenticated analyst identity
+- backend action submission API
+- production database
+- server-side audit log
+- enterprise access control
+- permissioned workflow
+- production deployment hardening
 
-## Architecture
+Staged actions are saved only in the browser. They are useful for demonstrating the workflow, but they are not yet a real operational audit log.
 
-The project is versioned.
+## Repository structure
 
-    versions/
-      v1/    original prototype
-      v2/    scenario-driven deterministic pipeline
-      v3/    contract-aware reconciliation pipeline and analyst workbench alpha
+Important areas:
 
-    frontend/
-      Next.js break-resolution workbench
+- `versions/v1/` contains the first prototype.
+- `versions/v2/` contains the scenario-driven deterministic pipeline generation.
+- `versions/v3/` contains the current contract-aware reconciliation pipeline.
+- `frontend/` contains the Next.js break-resolution workbench.
+- `tests/` contains pytest coverage for the v3 pipeline and exporter.
+- `frontend/design/` contains design notes, release notes, QA checklists, and action-log schema documentation.
 
-    tests/
-      pytest coverage for v3 pipeline and frontend exporter
+## How to run locally
 
-High-level v3 flow:
+Run the Python checks from the repository root with `python -m pytest -q`.
 
-    synthetic scenarios
-    -> canonicalization
-    -> validation
-    -> deterministic matching
-    -> candidate generation
-    -> exception lifecycle
-    -> action recommendations
-    -> workbench JSON export
-    -> Next.js analyst workbench
+Generate v3 pipeline outputs with `python versions/v3/src/reconciliation/run_v3_pipeline.py`.
 
-## Key Outputs
+Generate frontend workbench data with `python versions/v3/src/publish/frontend_workbench_exporter.py`.
 
-v3 generates frontend-ready reconciliation artifacts such as:
+Run the frontend with `cd frontend`, then `npm install`, then `npm run dev`.
 
-- canonical_bank_transactions.csv
-- canonical_internal_transactions.csv
-- validation_issues.csv
-- frictionless_validation_issues.csv
-- great_expectations_validation_issues.csv
-- reconciliation_links.csv
-- candidate_links.csv
-- splink_candidate_links.csv
-- split_payment_candidates.csv
-- exception_queue.csv
-- exception_lifecycle.csv
-- exception_actions.csv
-- pipeline_run_summary.csv
-- frontend/public/demo-data/workbench-data.json
+Open `http://localhost:3000`.
 
-## How to Run
+## Version history
 
-### Python pipeline
+v1 was the first rule-based reconciliation prototype. It focused on basic matching and exception surfacing.
 
-From the repository root:
+v2 expanded the synthetic data and introduced a more scenario-driven deterministic reconciliation pipeline.
 
-    python -m pytest -q
-    python versions/v3/src/reconciliation/run_v3_pipeline.py
-    python versions/v3/src/publish/frontend_workbench_exporter.py
+v3 alpha adds validation contracts, canonical outputs, candidate evidence, exception lifecycle context, action recommendations, a frontend exporter, and an interactive Next.js workbench.
 
-### Next.js frontend
+## Design principle
 
-    cd frontend
-    npm install
-    npm run build
-    npm run dev
+The important boundary is simple:
 
-Then open:
+The system can recommend.
 
-    http://localhost:3000
+The analyst decides.
 
-## Public Demo Path
+The action log records.
 
-Recommended demo flow:
+Candidate evidence is review support. It is not a final reconciliation decision.
 
-1. Open the Vercel demo.
-2. Start with the Priority Queue.
-3. Click Candidate Available.
-4. Select a candidate-backed break.
-5. Review Evidence Triage.
-6. Compare bank-side and ledger-side evidence.
-7. Open drill-down context.
-8. Review candidate evidence.
-9. Accept or reject a candidate.
-10. Add required analyst note.
-11. Stage action locally.
-12. Inspect staged action history.
-13. Export local action trail JSON.
+## Safety note
 
-## Documentation
+This repository is for synthetic data only.
 
-Useful docs:
+Do not commit real bank statements, ERP extracts, customer names, account numbers, or operational reconciliation data.
 
-- versions/v3/README.md
-- frontend/design/WORKBENCH_ALPHA_RELEASE_NOTES.md
-- frontend/design/MANUAL_UI_QA_CHECKLIST.md
-- frontend/design/ACTION_LOG_SCHEMA.md
-- frontend/design/DESIGN_REFERENCE_STACK.md
-- frontend/design/VISUAL_QA_NOTES.md
+The public demo uses synthetic generated data.
 
-## Version History
+## Next priorities
 
-### v1
-
-Original rule-based reconciliation prototype.
-
-Focus:
-
-- simple matching logic
-- exception surfacing
-- AI-assisted explanation concept
-
-### v2
-
-Scenario-driven deterministic reconciliation pipeline.
-
-Focus:
-
-- richer synthetic scenarios
-- deterministic matching stages
-- possible matches
-- exception queue
-- data-quality issues
-- optional Ollama-based exception assistant
-
-### v3 alpha
-
-Contract-aware, candidate-aware reconciliation workflow with analyst-facing UI.
-
-Focus:
-
-- validation contracts
-- canonical outputs
-- deterministic reconciliation spine
-- candidate evidence
-- exception lifecycle
-- action recommendations
-- Next.js workbench
-- local action trail
-- browser persistence
-- exportable action payloads
-
-## Current Limitations
-
-This is an alpha project.
-
-Current limitations:
-
-- synthetic/demo data only
-- no real bank or ERP connectors
-- no backend action submission API
-- no production database
-- no authenticated analyst identity
-- no enterprise access control
-- no server-side audit log
-- no real customer data
-- staged actions are browser-local
-- candidate evidence is demo-oriented
-- frontend is still being visually polished
-
-## Data and Security Notice
-
-This repository is intended for synthetic data only.
-
-Do not commit real bank statements, ERP extracts, account numbers, customer names, or operational reconciliation data.
-
-The current public demo and generated outputs are synthetic.
-
-## Project Direction
-
-Next priorities:
+Near-term work:
 
 - continue Salt-inspired visual polish
-- add backend action-log API planning
-- decide persistence architecture
 - improve candidate evidence detail
 - improve high-throughput queue workflow
-- prepare a concise alpha demo recording
+- plan a backend action-log API
+- decide persistence architecture
+- record a concise alpha demo walkthrough
