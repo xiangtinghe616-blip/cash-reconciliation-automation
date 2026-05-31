@@ -1,292 +1,326 @@
 # Cash Reconciliation Automation
 
-**Live Demo:** https://cash-reconciliation-automation.vercel.app  
-**Focus:** Control-aware cash reconciliation automation with a Next.js break resolution workbench.
+A versioned, control-aware cash reconciliation automation project that evolves from deterministic matching scripts into a v3 alpha break-resolution workbench.
 
-A Python-based reconciliation workflow for matching bank statement activity against internal ledger records, classifying exceptions, and producing analyst-ready review outputs.
+The project demonstrates how bank and ledger reconciliation outputs can be turned into an analyst-facing workflow:
 
-This project started as a small rule-based reconciliation prototype and has since been expanded into a scenario-driven workflow with richer synthetic data, staged matching logic, data quality checks, and an optional local LLM support layer for exception explanation and note drafting.
+    generated transactions
+    -> validation contracts
+    -> deterministic reconciliation spine
+    -> candidate evidence
+    -> exception queue
+    -> analyst workbench
+    -> staged action trail
 
-The main design choice is deliberate:
+Core principle:
 
-> Reconciliation decisions are handled by deterministic logic.  
-> AI is used only after exceptions are detected, as analyst support.
+    System recommends.
+    Analyst decides.
+    Action log records.
 
----
+## Live Demo
 
-## Quick Review
+Public Next.js workbench demo:
 
-| Resource | Link |
-|---|---|
-| Live case presentation | https://xiangtinghe616-blip.github.io/cash-reconciliation-automation/ |
-| Project brief | `docs/project-brief.pdf` |
-| Current implementation | `versions/v2/` |
-| Earlier stable prototype | `versions/v1/` |
-| v2 LLM design notes | `docs/v2-llm-design-notes.md` |
+https://cash-reconciliation-automation.vercel.app
 
----
+The demo is an interactive alpha workbench. It is not production software and does not use real bank data.
 
-## What This Project Does
+## What This Project Solves
 
-The workflow compares external bank statement records with internal cash ledger records and separates the result into:
+Cash reconciliation is often repetitive, high-volume, and operationally important. A large share of breaks are not conceptually hard; they are time-consuming because analysts must search across bank records, ledger records, references, amounts, dates, statuses, and review notes.
 
-- matched transactions
-- timing-related items
-- possible matches requiring analyst review
-- structured exception queues
-- data quality issues
-- management-style summary reporting
-- optional AI-assisted analyst notes
+This project shows how a reconciliation workflow can be structured so that:
 
-The goal is not just to label rows as matched or unmatched. The goal is to turn reconciliation breaks into reviewable operating artifacts that an analyst could investigate, explain, and escalate.
+- deterministic matches are handled transparently
+- unresolved breaks are prioritized
+- evidence is organized by review dimension
+- candidate matches are treated as hypotheses
+- analysts remain responsible for final decisions
+- action history is captured in an audit-style trail
 
----
+## Current Status
 
-## Why This Problem Is Interesting
+Current version:
 
-Cash reconciliation looks simple on the surface: compare two sets of records and find differences.
+    v3 alpha
 
-In practice, the work is more nuanced. Records may differ because of timing, formatting, fees, duplicate posting, missing internal booking, missing bank activity, split payments, reversals, or data quality problems. Some differences can be cleared automatically. Others need to be routed into a review queue with enough context for an analyst to act.
+v3 is a contract-aware, candidate-aware, analyst-facing reconciliation workflow.
 
-That makes reconciliation a useful case for automation, but only if the automation is careful about where decisions are made.
+It includes:
 
-This project keeps matching and exception classification deterministic, while using AI only for downstream handling work such as explanation, suggested next steps, and draft analyst notes.
+- synthetic v3 data generation
+- scenario manifest
+- schema validation
+- Frictionless-style validation
+- Great Expectations-style validation
+- canonical bank and ledger outputs
+- deterministic reconciliation links
+- candidate link generation
+- Splink-related candidate layer
+- exception queue
+- exception lifecycle
+- exception action recommendations
+- frontend workbench data exporter
+- interactive Next.js break-resolution workbench
+- Salt-inspired frontend design direction
+- local staged action trail
+- browser localStorage persistence
+- JSON export for local staged actions
 
----
+## Why v3 Matters
 
-## Current Version: v2
+The goal of v3 is not to replace reconciliation judgment with AI.
 
-v2 expands the project in two main ways:
+The goal is to preserve a deterministic, auditable reconciliation spine and add the workflow layers needed for analyst review:
 
-### 1. Larger, Scenario-Driven Synthetic Data
+    deterministic rules
+    + validation contracts
+    + candidate evidence
+    + lifecycle context
+    + analyst action workflow
+    + audit-style trail
 
-v2 moves beyond a small clean sample and generates a controlled reconciliation dataset with:
+Candidate evidence is not a final match. It is review support.
 
-- 600+ seeded scenarios
-- multiple accounts
-- CAD and USD transactions
-- different transaction types and counterparties
-- timing differences
-- missing bank records
-- missing internal ledger records
-- amount mismatches
-- duplicate bank-side records
-- duplicate ledger-side records
-- reference formatting differences
-- possible matches
-- split / aggregation cases
-- reversal or correction patterns
-- data quality issues
+## Workbench Overview
 
-The important file is:
+The v3 Next.js workbench is designed around break resolution, not dashboard viewing.
 
-```text
-versions/v2/data/scenario_manifest_v2.csv
-```
+### Priority Queue
 
-This manifest records the expected classification for each seeded scenario. It makes the dataset useful for testing and future iteration, rather than just being a larger set of random rows.
+The analyst starts from an ordered queue of unresolved breaks.
 
-### 2. Staged Matching and Exception Handling
+Capabilities:
 
-v2 uses staged reconciliation logic instead of a single match rule.
+- SLA and priority filters
+- Candidate Available filter
+- Search by exception ID or break type
+- Next break navigation
+- Hide staged toggle
+- Candidate badges
+- Amount gap visibility
+- Queue workload summary
 
-The workflow includes:
+### Active Break Review
 
-```text
-data generation
-        ↓
-data quality checks
-        ↓
-exact matching
-        ↓
-timing tolerance matching
-        ↓
-normalized reference matching
-        ↓
-split / aggregation handling
-        ↓
-amount mismatch detection
-        ↓
-possible match queue
-        ↓
-residual exception classification
-        ↓
-analyst and management outputs
-```
+Each selected break becomes an evidence packet.
 
-This staged approach is closer to how a real reconciliation workflow would separate clear matches from items that require review.
+Capabilities:
 
----
+- bank-side versus ledger-side comparison
+- amount gap
+- missing field count
+- difference count
+- matched evidence count
+- review-focus guidance
+- field-level evidence sorted by review priority
+- lifecycle drill-down
+- action recommendation drill-down
+- raw exception drill-down
 
-## Role of AI in v2
+### Candidate Evidence
 
-v2 includes an optional local LLM support layer using Ollama.
+Candidate evidence is shown as a review hypothesis.
 
-The LLM does **not** decide whether transactions match. It does **not** classify reconciliation breaks. It reads the already-classified exceptions queue and generates analyst support fields:
+Capabilities:
 
-- exception explanation
-- recommended next step
-- draft analyst note
-- risk/control consideration
+- compact candidate preview in the active break review
+- full Related Candidate Evidence section
+- Review / Accept / Reject candidate actions
+- candidate decision guardrails
+- required analyst notes for Accept / Reject
+- selected candidate context in the Action Panel
 
-LLM script:
+### Action Workflow
 
-```text
-versions/v2/src/llm_exception_assistant_ollama.py
-```
+The right-side Action Panel stages analyst decisions.
 
-The script also includes a deterministic template fallback mode, so the pipeline can still run when a local LLM is unavailable.
+Capabilities:
 
-This keeps the AI component useful but bounded.
+- structured action preview
+- action type
+- previous status
+- proposed status
+- disposition code
+- note requirement validation
+- evidence snapshot flag
+- local staged action history
+- browser-local persistence
+- export local action trail as JSON
+- clear current / clear all staged actions
 
----
+## Architecture
 
-## v2 Outputs
+The project is versioned.
 
-v2 generates the following output files:
+    versions/
+      v1/    original prototype
+      v2/    scenario-driven deterministic pipeline
+      v3/    contract-aware reconciliation pipeline and analyst workbench alpha
 
-| Output | Purpose |
-|---|---|
-| `matched_transactions.csv` | Transactions matched through exact, timing, normalized-reference, or split/aggregation logic |
-| `possible_matches.csv` | Candidate matches that need analyst review |
-| `exceptions_queue.csv` | Deterministically classified reconciliation exceptions |
-| `data_quality_issues.csv` | Input issues detected before reconciliation |
-| `exceptions_queue_llm_enhanced.csv` | Exception queue enriched with analyst-support text |
-| `summary_report.csv` | Management-style summary of match and exception results |
+    frontend/
+      Next.js break-resolution workbench
 
-Output location:
+    tests/
+      pytest coverage for v3 pipeline and frontend exporter
 
-```text
-versions/v2/output/
-```
+High-level v3 flow:
 
----
+    synthetic scenarios
+    -> canonicalization
+    -> validation
+    -> deterministic matching
+    -> candidate generation
+    -> exception lifecycle
+    -> action recommendations
+    -> workbench JSON export
+    -> Next.js analyst workbench
 
-## How to Run v2
+## Key Outputs
 
-Install dependencies from the repository root:
+v3 generates frontend-ready reconciliation artifacts such as:
 
-```bash
-pip install -r requirements-v2.txt
-```
+- canonical_bank_transactions.csv
+- canonical_internal_transactions.csv
+- validation_issues.csv
+- frictionless_validation_issues.csv
+- great_expectations_validation_issues.csv
+- reconciliation_links.csv
+- candidate_links.csv
+- splink_candidate_links.csv
+- split_payment_candidates.csv
+- exception_queue.csv
+- exception_lifecycle.csv
+- exception_actions.csv
+- pipeline_run_summary.csv
+- frontend/public/demo-data/workbench-data.json
 
-Run the full v2 pipeline:
+## How to Run
 
-```bash
-cd versions/v2
-python src/run_v2_pipeline.py
-```
-
-This runs:
-
-1. synthetic data generation
-2. reconciliation engine
-3. analyst-support enhancement in template fallback mode
-
-To run the local LLM assistant with Ollama:
-
-```bash
-python src/llm_exception_assistant_ollama.py --mode ollama --model llama3.2
-```
-
-To run without Ollama:
-
-```bash
-python src/llm_exception_assistant_ollama.py --mode template
-```
-
----
-
-## How to Run v1
+### Python pipeline
 
 From the repository root:
 
-```bash
-cd versions/v1
-python src/reconciliation_engine.py
-python src/ai_exception_assistant.py
-```
+    python -m pytest -q
+    python versions/v3/src/reconciliation/run_v3_pipeline.py
+    python versions/v3/src/publish/frontend_workbench_exporter.py
 
-v1 outputs are saved in:
+### Next.js frontend
 
-```text
-versions/v1/output/
-```
+    cd frontend
+    npm install
+    npm run build
+    npm run dev
 
----
+Then open:
 
-## Project Artifacts
+    http://localhost:3000
 
-| Artifact | Location |
-|---|---|
-| Business project brief | `docs/project-brief.pdf` |
-| Enterprise readiness notes | `docs/enterprise-readiness.md` |
-| Output sample explanation | `docs/output-samples.md` |
-| v2 LLM design notes | `docs/v2-llm-design-notes.md` |
-| Version roadmap | `docs/v2-roadmap.md` |
-| Changelog | `CHANGELOG.md` |
+## Public Demo Path
 
----
+Recommended demo flow:
 
-## What This Project Demonstrates
+1. Open the Vercel demo.
+2. Start with the Priority Queue.
+3. Click Candidate Available.
+4. Select a candidate-backed break.
+5. Review Evidence Triage.
+6. Compare bank-side and ledger-side evidence.
+7. Open drill-down context.
+8. Review candidate evidence.
+9. Accept or reject a candidate.
+10. Add required analyst note.
+11. Stage action locally.
+12. Inspect staged action history.
+13. Export local action trail JSON.
 
-This project is meant to show practical workflow judgment, not just code.
+## Documentation
 
-It demonstrates:
+Useful docs:
 
-- Python-based data workflow automation
-- reconciliation matching logic
-- exception classification
-- staged review design
-- data quality checks before processing
-- possible match queue design
-- structured analyst outputs
-- management-style summary reporting
-- business-facing documentation
-- controlled use of AI in a financial operations workflow
+- versions/v3/README.md
+- frontend/design/WORKBENCH_ALPHA_RELEASE_NOTES.md
+- frontend/design/MANUAL_UI_QA_CHECKLIST.md
+- frontend/design/ACTION_LOG_SCHEMA.md
+- frontend/design/DESIGN_REFERENCE_STACK.md
+- frontend/design/VISUAL_QA_NOTES.md
 
-The broader skill is translating a manual, exception-heavy process into a structured workflow that can be reviewed, explained, and improved.
+## Version History
 
----
+### v1
 
-## Limitations
+Original rule-based reconciliation prototype.
 
-This is a portfolio prototype, not a production reconciliation platform.
+Focus:
 
-Current limitations include:
+- simple matching logic
+- exception surfacing
+- AI-assisted explanation concept
 
-- synthetic data rather than live bank or ledger feeds
-- simplified account and entity structure
-- no production database backend
-- no user authentication or role-based access control
-- no analyst UI for assignment, aging, or resolution tracking
-- limited fuzzy matching
-- no external case management integration
-- local LLM support is used only for analyst assistance, not production decision-making
+### v2
 
-These limitations are intentional at this stage. The focus is on workflow structure, exception handling, data design, and automation boundaries.
+Scenario-driven deterministic reconciliation pipeline.
 
----
+Focus:
 
-## Future Improvements
+- richer synthetic scenarios
+- deterministic matching stages
+- possible matches
+- exception queue
+- data-quality issues
+- optional Ollama-based exception assistant
 
-Planned improvements include:
+### v3 alpha
 
-- configurable matching rules
-- richer fuzzy matching and reference normalization
-- exception aging
-- analyst status tracking
-- dashboard-style exception review
-- SQL-based validation checks
-- audit trail design
-- comparison between template-generated and LLM-generated notes
-- lightweight database or case-management layer
-- model governance notes for production-style AI use
+Contract-aware, candidate-aware reconciliation workflow with analyst-facing UI.
 
----
+Focus:
 
-## Usage and Rights
+- validation contracts
+- canonical outputs
+- deterministic reconciliation spine
+- candidate evidence
+- exception lifecycle
+- action recommendations
+- Next.js workbench
+- local action trail
+- browser persistence
+- exportable action payloads
 
-This repository is shared as a portfolio and learning project.
+## Current Limitations
 
-All rights are reserved unless otherwise stated. The code, documentation, workflow design, and project materials may not be copied, redistributed, or used commercially without permission.
+This is an alpha project.
+
+Current limitations:
+
+- synthetic/demo data only
+- no real bank or ERP connectors
+- no backend action submission API
+- no production database
+- no authenticated analyst identity
+- no enterprise access control
+- no server-side audit log
+- no real customer data
+- staged actions are browser-local
+- candidate evidence is demo-oriented
+- frontend is still being visually polished
+
+## Data and Security Notice
+
+This repository is intended for synthetic data only.
+
+Do not commit real bank statements, ERP extracts, account numbers, customer names, or operational reconciliation data.
+
+The current public demo and generated outputs are synthetic.
+
+## Project Direction
+
+Next priorities:
+
+- continue Salt-inspired visual polish
+- add backend action-log API planning
+- decide persistence architecture
+- improve candidate evidence detail
+- improve high-throughput queue workflow
+- prepare a concise alpha demo recording
