@@ -1106,6 +1106,71 @@ function LocalActionTrail({
   );
 }
 
+function ActionWorkflowStatus({
+  hasDecision,
+  noteRequired,
+  canStageAction,
+}: {
+  hasDecision: boolean;
+  noteRequired: boolean;
+  canStageAction: boolean;
+}) {
+  const steps = [
+    {
+      label: "Action selected",
+      active: hasDecision,
+      helper: "Choose recommendation or candidate action.",
+    },
+    {
+      label: noteRequired ? "Note required" : "Note optional",
+      active: hasDecision && (!noteRequired || canStageAction),
+      helper: noteRequired
+        ? "Add analyst rationale before staging."
+        : "Rationale can be added if useful.",
+    },
+    {
+      label: "Ready to stage",
+      active: canStageAction,
+      helper: "Local action trail will record this step.",
+    },
+  ];
+
+  return (
+    <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+        Workflow status
+      </div>
+
+      <div className="grid gap-2">
+        {steps.map((step, index) => (
+          <div
+            key={step.label}
+            className={`rounded-xl border p-2.5 ${
+              step.active
+                ? "border-slate-300 bg-white text-slate-950"
+                : "border-slate-200 bg-slate-100/70 text-slate-400"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-black ${
+                  step.active
+                    ? "bg-slate-950 text-white"
+                    : "bg-white text-slate-400 ring-1 ring-slate-200"
+                }`}
+              >
+                {index + 1}
+              </span>
+              <span className="text-xs font-bold">{step.label}</span>
+            </div>
+            <div className="mt-1 pl-7 text-xs leading-5">{step.helper}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function exportActionTrailJson(records: LocalActionRecord[]) {
   const exportPayload = {
     schemaVersion: "workbench-action-trail-export-v1",
@@ -1647,6 +1712,12 @@ export default function BreakResolutionWorkbench() {
                 Stage analyst actions with note requirements, guardrails, and audit-style preview.
               </p>
             </div>
+
+            <ActionWorkflowStatus
+              hasDecision={Boolean(decision)}
+              noteRequired={actionPreview.noteRequired}
+              canStageAction={actionPreview.canStageAction}
+            />
 
             <div className="rounded-xl border border-red-200 bg-red-50/60 p-3">
               <div className="text-sm font-bold text-red-700">

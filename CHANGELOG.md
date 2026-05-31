@@ -109,6 +109,21 @@
 - The workbench continues moving toward a Salt-inspired finance operations interface.
 - Further visual polish should continue to reduce generic SaaS card feel and improve high-density analyst workflow.
 
+## 2026-05-30 — Action Panel Workflow Status Polish
+
+### Changed
+
+- Added a workflow status rail to the Next.js Action Panel.
+- Added step indicators for action selection, analyst note requirement, and staging readiness.
+- Made the Action Panel workflow easier to explain in demo recordings.
+- Preserved action preview, candidate guardrails, local action trail, browser persistence, export, reset, queue, and evidence behavior.
+
+### Design Notes
+
+- This milestone improves explainability of the staged action workflow.
+- The Action Panel now better communicates the path from analyst decision to local action trail.
+- This prepares the workbench for a first alpha demo recording.
+
 ## 2026-05-30 — Action Trail Export and Reset Controls
 
 ### Changed
