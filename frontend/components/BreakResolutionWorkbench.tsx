@@ -12,9 +12,11 @@ import {
   candidatesByExceptionId as fallbackCandidatesByExceptionId,
   evidenceByExceptionId as fallbackEvidenceByExceptionId,
   priorityQueue as fallbackPriorityQueue,
+  reconciliationSummary as fallbackReconciliationSummary,
   type BreakItem,
   type Candidate,
   type EvidenceField,
+  type ReconciliationSummary,
 } from "@/lib/demoData";
 
 type QueueFilter =
@@ -62,6 +64,7 @@ type BreakPacket = {
 };
 
 type WorkbenchData = {
+  reconciliationSummary: ReconciliationSummary | null;
   priorityQueue: BreakItem[];
   evidenceByExceptionId: Record<string, EvidenceField[]>;
   candidatesByExceptionId: Record<string, Candidate[]>;
@@ -77,6 +80,7 @@ const QUEUE_FILTERS: QueueFilter[] = [
 ];
 
 const fallbackWorkbenchData: WorkbenchData = {
+  reconciliationSummary: fallbackReconciliationSummary,
   priorityQueue: fallbackPriorityQueue,
   evidenceByExceptionId: fallbackEvidenceByExceptionId,
   candidatesByExceptionId: fallbackCandidatesByExceptionId,
@@ -85,8 +89,8 @@ const fallbackWorkbenchData: WorkbenchData = {
 
 const actionButtonStyle = {
   width: "100%",
-  minHeight: "40px",
-  borderRadius: "12px",
+  minHeight: "36px",
+  borderRadius: "8px",
   fontSize: "13px",
   fontWeight: 700,
   letterSpacing: "0",
@@ -96,8 +100,8 @@ const actionButtonStyle = {
 
 const candidateButtonStyle = {
   width: "100%",
-  minHeight: "34px",
-  borderRadius: "10px",
+  minHeight: "30px",
+  borderRadius: "6px",
   fontSize: "12px",
   fontWeight: 700,
   textTransform: "none",
@@ -128,6 +132,40 @@ function hasRelatedCandidate(
       breakPacketsByExceptionId,
     ) > 0
   );
+}
+
+function pickDefaultExceptionId(
+  items: BreakItem[],
+  candidatesByExceptionId: Record<string, Candidate[]>,
+  breakPacketsByExceptionId: Record<string, BreakPacket>,
+) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  const hasCandidate = (item: BreakItem) =>
+    hasRelatedCandidate(
+      item.exceptionId,
+      candidatesByExceptionId,
+      breakPacketsByExceptionId,
+    );
+
+  // Prefer the most demo-rich break: an amount mismatch (bank and ledger
+  // sides both present) that also carries candidate evidence, so the opening
+  // view shows a full evidence trail rather than a one-sided unmatched record.
+  const richest = items.find(
+    (item) => item.breakType === "AMOUNT_MISMATCH" && hasCandidate(item),
+  );
+  if (richest) {
+    return richest.exceptionId;
+  }
+
+  const withCandidate = items.find(hasCandidate);
+  if (withCandidate) {
+    return withCandidate.exceptionId;
+  }
+
+  return items[0].exceptionId;
 }
 
 function filterPriorityQueue(
@@ -294,34 +332,34 @@ function QueueOperationsStrip({
   candidateVisibleCount: number;
 }) {
   return (
-    <div className="mb-3 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+    <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
       <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
         Queue workload
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-xs">
-        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+        <div className="rounded-md bg-white p-2 ring-1 ring-slate-200">
           <div className="font-semibold text-slate-500">Visible</div>
           <div className="mt-1 text-base font-black text-slate-950">
             {visibleCount}
           </div>
         </div>
 
-        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+        <div className="rounded-md bg-white p-2 ring-1 ring-slate-200">
           <div className="font-semibold text-slate-500">Filtered</div>
           <div className="mt-1 text-base font-black text-slate-950">
             {filteredCount}
           </div>
         </div>
 
-        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+        <div className="rounded-md bg-white p-2 ring-1 ring-slate-200">
           <div className="font-semibold text-slate-500">High attention</div>
           <div className="mt-1 text-base font-black text-slate-950">
             {highAttentionCount}
           </div>
         </div>
 
-        <div className="rounded-xl bg-white p-2 ring-1 ring-slate-200">
+        <div className="rounded-md bg-white p-2 ring-1 ring-slate-200">
           <div className="font-semibold text-slate-500">Candidates</div>
           <div className="mt-1 text-base font-black text-slate-950">
             {candidateVisibleCount}
@@ -353,7 +391,7 @@ function QueueCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full rounded-2xl border p-4 text-left transition ${
+      className={`w-full rounded-lg border p-4 text-left transition ${
         active
           ? "border-slate-900 bg-slate-900 text-white shadow-md shadow-slate-200"
           : "border-slate-200 bg-white hover:border-slate-500 hover:bg-slate-50"
@@ -460,7 +498,7 @@ function EvidenceTriagePanel({
         : "Evidence is aligned; review candidate and action context.";
 
   return (
-    <div className="mb-5 rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+    <div className="mb-5 rounded-lg border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
       <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -477,28 +515,28 @@ function EvidenceTriagePanel({
       </div>
 
       <div className="grid gap-3 lg:grid-cols-4">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs font-semibold text-slate-500">Amount gap</div>
           <div className="mt-1 text-sm font-black text-slate-950">
             {selectedPacket?.summary?.amountGap ?? selectedBreak.amountGap}
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs font-semibold text-slate-500">Missing fields</div>
           <div className="mt-1 text-sm font-black text-slate-950">
             {missingFields.length}
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs font-semibold text-slate-500">Differences</div>
           <div className="mt-1 text-sm font-black text-slate-950">
             {differenceFields.length}
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
           <div className="text-xs font-semibold text-slate-500">Matched evidence</div>
           <div className="mt-1 text-sm font-black text-slate-950">
             {matchedFields.length}
@@ -506,7 +544,7 @@ function EvidenceTriagePanel({
         </div>
       </div>
 
-      <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-5 text-slate-600">
+      <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-xs leading-5 text-slate-600">
         <span className="font-bold text-slate-800">Review focus:</span> {reviewFocus}
       </div>
     </div>
@@ -526,7 +564,7 @@ function BreakSideContext({
 
   return (
     <div className="mb-5 grid gap-3 lg:grid-cols-2">
-      <div className="rounded-2xl border border-slate-300/70 bg-white p-4">
+      <div className="rounded-lg border border-slate-300/70 bg-white p-4">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
           Bank side
         </div>
@@ -552,7 +590,7 @@ function BreakSideContext({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-300/70 bg-white p-4">
+      <div className="rounded-lg border border-slate-300/70 bg-white p-4">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
           Ledger side
         </div>
@@ -594,7 +632,7 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
             Field-level evidence
@@ -611,7 +649,7 @@ function EvidenceComparison({ fields }: { fields: EvidenceField[] }) {
       {sortedFields.map((field) => (
         <div
           key={field.field}
-          className={`grid gap-3 rounded-2xl border p-3 lg:grid-cols-[145px_1fr_1fr_110px] ${evidenceRowTone(field.status)}`}
+          className={`grid gap-3 rounded-lg border p-3 lg:grid-cols-[145px_1fr_1fr_110px] ${evidenceRowTone(field.status)}`}
         >
           <div>
             <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
@@ -671,7 +709,7 @@ function DrillDownRecord({
   );
 
   return (
-    <details className="rounded-2xl border border-slate-300/70 bg-white p-4">
+    <details className="rounded-lg border border-slate-300/70 bg-white p-4">
       <summary className="cursor-pointer text-sm font-bold text-slate-950">
         {title}
       </summary>
@@ -683,7 +721,7 @@ function DrillDownRecord({
           {entries.map(([key, value]) => (
             <div
               key={key}
-              className="grid gap-2 rounded-xl bg-slate-50 p-3 text-xs lg:grid-cols-[190px_1fr]"
+              className="grid gap-2 rounded-md bg-slate-50 p-3 text-xs lg:grid-cols-[190px_1fr]"
             >
               <div className="font-bold uppercase tracking-[0.08em] text-slate-400">
                 {key}
@@ -702,7 +740,7 @@ function DrillDownRecord({
 function DrillDownPanels({ packet }: { packet?: BreakPacket }) {
   if (!packet) {
     return (
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
+      <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
         No drill-down packet is available for this break.
       </div>
     );
@@ -802,7 +840,7 @@ function CompactCandidatePreview({
   return (
     <div
       id="candidate-evidence-preview"
-      className="mb-5 rounded-2xl border border-blue-200 bg-blue-50/60 p-4"
+      className="mb-5 rounded-lg border border-blue-200 bg-blue-50/60 p-4"
     >
       <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
         <div>
@@ -822,7 +860,7 @@ function CompactCandidatePreview({
         {candidates.slice(0, 2).map((candidate) => (
           <div
             key={`compact-${candidate.source}`}
-            className="rounded-xl border border-blue-100 bg-white p-3"
+            className="rounded-md border border-blue-100 bg-white p-3"
           >
             <div className="flex items-center justify-between gap-3">
               <CandidateSourceBadge source={candidate.source} />
@@ -837,7 +875,7 @@ function CompactCandidatePreview({
         ))}
       </div>
 
-      <div className="mt-3 flex flex-col gap-2 rounded-xl border border-blue-100 bg-white p-3 text-xs leading-5 text-slate-600">
+      <div className="mt-3 flex flex-col gap-2 rounded-md border border-blue-100 bg-white p-3 text-xs leading-5 text-slate-600">
         <div>
           This preview surfaces candidate evidence early. Use the full candidate review section to stage Review, Accept, or Reject actions.
         </div>
@@ -864,7 +902,7 @@ function CandidateCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-4 transition ${
+      className={`rounded-lg border p-4 transition ${
         selectedDecision
           ? "border-blue-300 bg-blue-50/60 ring-2 ring-blue-100"
           : "border-slate-200 bg-white"
@@ -887,7 +925,7 @@ function CandidateCard({
       </div>
       <p className="mt-3 text-sm leading-6 text-slate-600">{candidate.rationale}</p>
 
-      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
+      <div className="mt-4 rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
         Candidate evidence supports review prioritization. It does not confirm a match.
       </div>
 
@@ -920,7 +958,7 @@ function CandidateCard({
 
       {selectedDecision ? (
         <div
-          className={`mt-3 rounded-xl border p-3 text-xs leading-5 ${
+          className={`mt-3 rounded-md border p-3 text-xs leading-5 ${
             candidateDecisionGuardrail(selectedDecision.action).tone
           }`}
         >
@@ -935,7 +973,7 @@ function CandidateCard({
           </div>
         </div>
       ) : (
-        <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
+        <div className="mt-3 rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
           Accept or reject requires analyst rationale before it can be staged.
         </div>
       )}
@@ -1047,7 +1085,7 @@ function LocalActionTrail({
   onClear: () => void;
 }) {
   return (
-    <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
+    <div className="mt-3 rounded-md border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
           Staged action history
@@ -1077,7 +1115,7 @@ function LocalActionTrail({
           {records.slice(0, 4).map((record) => (
             <div
               key={record.id}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-5"
+              className="rounded-md border border-slate-200 bg-slate-50 p-3 text-xs leading-5"
             >
               <div className="flex justify-between gap-3">
                 <span className="font-bold text-slate-900">{record.actionType}</span>
@@ -1136,7 +1174,7 @@ function ActionWorkflowStatus({
   ];
 
   return (
-    <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+    <div className="mb-4 rounded-md border border-slate-200 bg-slate-50 p-3">
       <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
         Workflow status
       </div>
@@ -1145,7 +1183,7 @@ function ActionWorkflowStatus({
         {steps.map((step, index) => (
           <div
             key={step.label}
-            className={`rounded-xl border p-2.5 ${
+            className={`rounded-md border p-2.5 ${
               step.active
                 ? "border-slate-300 bg-white text-slate-950"
                 : "border-slate-200 bg-slate-100/70 text-slate-400"
@@ -1208,7 +1246,7 @@ function ActionTrailPersistencePanel({
   const hasRecords = totalRecords > 0;
 
   return (
-    <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
+    <div className="mt-3 rounded-md border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
@@ -1231,13 +1269,13 @@ function ActionTrailPersistencePanel({
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-        <div className="rounded-xl bg-slate-50 p-3">
+        <div className="rounded-md bg-slate-50 p-3">
           <div className="font-semibold text-slate-500">Current break</div>
           <div className="mt-1 text-lg font-black text-slate-950">
             {currentBreakRecords}
           </div>
         </div>
-        <div className="rounded-xl bg-slate-50 p-3">
+        <div className="rounded-md bg-slate-50 p-3">
           <div className="font-semibold text-slate-500">All staged</div>
           <div className="mt-1 text-lg font-black text-slate-950">
             {totalRecords}
@@ -1250,7 +1288,7 @@ function ActionTrailPersistencePanel({
           type="button"
           disabled={!hasRecords}
           onClick={onExport}
-          className={`rounded-xl px-3 py-2 text-xs font-bold ring-1 ${
+          className={`rounded-md px-3 py-2 text-xs font-bold ring-1 ${
             hasRecords
               ? "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50"
               : "cursor-not-allowed bg-slate-50 text-slate-300 ring-slate-100"
@@ -1262,7 +1300,7 @@ function ActionTrailPersistencePanel({
           type="button"
           disabled={!hasRecords}
           onClick={onClearAll}
-          className={`rounded-xl px-3 py-2 text-xs font-bold ring-1 ${
+          className={`rounded-md px-3 py-2 text-xs font-bold ring-1 ${
             hasRecords
               ? "bg-white text-red-700 ring-red-200 hover:bg-red-50"
               : "cursor-not-allowed bg-slate-50 text-slate-300 ring-slate-100"
@@ -1276,6 +1314,107 @@ function ActionTrailPersistencePanel({
         These records are stored only in this browser. They are not submitted to a backend.
       </p>
     </div>
+  );
+}
+
+function FunnelStage({
+  label,
+  value,
+  caption,
+  tone = "neutral",
+}: {
+  label: string;
+  value: number;
+  caption: string;
+  tone?: "neutral" | "matched" | "review" | "alert";
+}) {
+  const toneClass =
+    tone === "matched"
+      ? "text-emerald-300"
+      : tone === "review"
+        ? "text-sky-300"
+        : tone === "alert"
+          ? "text-red-300"
+          : "text-white";
+
+  return (
+    <div className="min-w-0 flex-1">
+      <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+        {label}
+      </div>
+      <div className={`mt-1 text-xl font-black tabular-nums lg:text-2xl ${toneClass}`}>
+        {value.toLocaleString()}
+      </div>
+      <div className="mt-0.5 text-[11px] leading-4 text-slate-400">{caption}</div>
+    </div>
+  );
+}
+
+function FunnelArrow() {
+  return (
+    <div className="hidden self-center text-slate-600 sm:block" aria-hidden="true">
+      →
+    </div>
+  );
+}
+
+function ReconciliationFunnel({
+  summary,
+}: {
+  summary: ReconciliationSummary | null;
+}) {
+  if (!summary) {
+    return null;
+  }
+
+  return (
+    <section
+      className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-4 text-white shadow-md shadow-slate-200"
+      aria-label="Reconciliation run funnel"
+    >
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:justify-between">
+        <div className="flex flex-1 flex-wrap items-stretch gap-x-4 gap-y-3 sm:flex-nowrap">
+          <FunnelStage
+            label="Transactions in"
+            value={summary.totalTransactions}
+            caption={`Bank ${summary.bankTransactions.toLocaleString()} · Ledger ${summary.ledgerTransactions.toLocaleString()}`}
+          />
+          <FunnelArrow />
+          <FunnelStage
+            label="Auto-matched"
+            value={summary.deterministicMatches}
+            caption="Deterministic rule links"
+            tone="matched"
+          />
+          <FunnelArrow />
+          <FunnelStage
+            label="Candidate evidence"
+            value={summary.candidateEvidenceTotal}
+            caption="Rule + Splink + split-payment"
+            tone="review"
+          />
+          <FunnelArrow />
+          <FunnelStage
+            label="Breaks to review"
+            value={summary.exceptionsForReview}
+            caption={`${summary.slaBreached.toLocaleString()} breached SLA`}
+            tone="alert"
+          />
+        </div>
+
+        <div className="flex shrink-0 flex-col justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-center lg:min-w-[160px]">
+          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-200">
+            Auto-match rate
+          </div>
+          <div className="mt-1 text-3xl font-black tabular-nums text-emerald-300">
+            {summary.autoMatchRate}%
+          </div>
+          <div className="mt-0.5 text-[11px] leading-4 text-emerald-200/80">
+            Resolved before analyst review
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1315,6 +1454,8 @@ export default function BreakResolutionWorkbench() {
           payload.candidatesByExceptionId
         ) {
           setWorkbenchData({
+            reconciliationSummary:
+              payload.reconciliationSummary ?? fallbackReconciliationSummary,
             priorityQueue: payload.priorityQueue,
             evidenceByExceptionId: payload.evidenceByExceptionId,
             candidatesByExceptionId: payload.candidatesByExceptionId,
@@ -1421,7 +1562,9 @@ export default function BreakResolutionWorkbench() {
   );
 
   useEffect(() => {
-    if (visiblePriorityQueue.length === 0) {
+    // Wait for the generated data to settle before choosing a default so the
+    // selection lands on a loaded break rather than sticking to a fallback id.
+    if (isLoadingData || visiblePriorityQueue.length === 0) {
       return;
     }
 
@@ -1430,9 +1573,21 @@ export default function BreakResolutionWorkbench() {
     );
 
     if (!selectedId || !selectedStillExists) {
-      setSelectedId(visiblePriorityQueue[0].exceptionId);
+      setSelectedId(
+        pickDefaultExceptionId(
+          visiblePriorityQueue,
+          workbenchData.candidatesByExceptionId,
+          workbenchData.breakPacketsByExceptionId,
+        ),
+      );
     }
-  }, [selectedId, visiblePriorityQueue]);
+  }, [
+    selectedId,
+    visiblePriorityQueue,
+    isLoadingData,
+    workbenchData.candidatesByExceptionId,
+    workbenchData.breakPacketsByExceptionId,
+  ]);
 
   const selectedBreak = useMemo(
     () =>
@@ -1466,7 +1621,7 @@ export default function BreakResolutionWorkbench() {
   if (!selectedBreak) {
     return (
       <main className="min-h-screen bg-[#f4f6f8] p-8 text-slate-950">
-        <div className="rounded-3xl bg-white p-8 shadow-sm">
+        <div className="rounded-lg bg-white p-8 shadow-sm">
           No workbench data available. Run the v3 pipeline and frontend exporter.
         </div>
       </main>
@@ -1517,7 +1672,7 @@ export default function BreakResolutionWorkbench() {
   return (
     <main className="min-h-screen bg-[#f6f7f9] text-slate-950">
       <section className="mx-auto flex max-w-[1500px] flex-col gap-5 px-4 py-4 xl:px-6">
-        <header className="rounded-2xl border border-slate-800 bg-slate-950 px-5 py-4 text-white shadow-md shadow-slate-300">
+        <header className="rounded-lg border border-slate-800 bg-slate-950 px-5 py-4 text-white shadow-md shadow-slate-300">
           <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">
             Cash Break Resolution Workbench
           </div>
@@ -1534,7 +1689,7 @@ export default function BreakResolutionWorkbench() {
               </p>
             </div>
 
-            <div className="max-w-[560px] rounded-2xl border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-xs text-amber-100">
+            <div className="max-w-[560px] rounded-lg border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-xs text-amber-100">
               <div className="font-bold text-amber-200">Decision boundary</div>
               <div className="mt-1 leading-6">{displayedDecisionBoundary}</div>
               <div className="mt-3 text-xs text-amber-200/80">
@@ -1544,8 +1699,10 @@ export default function BreakResolutionWorkbench() {
           </div>
         </header>
 
+        <ReconciliationFunnel summary={workbenchData.reconciliationSummary} />
+
         <section className="grid gap-5 xl:grid-cols-[340px_minmax(0,1fr)_340px]">
-          <aside className="rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
+          <aside className="rounded-lg border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
             <div className="mb-4">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Priority Queue
@@ -1582,7 +1739,7 @@ export default function BreakResolutionWorkbench() {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search exception id or break type..."
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none ring-slate-300 placeholder:text-slate-400 focus:ring-2"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none ring-slate-300 placeholder:text-slate-400 focus:ring-2"
               />
 
               <div className="flex items-center justify-between gap-3">
@@ -1631,7 +1788,7 @@ export default function BreakResolutionWorkbench() {
 
             <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
               {visiblePriorityQueue.length === 0 ? (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">
                   No breaks match this filter.
                 </div>
               ) : (
@@ -1659,7 +1816,7 @@ export default function BreakResolutionWorkbench() {
             </div>
           </aside>
 
-          <section className="rounded-2xl border border-slate-300/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
+          <section className="rounded-lg border border-slate-300/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
             <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -1702,7 +1859,7 @@ export default function BreakResolutionWorkbench() {
             <DrillDownPanels packet={selectedPacket} />
           </section>
 
-          <aside className="rounded-2xl border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
+          <aside className="rounded-lg border border-slate-300/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.06)] xl:sticky xl:top-4 xl:self-start">
             <div className="mb-4 border-b border-slate-200 pb-4">
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 Resolution Controls
@@ -1719,7 +1876,7 @@ export default function BreakResolutionWorkbench() {
               canStageAction={actionPreview.canStageAction}
             />
 
-            <div className="rounded-xl border border-red-200 bg-red-50/60 p-3">
+            <div className="rounded-md border border-red-200 bg-red-50/60 p-3">
               <div className="text-sm font-bold text-red-700">
                 {displayedRecommendedAction}
               </div>
@@ -1727,7 +1884,7 @@ export default function BreakResolutionWorkbench() {
             </div>
 
             {candidateDecision ? (
-              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50/70 p-3 text-sm leading-5 text-blue-800">
+              <div className="mt-4 rounded-md border border-blue-200 bg-blue-50/70 p-3 text-sm leading-5 text-blue-800">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
                     Selected candidate
@@ -1754,7 +1911,7 @@ export default function BreakResolutionWorkbench() {
             ) : null}
 
             {relatedCandidates.length > 0 ? (
-              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm leading-5 text-blue-800">
+              <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm leading-5 text-blue-800">
                 <div className="font-bold">Candidate evidence available</div>
                 <p className="mt-1 text-xs leading-5 text-blue-700">
                   Candidate evidence is available for this break. Review it before staging a candidate decision.
@@ -1829,12 +1986,12 @@ export default function BreakResolutionWorkbench() {
               </div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+            <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600">
               <div className="font-bold text-slate-900">Action log preview</div>
 
               {decision ? (
                 <div className="mt-3 space-y-3">
-                  <div className="grid gap-2 rounded-xl border border-slate-200 bg-white p-3 text-xs">
+                  <div className="grid gap-2 rounded-md border border-slate-200 bg-white p-3 text-xs">
                     <div className="flex justify-between gap-3">
                       <span className="text-slate-500">Exception</span>
                       <span className="font-semibold text-slate-900">
@@ -1879,13 +2036,13 @@ export default function BreakResolutionWorkbench() {
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-800">
+                  <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-800">
                     <div className="font-bold">Workflow guardrail</div>
                     <div className="mt-1">{actionPreview.guardrailMessage}</div>
                   </div>
 
                   {candidateDecision ? (
-                    <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-5 text-blue-700">
+                    <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-xs leading-5 text-blue-700">
                       <div className="font-bold">Candidate decision context</div>
                       <div>Source: {candidateDecision.source}</div>
                       <div>Action: {candidateDecision.action}</div>
@@ -1904,11 +2061,11 @@ export default function BreakResolutionWorkbench() {
                       value={analystNote}
                       onChange={(event) => setAnalystNote(event.target.value)}
                       placeholder="Add rationale, follow-up request, or review note..."
-                      className="min-h-24 w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none ring-slate-300 placeholder:text-slate-400 focus:ring-2"
+                      className="min-h-24 w-full rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none ring-slate-300 placeholder:text-slate-400 focus:ring-2"
                     />
                   </label>
 
-                  <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
+                  <div className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-500">
                     Evidence snapshot included:{" "}
                     <span className="font-bold text-slate-900">
                       {actionPreview.evidenceSnapshotIncluded ? "Yes" : "No"}
@@ -1949,7 +2106,7 @@ export default function BreakResolutionWorkbench() {
                         ...current,
                       ]);
                     }}
-                    className={`w-full rounded-2xl px-4 py-3 text-sm font-bold ${
+                    className={`w-full rounded-lg px-4 py-3 text-sm font-bold ${
                       actionPreview.canStageAction
                         ? "bg-slate-950 text-white"
                         : "cursor-not-allowed bg-slate-200 text-slate-400"
@@ -2001,7 +2158,7 @@ export default function BreakResolutionWorkbench() {
           </aside>
         </section>
 
-        <section id="related-candidate-evidence" className="rounded-2xl border border-slate-300/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
+        <section id="related-candidate-evidence" className="rounded-lg border border-slate-300/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)]">
           <div className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -2018,7 +2175,7 @@ export default function BreakResolutionWorkbench() {
           </div>
 
           {relatedCandidates.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-500">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-500">
               No related candidate evidence is available for this break. Continue with
               exception evidence and action review.
             </div>

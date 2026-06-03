@@ -70,3 +70,6 @@ frontend/out/
 frontend/.vercel/
 frontend/.env.local
 frontend/.env.*.local
+
+# Claude Code local workspace
+.claude/

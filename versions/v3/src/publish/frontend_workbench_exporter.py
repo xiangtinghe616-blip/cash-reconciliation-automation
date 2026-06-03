@@ -499,6 +499,109 @@ def build_break_packets_by_exception(
     return packets
 
 
+def _stage_record_count(
+    pipeline_run_summary: pd.DataFrame,
+    stage: str,
+    column: str = "record_count",
+) -> int:
+    if (
+        pipeline_run_summary.empty
+        or "stage" not in pipeline_run_summary.columns
+        or column not in pipeline_run_summary.columns
+    ):
+        return 0
+
+    matched = pipeline_run_summary[
+        pipeline_run_summary["stage"].astype(str) == stage
+    ]
+
+    if matched.empty:
+        return 0
+
+    value = matched.iloc[0].get(column)
+
+    if value is None or pd.isna(value):
+        return 0
+
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def build_reconciliation_summary(
+    pipeline_run_summary: pd.DataFrame,
+) -> dict[str, Any] | None:
+    """Build the top-of-funnel reconciliation summary for the workbench.
+
+    The summary turns the per-stage pipeline run report into the funnel the
+    analyst sees first: how many transactions flowed in, how many were resolved
+    automatically by deterministic rules, how much candidate evidence was
+    generated for review, and how many breaks reached the exception queue.
+
+    Returns None when no pipeline run summary is available so the frontend can
+    gracefully hide the funnel strip.
+    """
+    if pipeline_run_summary.empty:
+        return None
+
+    bank_transactions = _stage_record_count(
+        pipeline_run_summary, "bank_standardization"
+    )
+    ledger_transactions = _stage_record_count(
+        pipeline_run_summary, "ledger_standardization"
+    )
+    deterministic_matches = _stage_record_count(
+        pipeline_run_summary, "deterministic_matching"
+    )
+    candidate_links = _stage_record_count(
+        pipeline_run_summary, "candidate_link_generation"
+    )
+    splink_candidates = _stage_record_count(
+        pipeline_run_summary, "splink_candidate_link_generation"
+    )
+    split_payment_candidates = _stage_record_count(
+        pipeline_run_summary, "split_payment_candidate_generation"
+    )
+    exceptions_for_review = _stage_record_count(
+        pipeline_run_summary, "exception_queue_build"
+    )
+    sla_breached = _stage_record_count(
+        pipeline_run_summary, "exception_lifecycle_build", column="issue_count"
+    )
+
+    total_transactions = bank_transactions + ledger_transactions
+    candidate_evidence_total = (
+        candidate_links + splink_candidates + split_payment_candidates
+    )
+
+    auto_resolution_base = deterministic_matches + exceptions_for_review
+    auto_match_rate = (
+        round(deterministic_matches / auto_resolution_base * 100)
+        if auto_resolution_base
+        else 0
+    )
+
+    run_id = ""
+    if "run_id" in pipeline_run_summary.columns:
+        run_id = _string_value(pipeline_run_summary.iloc[0].get("run_id"), "")
+
+    return {
+        "runId": run_id,
+        "bankTransactions": bank_transactions,
+        "ledgerTransactions": ledger_transactions,
+        "totalTransactions": total_transactions,
+        "deterministicMatches": deterministic_matches,
+        "candidateLinks": candidate_links,
+        "splinkCandidates": splink_candidates,
+        "splitPaymentCandidates": split_payment_candidates,
+        "candidateEvidenceTotal": candidate_evidence_total,
+        "exceptionsForReview": exceptions_for_review,
+        "slaBreached": sla_breached,
+        "autoMatchRate": auto_match_rate,
+    }
+
+
 def build_frontend_workbench_payload(
     exception_queue: pd.DataFrame,
     exception_lifecycle: pd.DataFrame,
@@ -506,6 +609,7 @@ def build_frontend_workbench_payload(
     candidate_links: pd.DataFrame,
     splink_candidate_links: pd.DataFrame,
     split_payment_candidates: pd.DataFrame,
+    pipeline_run_summary: pd.DataFrame | None = None,
 ) -> dict[str, Any]:
     priority_queue = build_priority_queue(
         exception_queue=exception_queue,
@@ -536,7 +640,14 @@ def build_frontend_workbench_payload(
         split_payment_candidates=split_payment_candidates,
     )
 
+    reconciliation_summary = build_reconciliation_summary(
+        pipeline_run_summary
+        if pipeline_run_summary is not None
+        else pd.DataFrame()
+    )
+
     return {
+        "reconciliationSummary": reconciliation_summary,
         "priorityQueue": priority_queue,
         "evidenceByExceptionId": evidence_by_exception_id,
         "candidatesByExceptionId": candidates_by_exception_id,
@@ -554,6 +665,7 @@ def export_frontend_workbench_data(
     candidate_links = _read_csv_if_exists(output_dir / "candidate_links.csv")
     splink_candidate_links = _read_csv_if_exists(output_dir / "splink_candidate_links.csv")
     split_payment_candidates = _read_csv_if_exists(output_dir / "split_payment_candidates.csv")
+    pipeline_run_summary = _read_csv_if_exists(output_dir / "pipeline_run_summary.csv")
 
     payload = build_frontend_workbench_payload(
         exception_queue=exception_queue,
@@ -562,6 +674,7 @@ def export_frontend_workbench_data(
         candidate_links=candidate_links,
         splink_candidate_links=splink_candidate_links,
         split_payment_candidates=split_payment_candidates,
+        pipeline_run_summary=pipeline_run_summary,
     )
 
     destination_path.parent.mkdir(parents=True, exist_ok=True)

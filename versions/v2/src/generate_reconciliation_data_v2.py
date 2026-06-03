@@ -15,6 +15,29 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
 
+# Anchor synthetic transaction dates to the generation date so the downstream
+# SLA / aging view produces a realistic spread of WITHIN_SLA, DUE_TODAY, and
+# BREACHED exceptions instead of going fully stale over time. Row counts stay
+# deterministic; only the calendar anchor shifts with the generation date.
+AS_OF_DATE = date.today()
+
+
+def aged_transaction_date() -> date:
+    """Draw a transaction date with a realistic recency spread.
+
+    Roughly 35% recent (0-2 days), 30% mid (3-10 days), and 35% aged
+    (11-45 days) so SLA tiers (High=2, Medium=5, Low=10) yield a believable
+    mix of within-SLA and breached exceptions rather than near-total breach.
+    """
+    roll = random.random()
+    if roll < 0.35:
+        offset = random.randint(0, 2)
+    elif roll < 0.65:
+        offset = random.randint(3, 10)
+    else:
+        offset = random.randint(11, 45)
+    return AS_OF_DATE - timedelta(days=offset)
+
 
 ACCOUNTS = [
     ("ACC1001", "Operating Cash - CAD"),
@@ -99,7 +122,7 @@ def base_fields(ref_num: int, scenario_type: str) -> Dict[str, object]:
     currency = choose_currency(account_id)
     transaction_type = random.choice(TRANSACTION_TYPES)
     direction = direction_for_txn(transaction_type)
-    base_date = date(2026, 3, 1) + timedelta(days=random.randint(0, 45))
+    base_date = aged_transaction_date()
     ref = format_ref(ref_num)
     amount = money()
     counterparty = random.choice(COUNTERPARTIES)
@@ -200,7 +223,13 @@ def add_scenario(
 
     elif scenario == "amount_mismatch":
         bank_rows.append(bank_record(base))
-        adjusted_amount = round(float(base["amount"]) + random.choice([-25.00, -50.00, 75.00, 125.00]), 2)
+        # Vary the discrepancy so amount-mismatch breaks do not collapse onto a
+        # handful of identical gap values. Gap is a realistic 0.5%-6% of the
+        # base amount (floored at $5), with either sign.
+        base_amount = float(base["amount"])
+        gap = round(base_amount * random.uniform(0.005, 0.06), 2)
+        gap = max(gap, 5.00) * random.choice([-1.0, 1.0])
+        adjusted_amount = round(base_amount + gap, 2)
         ledger_rows.append(ledger_record(base, amount=f"{adjusted_amount:.2f}"))
         expected = "amount_mismatch"
         notes = "Same reference but different amount."

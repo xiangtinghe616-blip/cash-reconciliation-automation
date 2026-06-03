@@ -23,6 +23,36 @@ export type Candidate = {
   rationale: string;
 };
 
+export type ReconciliationSummary = {
+  runId: string;
+  bankTransactions: number;
+  ledgerTransactions: number;
+  totalTransactions: number;
+  deterministicMatches: number;
+  candidateLinks: number;
+  splinkCandidates: number;
+  splitPaymentCandidates: number;
+  candidateEvidenceTotal: number;
+  exceptionsForReview: number;
+  slaBreached: number;
+  autoMatchRate: number;
+};
+
+export const reconciliationSummary: ReconciliationSummary = {
+  runId: "demo-fallback",
+  bankTransactions: 595,
+  ledgerTransactions: 600,
+  totalTransactions: 1195,
+  deterministicMatches: 399,
+  candidateLinks: 468,
+  splinkCandidates: 567,
+  splitPaymentCandidates: 15,
+  candidateEvidenceTotal: 1050,
+  exceptionsForReview: 342,
+  slaBreached: 336,
+  autoMatchRate: 54,
+};
+
 export const priorityQueue: BreakItem[] = [
   {
     exceptionId: "EXC-000342",

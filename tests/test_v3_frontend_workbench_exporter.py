@@ -11,8 +11,97 @@ from versions.v3.src.publish.frontend_workbench_exporter import (  # noqa: E402
     build_break_packets_by_exception,
     build_frontend_workbench_payload,
     build_priority_queue,
+    build_reconciliation_summary,
     export_frontend_workbench_data,
 )
+
+
+def _pipeline_run_summary_fixture() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {"run_id": "run-1", "stage": "bank_standardization", "record_count": 595, "issue_count": 0},
+            {"run_id": "run-1", "stage": "ledger_standardization", "record_count": 600, "issue_count": 0},
+            {"run_id": "run-1", "stage": "deterministic_matching", "record_count": 399, "issue_count": 0},
+            {"run_id": "run-1", "stage": "candidate_link_generation", "record_count": 468, "issue_count": 0},
+            {"run_id": "run-1", "stage": "splink_candidate_link_generation", "record_count": 567, "issue_count": 0},
+            {"run_id": "run-1", "stage": "split_payment_candidate_generation", "record_count": 15, "issue_count": 0},
+            {"run_id": "run-1", "stage": "exception_queue_build", "record_count": 342, "issue_count": 342},
+            {"run_id": "run-1", "stage": "exception_lifecycle_build", "record_count": 342, "issue_count": 336},
+        ]
+    )
+
+
+def test_build_reconciliation_summary_builds_funnel():
+    summary = build_reconciliation_summary(_pipeline_run_summary_fixture())
+
+    assert summary is not None
+    assert summary["bankTransactions"] == 595
+    assert summary["ledgerTransactions"] == 600
+    assert summary["totalTransactions"] == 1195
+    assert summary["deterministicMatches"] == 399
+    assert summary["candidateEvidenceTotal"] == 468 + 567 + 15
+    assert summary["exceptionsForReview"] == 342
+    assert summary["slaBreached"] == 336
+    # 399 / (399 + 342) -> 54%
+    assert summary["autoMatchRate"] == 54
+    assert summary["runId"] == "run-1"
+
+
+def test_build_reconciliation_summary_returns_none_without_summary():
+    assert build_reconciliation_summary(pd.DataFrame()) is None
+
+
+def test_payload_includes_reconciliation_summary_when_available():
+    payload = build_frontend_workbench_payload(
+        exception_queue=pd.DataFrame(
+            [
+                {
+                    "exception_id": "EXC-1",
+                    "break_type": "AMOUNT_MISMATCH",
+                    "priority": "High",
+                    "currency": "CAD",
+                    "amount_bank": 500.0,
+                    "amount_internal": 450.0,
+                }
+            ]
+        ),
+        exception_lifecycle=pd.DataFrame(
+            [{"exception_id": "EXC-1", "sla_status": "BREACHED", "age_days": 12}]
+        ),
+        exception_actions=pd.DataFrame(),
+        candidate_links=pd.DataFrame(),
+        splink_candidate_links=pd.DataFrame(),
+        split_payment_candidates=pd.DataFrame(),
+        pipeline_run_summary=_pipeline_run_summary_fixture(),
+    )
+
+    assert payload["reconciliationSummary"]["totalTransactions"] == 1195
+
+
+def test_payload_reconciliation_summary_none_without_summary():
+    payload = build_frontend_workbench_payload(
+        exception_queue=pd.DataFrame(
+            [
+                {
+                    "exception_id": "EXC-1",
+                    "break_type": "AMOUNT_MISMATCH",
+                    "priority": "High",
+                    "currency": "CAD",
+                    "amount_bank": 500.0,
+                    "amount_internal": 450.0,
+                }
+            ]
+        ),
+        exception_lifecycle=pd.DataFrame(
+            [{"exception_id": "EXC-1", "sla_status": "BREACHED", "age_days": 12}]
+        ),
+        exception_actions=pd.DataFrame(),
+        candidate_links=pd.DataFrame(),
+        splink_candidate_links=pd.DataFrame(),
+        split_payment_candidates=pd.DataFrame(),
+    )
+
+    assert payload["reconciliationSummary"] is None
 
 
 def test_build_priority_queue_sorts_breached_high_priority_first():
