@@ -14,7 +14,8 @@ Cash reconciliation usually lives in fragile spreadsheets. This project shows ho
 
 ### ▶ Watch the 90-second demo
 
-[![Watch the cash break resolution workbench demo](frontend/design/demo/workbench-demo-poster.png)](https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/blob/main/frontend/design/demo/workbench-demo-short.mp4)
+https://github.com/user-attachments/assets/c414aa0c-0aa6-4b7c-a206-0f8f0e7f66ed
+
 
 **[▶ Try the live demo](https://cash-reconciliation-automation.vercel.app)** — no setup required.
 
