@@ -73,3 +73,7 @@ frontend/.env.*.local
 
 # Claude Code local workspace
 .claude/
+
+# Raw demo recording workspace and stray root lockfile
+record-demo-starter/
+/package-lock.json

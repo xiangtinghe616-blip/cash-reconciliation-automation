@@ -12,9 +12,11 @@ Cash reconciliation usually lives in fragile spreadsheets. This project shows ho
 
 **The core principle:** the system *recommends*, the analyst *decides*, the action log *records*. Candidate evidence and model output are treated as hypotheses for review — never as final reconciliation decisions.
 
-![Cash break resolution workbench](frontend/design/screenshots/workbench-hero.png)
+### ▶ Watch the 90-second demo
 
-**[▶ Try the live demo](https://cash-reconciliation-automation.vercel.app)** — no setup required.
+[![Watch the cash break resolution workbench demo](frontend/design/demo/workbench-demo-poster.png)](https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/blob/main/frontend/design/demo/workbench-demo-short.mp4)
+
+*Click the image above to play the walkthrough.* **[▶ Try the live demo](https://cash-reconciliation-automation.vercel.app)** — no setup required.
 
 ## How it works
 
