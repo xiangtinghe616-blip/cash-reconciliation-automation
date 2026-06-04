@@ -19,6 +19,8 @@ https://github.com/user-attachments/assets/c414aa0c-0aa6-4b7c-a206-0f8f0e7f66ed
 
 **[▶ Try the live demo](https://cash-reconciliation-automation.vercel.app)** — no setup required.
 
+*Want the full story? [▶ Watch the 2.5-minute deep-dive walkthrough](https://github.com/xiangtinghe616-blip/cash-reconciliation-automation/blob/main/frontend/design/demo/workbench-demo-long-web.mp4) — the complete workflow, for interviewers and deeper reviewers.*
+
 ## How it works
 
 ```mermaid
